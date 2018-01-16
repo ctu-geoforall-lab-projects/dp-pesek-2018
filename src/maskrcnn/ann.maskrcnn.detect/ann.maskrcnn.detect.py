@@ -72,7 +72,7 @@ import sys
 import os
 from subprocess import call, Popen, check_output
 from shutil import copyfile
-from random import uniform
+from random import uniform, randint
 
 path = get_lib_path(modname='maskrcnn', libname='py3detect')
 if path is None:
@@ -98,7 +98,7 @@ def main(options, flags):
 
     # TODO: Check if unique
     # TODO: (3 different brands in case of lot of classes?)
-    classesColours = [0] + [uniform(0, 1) for _ in range(
+    classesColours = [0] + [randint(0, 255) for _ in range(
         len(classes.split(',')))]
 
     ###########################################################
@@ -118,36 +118,39 @@ def main(options, flags):
             format),
          shell=True)
 
+    raise SystemExit(0)
     print('Masks detected. Georeferencing masks...')
     masks = list()
     for referencing in [file for file in next(
             os.walk(imagesDir))[2] if os.path.splitext(file)[1] != format]:
         fileName, refExtension = referencing.split(format)
-        maskName = fileName + '_mask'
-        masks.append(maskName)
-        maskFileName = maskName + '.png'
-        copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
-                            referencing)
+        # TODO: Join with converting to one loop
+        for i in range(1, len(classes.split(',')) + 1):
+            maskName = fileName + '_' + str(i)
+            maskFileName = maskName + '.png'
+            if os.path.isfile(os.path.join(masksDir, maskFileName)):
+                masks.append(maskName)
+                copy_georeferencing(imagesDir, masksDir, maskFileName,
+                                    refExtension, referencing)
 
-        gscript.run_command('r.in.gdal',
-                            input=os.path.join(masksDir, maskFileName),
-                            output=maskName,
-                            band=1,  # TODO: Change to 3 if 3 bands masks
-                            overwrite=gscript.overwrite())
+                gscript.run_command('r.in.gdal',
+                                    input=os.path.join(masksDir, maskFileName),
+                                    output=maskName,
+                                    band=1,  # TODO: 3 if 3 band masks
+                                    overwrite=gscript.overwrite())
 
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
     index = 0
     for i in classesColours[1:]:
         for maskName in masks:
-            # TODO: Use r.patch, do following for one colour...
-            # TODO: ... in previous loop
             gscript.run_command('g.region',
                                 raster=maskName)
             gscript.run_command('r.mask',
                                 raster=maskName,
-                                maskcats=i * 255)
+                                maskcats=i)
             gscript.run_command('r.to.vect',
+                                's',
                                 input=maskName,
                                 output=maskName,
                                 type='area')

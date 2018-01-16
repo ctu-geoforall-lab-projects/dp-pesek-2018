@@ -39,13 +39,8 @@ def detect(imagesDir, modelPath, classes, name, masksDir, outputType,
     model = modellib.MaskRCNN(mode="inference", model_dir=modelPath,
                               config=config)
 
-    # Load weights trained on MS-COCO
-
     model.load_weights(modelPath, by_name=True)
 
-    # COCO Class names
-    # Index of the class in the list is its ID. For example, to get ID of
-    # the teddy bear class, use: class_names.index('teddy bear')
     classNames = ['BG']
     for i in classes:
         classNames.append(i)
@@ -57,26 +52,19 @@ def detect(imagesDir, modelPath, classes, name, masksDir, outputType,
     # TODO: Use the whole list instead of iteration
     for imageFile in [file for file in next(
             os.walk(imagesDir))[2] if os.path.splitext(file)[1] == format]:
-        # fileNames = next(os.walk(imagesDir))[2]
-        # a = random.choice(fileNames)
         image = skimage.io.imread(os.path.join(imagesDir, imageFile))
 
         # Run detection
         results = model.detect([image], verbose=1)
 
-        # Visualize results
+        # Save results
         # TODO: More images -> more indices than [0]
         r = results[0]
-        # print('Stat:', image, r['rois'], r['masks'], r['class_ids'],
-        #                             classNames, r['scores'])
-        # print(a)
-        # print('NEXT VISUALIZE')
         visualize.save_instances(image, r['rois'], r['masks'], r['class_ids'],
                                  classNames, r['scores'], outputDir=masksDir,
                                  which=outputType, title=imageFile,
                                  colours=classesColours)
 
-    # sys.stdout.write('ahoj')
 
 if __name__ == '__main__':
 

@@ -68,14 +68,13 @@ def random_colors(N, bright=True):
     return colors
 
 
-def apply_mask(image, mask, color, alpha=0.5):
+def apply_mask(image, mask, color):
     """Apply the given mask to the image.
     """
     for c in range(3):
         image[:, :, c] = np.where(mask == 1,
-                                  # image[:, :, c] *
-                                  # (1 - alpha) + alpha * color[c] * 255,
-                                  image[:, :, c] + color[c] * 255,
+                                  np.zeros([image.shape[0],
+                                            image.shape[1]]) + color[c],
                                   image[:, :, c])
     return image
 
@@ -92,13 +91,10 @@ def save_instances(image, boxes, masks, class_ids, class_names,
     scores: (optional) confidence scores for each box
     figsize: (optional) the size of the image.
     """
-    # Number of instances
 
     dpi = 80
     height, width = image.shape[:2]
     figsize = width / float(dpi), height / float(dpi)
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_axes([0, 0, 1, 1])
 
     N = boxes.shape[0]
     if not N:
@@ -106,99 +102,116 @@ def save_instances(image, boxes, masks, class_ids, class_names,
     else:
         assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
 
-    #if not ax:
-    #    _, ax = plt.subplots(1, figsize=figsize)
-
-    # Generate random colors
-    #colors = random_colors(N)
-    # if not colours:
-    #     colours = dict()
-    #     for i in set(class_ids):
-    #         colours.update({i: (random.uniform(0, 1), random.uniform(0, 1),
-    #                             random.uniform(0, 1))})
-    #     # colors = random_colors(len(set(class_ids)))
-
     # Show area outside image boundaries.
     height, width = image.shape[:2]
-    #ax.set_ylim(height + 10, -10)
-    #ax.set_xlim(-10, width + 10)
-    ax.axis('off')
-    # ax.set_title(title)
-
-    masked_image = np.zeros(image.shape)#astype(np.uint32).copy()
 
     if which == 'areas':
-        for i in range(N):
-            # color = (1, 1, 1)
-            #color = colors[i]
-            colour = (colours[class_ids[i]],) * 3
+        for classId in set(class_ids):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.axis('off')
+            masked_image = np.zeros(image.shape)
+            index = 0
 
-            # Bounding box
-            if not np.any(boxes[i]):
-                # Skip this instance. Has no bbox. Likely lost in image cropping.
-                continue
-            y1, x1, y2, x2 = boxes[i]
+            for i in range(N):
+                if class_ids[i] != classId:
+                    continue
+                colour = (colours[class_ids[i]],) * 3
 
-            # Mask
-            mask = masks[:, :, i]
-            masked_image = apply_mask(masked_image, mask, colour)
+                # Bounding box
+                if not np.any(boxes[i]):
+                    # Skip this instance. Has no bbox. Likely lost in image cropping.
+                    continue
+                y1, x1, y2, x2 = boxes[i]
 
-            # Mask Polygon
-            # Pad to ensure proper polygons for masks that touch image edges.
-            padded_mask = np.zeros(
-                (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
-            padded_mask[1:-1, 1:-1] = mask
-            contours = find_contours(padded_mask, 0.5)
-            for verts in contours:
-                # Subtract the padding and flip (y, x) to (x, y)
-                verts = np.fliplr(verts) - 1
-                p = Polygon(verts, facecolor="none", edgecolor=colour)
-                ax.add_patch(p)
+                # Mask
+                mask = masks[:, :, i]
+                masked_image = apply_mask(masked_image, mask, colour)
+
+                # Mask Polygon
+                # Pad to ensure proper polygons for masks that touch image edges.
+                padded_mask = np.zeros(
+                    (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
+                padded_mask[1:-1, 1:-1] = mask
+                contours = find_contours(padded_mask, 0.5)
+                for verts in contours:
+                    # Subtract the padding and flip (y, x) to (x, y)
+                    verts = np.fliplr(verts) - 1
+                    p = Polygon(verts, facecolor="none", edgecolor='none')
+                    ax.add_patch(p)
+
+                index = i
+
+            ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
+            ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
+            plt.savefig(
+                os.path.join(
+                    outputDir,
+                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
+                dpi=dpi)
+            plt.close()
     elif which =='points':
-        for i in range(N):
-            # color = (1, 1, 1)  # colors[i]
-            colour = (colours[class_ids[i]],) * 3
+        for classId in set(class_ids):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.axis('off')
+            masked_image = np.zeros(image.shape)
+            index = 0
+            for i in range(N):
+                if class_ids[i] != classId:
+                    continue
 
-            # Bounding box
-            if not np.any(boxes[i]):
-                # Skip this instance. Has no bbox. Likely lost in image cropping.
-                continue
-            y1, x1, y2, x2 = boxes[i]
-            p = patches.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2,
-                                  alpha=0.7, linestyle="dashed",
-                                  edgecolor=colour, facecolor='none')
-            ax.add_patch(p)
+                fig = plt.figure(figsize=figsize)
+                ax = fig.add_axes([0, 0, 1, 1])
+                ax.axis('off')
+                masked_image = np.zeros(image.shape)
+                colour = (colours[class_ids[i]],) * 3
 
-            # # Label
-            # class_id = class_ids[i]
-            # score = scores[i] if scores is not None else None
-            # label = class_names[class_id]
-            # x = random.randint(x1, (x1 + x2) // 2)
-            # caption = "{} {:.3f}".format(label, score) if score else label
-            # ax.text(x1, y1 + 8, caption,
-            #         color='w', size=11, backgroundcolor="none")
-            #
-            # # Mask
-            # mask = masks[:, :, i]
-            # masked_image = apply_mask(masked_image, mask, color)
-            #
-            # # Mask Polygon
-            # # Pad to ensure proper polygons for masks that touch image edges.
-            # padded_mask = np.zeros(
-            #     (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
-            # padded_mask[1:-1, 1:-1] = mask
-            # contours = find_contours(padded_mask, 0.5)
-            # for verts in contours:
-            #     # Subtract the padding and flip (y, x) to (x, y)
-            #     verts = np.fliplr(verts) - 1
-            #     p = Polygon(verts, facecolor="none", edgecolor=color)
-            #     ax.add_patch(p)
+                # Bounding box
+                if not np.any(boxes[i]):
+                    # Skip this instance. Has no bbox. Likely lost in image cropping.
+                    continue
+                y1, x1, y2, x2 = boxes[i]
+                p = patches.Rectangle((x1, y1), x2 - x1, y2 - y1, linewidth=2,
+                                      alpha=0.7, linestyle="dashed",
+                                      edgecolor=colour, facecolor='none')
+                ax.add_patch(p)
 
-    ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
-    ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
-    plt.savefig(os.path.join(outputDir, os.path.splitext(title)[0] + '_mask'), dpi=dpi)
-    # plt.show()
-    plt.close()
+                # # Label
+                # class_id = class_ids[i]
+                # score = scores[i] if scores is not None else None
+                # label = class_names[class_id]
+                # x = random.randint(x1, (x1 + x2) // 2)
+                # caption = "{} {:.3f}".format(label, score) if score else label
+                # ax.text(x1, y1 + 8, caption,
+                #         color='w', size=11, backgroundcolor="none")
+                #
+                # # Mask
+                # mask = masks[:, :, i]
+                # masked_image = apply_mask(masked_image, mask, color)
+                #
+                # # Mask Polygon
+                # # Pad to ensure proper polygons for masks that touch image edges.
+                # padded_mask = np.zeros(
+                #     (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
+                # padded_mask[1:-1, 1:-1] = mask
+                # contours = find_contours(padded_mask, 0.5)
+                # for verts in contours:
+                #     # Subtract the padding and flip (y, x) to (x, y)
+                #     verts = np.fliplr(verts) - 1
+                #     p = Polygon(verts, facecolor="none", edgecolor=color)
+                #     ax.add_patch(p)
+
+            ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
+            ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
+
+            plt.savefig(
+                os.path.join(
+                    outputDir,
+                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
+                dpi=dpi)
+            # plt.show()
+            plt.close()
 
 
 def draw_rois(image, rois, refined_rois, mask, class_ids, class_names, limit=10):
