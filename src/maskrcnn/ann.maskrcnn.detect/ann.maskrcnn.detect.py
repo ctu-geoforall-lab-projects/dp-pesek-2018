@@ -54,7 +54,8 @@
 #%option G_OPT_M_DIR
 #% key: masks_output
 #% label: Directory where masks will be saved
-#% required: yes
+#% description: keep empty to use just temporary files
+#% required: no
 #%end
 #%option
 #% key: output_type
@@ -91,10 +92,12 @@ def main(options, flags):
     modelPath = options['model']
     classes = options['classes']
     name = options['name']
-    # TODO: Use GRASS temp files
-    masksDir = options['masks_output']
     outputType = options['output_type']
     format = options['images_format']
+    masksDir = options['masks_output']
+    # TODO: Add checkbox to decide whether keep raster masks or not
+    if masksDir == '':
+        masksDir = gscript.core.tempfile()
 
     # TODO: Check if unique
     # TODO: (3 different brands in case of lot of classes?)
@@ -118,7 +121,7 @@ def main(options, flags):
             format),
          shell=True)
 
-    raise SystemExit(0)
+    # raise SystemExit(0)
     print('Masks detected. Georeferencing masks...')
     masks = list()
     for referencing in [file for file in next(
@@ -142,6 +145,7 @@ def main(options, flags):
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
     index = 0
+    # TODO: Do just for existing classes
     for i in classesColours[1:]:
         for maskName in masks:
             gscript.run_command('g.region',
@@ -164,6 +168,7 @@ def main(options, flags):
                             'f',
                             name=masksString,
                             type='vector')
+        # TODO: If masks are temporary, delete them
 
         index += 1
 
