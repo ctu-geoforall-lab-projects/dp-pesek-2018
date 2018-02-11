@@ -97,7 +97,7 @@ def main(options, flags):
     masksDir = options['masks_output']
     # TODO: Add checkbox to decide whether keep raster masks or not
     if masksDir == '':
-        masksDir = gscript.core.tempfile()
+        masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
 
     # TODO: Check if unique
     # TODO: (3 different brands in case of lot of classes?)
