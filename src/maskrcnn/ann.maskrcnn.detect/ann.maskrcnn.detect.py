@@ -124,6 +124,7 @@ def main(options, flags):
     # raise SystemExit(0)
     print('Masks detected. Georeferencing masks...')
     masks = list()
+    detectedClasses = list()
     for referencing in [file for file in next(
             os.walk(imagesDir))[2] if os.path.splitext(file)[1] != format]:
         fileName, refExtension = referencing.split(format)
@@ -132,6 +133,8 @@ def main(options, flags):
             maskName = fileName + '_' + str(i)
             maskFileName = maskName + '.png'
             if os.path.isfile(os.path.join(masksDir, maskFileName)):
+                if i not in detectedClasses:
+                    detectedClasses.append(i)
                 masks.append(maskName)
                 copy_georeferencing(imagesDir, masksDir, maskFileName,
                                     refExtension, referencing)
@@ -144,15 +147,13 @@ def main(options, flags):
 
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
-    index = 0
-    # TODO: Do just for existing classes
-    for i in classesColours[1:]:
+    for i in detectedClasses:
         for maskName in masks:
             gscript.run_command('g.region',
                                 raster=maskName)
             gscript.run_command('r.mask',
                                 raster=maskName,
-                                maskcats=i)
+                                maskcats=classesColours[i])
             gscript.run_command('r.to.vect',
                                 's',
                                 input=maskName,
@@ -163,14 +164,12 @@ def main(options, flags):
 
         gscript.run_command('v.patch',
                             input=masksString,
-                            output=classes.split(',')[index - 1])
+                            output=classes.split(',')[i])
         gscript.run_command('g.remove',
                             'f',
                             name=masksString,
                             type='vector')
         # TODO: If masks are temporary, delete them
-
-        index += 1
 
 
 def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
