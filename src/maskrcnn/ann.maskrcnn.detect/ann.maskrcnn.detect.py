@@ -99,10 +99,10 @@ def main(options, flags):
     if masksDir == '':
         masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
 
-    # TODO: Check if unique
     # TODO: (3 different brands in case of lot of classes?)
-    classesColours = [0] + [randint(0, 255) for _ in range(
-        len(classes.split(',')))]
+    if len(classes.split(',')) > 255:
+        raise SystemExit('Too many classes. Must be less than 256.')
+    classesColours = [0] + [i for i in range(len(classes.split(',')))]
 
     ###########################################################
     # unfortunately, redirect everything to python3
