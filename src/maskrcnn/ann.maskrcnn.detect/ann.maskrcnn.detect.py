@@ -104,6 +104,9 @@ def main(options, flags):
         raise SystemExit('Too many classes. Must be less than 256.')
     classesColours = [0] + [i for i in range(len(classes.split(',')))]
 
+    if len(set(classes.split(','))) != len(classes.split(',')):
+        raise SystemExit('ERROR: Two or more classes have the same name.')
+
     ###########################################################
     # unfortunately, redirect everything to python3
     ###########################################################
