@@ -58,12 +58,11 @@ def detect(imagesDir, modelPath, classes, name, masksDir, outputType,
         results = model.detect([image], verbose=1)
 
         # Save results
-        # TODO: More images -> more indices than [0]
-        r = results[0]
-        visualize.save_instances(image, r['rois'], r['masks'], r['class_ids'],
-                                 classNames, r['scores'], outputDir=masksDir,
-                                 which=outputType, title=imageFile,
-                                 colours=classesColours)
+        for r in results:
+            visualize.save_instances(image, r['rois'], r['masks'],
+                                     r['class_ids'], classNames, r['scores'],
+                                     outputDir=masksDir, which=outputType,
+                                     title=imageFile, colours=classesColours)
 
 
 if __name__ == '__main__':
