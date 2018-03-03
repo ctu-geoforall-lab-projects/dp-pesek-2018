@@ -34,7 +34,7 @@
 #%option
 #% key: model
 #% type: string
-#% label: Path to the .h5 file to use as initial values
+#% label: Path to the .h5 file containing the model
 #% required: yes
 #% multiple: no
 #%end

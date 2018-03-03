@@ -61,12 +61,11 @@ def train(dataset, modelPath, classes, logs, modelName, epochs=200,
 
     # Load weights
     print("Loading weights ", modelPath)
-    # TODO: Make as a parameter
-    if "coco.h5" in modelPath:
+    if modelPath and "e" in flags:
         model.load_weights(modelPath, by_name=True,
                            exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
                                     "mrcnn_bbox", "mrcnn_mask"])
-    else:
+    elif modelPath:
         model.load_weights(modelPath, by_name=True)
 
     print('Reading images from dataset ', dataset)

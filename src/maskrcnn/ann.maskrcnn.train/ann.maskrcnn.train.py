@@ -20,6 +20,10 @@
 #% keyword: raster
 #%end
 #%flag
+#%  key: e
+#%  description: Pretrained weights were trained on another classes / resolution / sizes
+#%end
+#%flag
 #%  key: s
 #%  description: Save also a list of images unused for training to logs dir
 #%end
@@ -32,7 +36,8 @@
 #% key: model
 #% type: string
 #% label: Path to the .h5 file to use as initial values
-#% required: yes
+#% description: Keep empty to train from a scratch
+#% required: no
 #% multiple: no
 #%end
 #%option
