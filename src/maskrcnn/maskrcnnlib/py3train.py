@@ -35,7 +35,7 @@ from sys import exit
 
 
 def train(dataset, modelPath, classes, logs, modelName, epochs=200,
-          steps_per_epoch=3000, ROIsPerImage=64, flags=''):
+          stepsPerEpoch=3000, ROIsPerImage=64, flags=''):
 
     print("Logs: ", logs)
 
@@ -46,7 +46,7 @@ def train(dataset, modelPath, classes, logs, modelName, epochs=200,
                          GPUcount=1,
                          numClasses=len(classes) + 1,
                          trainROIsPerImage=ROIsPerImage,
-                         stepsPerEpoch=steps_per_epoch,
+                         stepsPerEpoch=stepsPerEpoch,
                          miniMaskShape=(128, 128),
                          validationSteps=100,
                          imageMaxDim=256*3,
