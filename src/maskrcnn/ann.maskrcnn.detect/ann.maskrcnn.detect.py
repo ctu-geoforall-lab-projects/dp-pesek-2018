@@ -93,7 +93,10 @@ def main(options, flags):
     classes = options['classes']
     name = options['name']
     outputType = options['output_type']
-    format = options['images_format']
+    if options['images_format'][0] != '.':
+        format = '.{}'.format(options['images_format'])
+    else:
+        format = options['images_format']
     masksDir = options['masks_output']
     # TODO: Add checkbox to decide whether keep raster masks or not
     if masksDir == '':
