@@ -1,0 +1,1390 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Upraven název školy na ČVUT v Praze (původní ČVUT Praha)                %%
+%% Upraveny penalty pro sirotky a vdovy na 10000 (původní 1000)            %%
+%% Upravena penalta pro dílení slova na dví stránky na 10000 (původní 1000)%%
+%% Popis tabulek přesunut nad tabulky                                      %%
+%% Drobná korektura textu a aktualizace odkazů                             %%
+%% Autor: Petr Soukup, poslední revize: 26.2.2012                          %%  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sablona pro psani studentskych praci                                    %%
+%% Autor: Anna Horcickova                                                  %%  
+%%                                                                         %%
+%% Sablona vznikla prepracovanim Sablony 2.02, kterou vytvorili Petr Sysel %%
+%% a Pavel Rajmic (FEKT, VUT v Brne).                                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Puvodni sablona:                                                        %%
+%% Sablona pro psani diplomovych praci                                     %%
+%%                                                                         %%
+%% Verze: 2.02 (beta)                                                      %%
+%% Autor: Petr Sysel, sysel@feec.vutbr.cz                                  %%
+%%        Pavel Rajmic, rajmic@feec.vutbr.cz                               %%
+%%                                                                         %%
+%% FEKT, VUT v Brne                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Zaklad stylu byl prevzat ze stylu pro elektronizaci ucebnich textu      %%
+%%                                                                         %%
+%% Sablona pro elektronicka skripta                                        %%
+%% Verze: 1.0 (beta)                                                       %%
+%% Autor: Jakub Hrabec, hrabec@feec.vutbr.cz                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+% testovano na verzi balicku czech 2002/07/19 v2.4
+%\RequirePackage{czech}
+% Pri odkomentovani bude balicek vkladan automaticky
+% testovano na verzi balicku graphicx 1999/02/16 v1.0f
+%\RequirePackage{graphicx}[1999/02/16]
+% Pri odkomentovani bude balicek vkladan automaticky
+% testovano na verzi balicku acronym 2005/10/04 v1.22
+%\RequirePackage[nohyperlinks]{acronym}[2005/10/04]
+% Pri odkomentovani bude balicek vkladan automaticky
+% testovano na verzi balicku hyperref 2003/11/30 v6.74m
+%\RequirePackage[unicode,breaklinks=true,hypertexnames=false]%
+%	{hyperref}[2003/11/30]
+
+
+\ProvidesClass{thesiscvut}%
+  [2007/05/17 v2.02 LaTeX document class]
+
+\DeclareOption{semestral}%sazba semestralniho projektu
+	{\TT@diplomafalse \TT@bachelorfalse \TT@semestraltrue}
+\DeclareOption{bachelor}%sazba bakalarske prace
+	{\TT@diplomafalse \TT@bachelortrue \TT@semestralfalse}
+\DeclareOption{diploma}%sazba diplomove prace
+	{\TT@diplomatrue \TT@bachelorfalse \TT@semestralfalse}
+\DeclareOption{cvutstyle}% titulni stranky podle smernice rektora
+	{\TT@cvutstyletrue}
+\DeclareOption{english}% titulni stranky budou sazeny v anglictine
+	{\TT@englishtrue}
+
+\DeclareOption{dvipdfm}% prevod bude proveden pomoci dvipdfm
+	{\TT@dvipdfmtrue\TT@dvipsfalse\TT@pdftexfalse}
+\DeclareOption{pdftex} % prevod bude proveden pomoci pdftex
+	{\TT@dvipdfmfalse\TT@dvipsfalse\TT@pdftextrue}
+\DeclareOption{dvips}  % prevod bude proveden pomoci dvips
+	{\TT@dvipdfmfalse\TT@dvipstrue\TT@pdftexfalse}
+
+\typeout{}
+\typeout{Styl pro psani studenstkych praci} 
+\typeout{}
+
+% Definice novych podminek pro pouzite volby
+\newif\ifTT@phd
+\newif\ifTT@diploma
+\newif\ifTT@bachelor
+\newif\ifTT@semestral
+\newif\ifTT@english
+\newif\ifTT@cvutstyle
+\newif\ifTT@dvipdfm
+\newif\ifTT@dvips
+\newif\ifTT@pdftex
+
+%% Defaultni volby
+\TT@phdfalse
+\TT@diplomatrue
+\TT@englishfalse
+\TT@cvutstylefalse
+\TT@dvipdfmfalse
+\TT@dvipstrue
+
+%% Zpracovani voleb
+\ProcessOptions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Nove prikazy pro symboly a jednotky                                      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Deklarace Eulerova cisla
+\DeclareMathSymbol{\E}{\mathord}{operators}{`e}
+\DeclareMathSymbol{\eul}{\mathord}{operators}{`e}
+%% Deklarace imaginarni jednotky
+\DeclareMathSymbol{\I}{\mathord}{operators}{`i}
+\DeclareMathSymbol{\imag}{\mathord}{operators}{`i}
+\DeclareMathSymbol{\J}{\mathord}{operators}{`j}
+\DeclareMathSymbol{\jmag}{\mathord}{operators}{`j}
+%% Deklarace diferencialniho d
+\DeclareMathSymbol{\dif}{\mathord}{operators}{`d}
+%% Definice funkce sinc
+\def\sinc{\mathop{\operator@font sinc}\nolimits}
+
+%% Definice prikazu pro sazbu konstantnich velicin
+\DeclareMathAlphabet{\konst}{OT1}{cmr}{m}{n}
+%% Definice prikazu pro sazbu promennych velicin
+\DeclareMathAlphabet{\prom}{OT1}{cmr}{m}{it}
+%% Definice prikazu pro sazbu komplexnich velicin
+\DeclareMathAlphabet{\komplex}{OT1}{cmr}{bx}{it}
+%% Definice prikazu pro sazbu matic
+\DeclareMathAlphabet{\matice}{OT1}{cmr}{bx}{n}
+%% Definice prikazu pro sazbu jednotek
+\DeclareMathAlphabet{\jedn}{OT1}{cmr}{m}{n}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Definice textu pro oznaceni skoly, fakulty, ...                           
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Oznaceni skoly
+\newcommand\skola@en{České vysoké uČení technické v~Praze }
+%\v{C}esk\'{e} vysok\'{e} u\v{c}en\'{\i} technick\'{e} v~Praze}
+\newcommand\skola@cz{Czech Technical University in Prague}
+%% Soubor s logem skoly
+\ifTT@dvipdfm
+	\newcommand\logo@skola{pictures/logo.pdf}
+\fi
+\ifTT@pdftex
+	\newcommand\logo@skola{pictures/logo.pdf}
+\fi
+\ifTT@dvips
+	\newcommand\logo@skola{pictures/logo.eps}
+\fi
+%logo zahlavi
+
+\ifTT@dvipdfm
+	\newcommand\logo@zahl{pictures/logo2.pdf}
+\fi
+\ifTT@pdftex
+	\newcommand\logo@zahl{pictures/logo2.pdf}
+\fi
+\ifTT@dvips
+	\newcommand\logo@zahl{pictures/logo2.eps}
+\fi
+
+%% Oznaceni fakulty
+\newcommand\fakulta@en{Fakulta stavební }%\'{\i}}
+\newcommand\fakulta@cz{Faculty of Civil Engineering}
+%% Soubor s logem fakulty
+%\ifTT@dvipdfm
+%	\newcommand\logo@fakulta{FEKT-spec-color.pdf}
+%\fi
+%\ifTT@pdftex
+%	\newcommand\logo@fakulta{FEKT-spec-color.pdf}
+%\fi
+%\ifTT@dvips
+%	\newcommand\logo@fakulta{FEKT-spec-color.eps}
+%\fi
+
+%% Oznaceni typu studijniho programu
+\ifTT@diploma
+  \newcommand\oznaceniprogramu@en{Magistersk\'{y} studijn\'{\i} obor}
+  \newcommand\oznaceniprogramu@cz{Master Study Programme}
+\fi
+\ifTT@bachelor
+  \newcommand\oznaceniprogramu@cz{Bakal\'{a}\v{r}sk\'{y} studijn\'{\i} obor}
+  \newcommand\oznaceniprogramu@en{Bachelor Study Programme}
+\fi
+\ifTT@semestral
+  \newcommand\oznaceniprogramu@cz{Bakal\'{a}\v{r}sk\'{y} studijn\'{\i} obor}
+  \newcommand\oznaceniprogramu@en{Bachelor Study Programme}
+\fi
+
+%% Oznaceni typu prace
+\ifTT@phd
+	\newcommand\oznaceniprace@cz{Doktorsk\'{a} pr\'{a}ce}
+	\newcommand\oznaceniprace@en{Doctoral thesis}
+\fi
+\ifTT@diploma
+  \newcommand\oznaceniprace@en{Diplomov\'{a} pr\'{a}ce}
+  \newcommand\oznaceniprace@cz{Master's Thesis}
+\fi
+\ifTT@bachelor
+  \newcommand\oznaceniprace@cz{Bakal\'{a}\v{r}sk\'{a} pr\'{a}ce}
+  \newcommand\oznaceniprace@en{Bachelor's Thesis}
+\fi
+\ifTT@semestral
+  \newcommand\oznaceniprace@cz{Semestr\'{a}ln\'{\i} projekt}
+  \newcommand\oznaceniprace@en{Semestral Project}
+\fi
+
+%% Oznaceni vedouciho prace
+\ifTT@cvutstyle
+	\newcommand\garanttext@en{Vedouc\'{\i} pr\'{a}ce:}
+	\newcommand\garanttext@cz{Supervisor}
+\else
+	\ifTT@diploma
+	  \newcommand\garanttext@en{Vedouc\'{\i} diplomov\'{e} pr\'{a}ce:}
+	  \newcommand\garanttext@cz{Supervisor}
+	\fi
+	\ifTT@bachelor
+	  \newcommand\garanttext@cz{Vedouc\'{\i} bakal\'{a}\v{r}sk\'{e} pr\'{a}ce:}
+	  \newcommand\garanttext@en{Supervisor}
+	\fi
+	\ifTT@semestral
+	  \newcommand\garanttext@cz{Vedouc\'{\i} semestr\'{a}ln\'{\i}ho projektu:}
+	  \newcommand\garanttext@en{Supervisor}
+	\fi
+\fi
+
+%% Oznaceni autora prace
+\ifTT@cvutstyle
+	\newcommand\autortext@en{Autor pr\'{a}ce}
+	\newcommand\autortext@cz{Author}
+\else
+	\ifTT@diploma
+	  \newcommand\autortext@en{Jm\'{e}no diplomanta}
+	  \newcommand\autortext@cz{Author}
+	\fi
+	\ifTT@bachelor
+	  \newcommand\autortext@cz{Jm\'{e}no studenta}
+	  \newcommand\autortext@en{Author}
+	\fi
+	\ifTT@semestral
+	  \newcommand\autortext@cz{Jm\'{e}no studenta}
+	  \newcommand\autortext@en{Author}
+	\fi
+\fi
+
+%% Oznaceni oboru
+\newcommand\oborstudiatext@en{Obor}
+\newcommand\oborstudiatext@cz{Specialization of Study}
+
+%% Oznaceni prohlaseni
+\newcommand\oznaceniprohlaseni@cz{Declaration of authorship}
+%% Text prohlaseni
+\newcommand\prohlasenitext@cz{\par\hspace{2ex}
+I declare that the work presented here is, to the best of my knowledge and belief, original and the result of my own investigations, exept as acknowledged. Formulations and ideas taken from other sources are cited as such.}
+
+
+%% Misto prohlaseni
+\newcommand\mistoprohlaseni@cz{In Prague}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Definice informaci o dokumentu                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Definice skoly
+\def\skola#1#2{%
+	\renecommand{\skola@cz}{#1}%
+	\renewcommand{\skola@en}{#1}%
+}
+\def\logoskola#1{%
+	\renewcommand{\logo@skola}{#1}%
+}
+%% Definice fakulty
+\def\fakulta#1#2{%
+	\renecommand{\fakulta@cz}{#1}%
+	\renewcommand{\fakulta@en}{#1}%
+}
+\def\logoskola#1{%
+	\renewcommand{\logo@fakulta}{#1}%
+}
+%% Definice jmena autora
+\ifTT@cvutstyle
+	\def\autor#1#2{\gdef\@autor@jmeno{#1}\gdef\@autor@prijmeni{#2}}
+	\def\@autor@jmeno{\@latex@warning@no@line{Nezadano jmeno autora textu \noexpand\autor}}
+	\def\@autor@prijmeni{\@latex@warning@no@line{Nezadano prijmeni autora textu \noexpand\autor}}
+\else
+	\def\autor#1{\gdef\@autor{#1}}
+	\def\@autor{\@latex@warning@no@line{Nezadan autor textu \noexpand\autor}}
+\fi
+	
+%% Definice jmena vedouciho
+\def\garant#1{\gdef\@garant{#1}}
+\def\@garant{\@latex@warning@no@line{Nezadan vedouci \noexpand\garant}}
+%% Definice nazvu prace
+\def\nazev#1#2{\gdef\nazev@cz{#1}\gdef\nazev@en{#2}}
+\def\nazev@cz{\@latex@warning@no@line{Nezadan nazev prace \noexpand\nazev}}
+\def\nazev@en{\@latex@warning@no@line{Nezadan nazev prace \noexpand\nazev}}
+%% Definice oboru
+\def\oborstudia#1#2{\gdef\oborstudia@cz{#1}\gdef\oborstudia@en{#2}}
+\def\oborstudia@cz{\@latex@warning@no@line{Nezadan studijni program \noexpand\oborstudia}}
+\def\oborstudia@en{\@latex@warning@no@line{Nezadan studijni program \noexpand\oborstudia}}
+%% Definice ustavu
+\def\ustav#1#2{\gdef\ustav@cz{#1}\gdef\ustav@en{#2}}
+\def\ustav@cz{\@latex@warning@no@line{Nezadan ustav \noexpand\ustav}}
+\def\ustav@en{\@latex@warning@no@line{Nezadan ustav \noexpand\ustav}}
+%% Definice roku sepsani
+\def\rok#1{\gdef\@rok{#1}}
+\def\@rok{\@latex@warning@no@line{Nezadan rok \noexpand\rok}}
+%% Definice mesice obhajoby
+\def\mesic#1{\gdef\@mesic{#1}}
+\def\@mesic{\@latex@warning@no@line{Nezadan mesic \noexpand\mesic}}
+%% Definice mista obhajoby
+\ifTT@cvutstyle
+	\def\misto#1{\gdef\@misto{#1}}
+	\def\@misto{\@latex@warning@no@line{Nezadano misto vydani \noexpand\misto}}
+\else
+	\def\misto#1{\@latex@warning@no@line{Ve starem stylu je misto vydani nutno zadat pomoci prikazu \noexpand\rok}}
+\fi
+%% Definice abstraktu
+\ifTT@cvutstyle
+	\def\abstrakt#1#2{\gdef\abstrakt@cz{#1}\gdef\abstrakt@en{#2}}
+	\def\abstrakt@cz{\@latex@warning@no@line{Nezadan abstrakt \noexpand\abstrakt} v ceskem jazyce}
+	\def\abstrakt@en{\@latex@warning@no@line{Nezadan abstrakt \noexpand\abstrakt} v anglickem jazyce}
+\else
+	\def\abstrakt#1{\gdef\@abstrakt{#1}}
+	\def\@abstrakt{\@latex@warning@no@line{Nezadan abstrakt \noexpand\abstrakt} v druhem jazyce}
+\fi
+%% Klicova slova
+\def\klicovaslova#1#2{\gdef\keywords@cz{#1}\gdef\keywords@en{#2}}
+\def\keywords@cz{\@latex@warning@no@line{Nezadana klicova slova \noexpand\klicovaslova v ceskem jazyce}}
+\def\keywords@en{\@latex@warning@no@line{Nezadana klicova slova \noexpand\klicovaslova v anglickem jazyce}}
+
+%zahlavi
+\def\zahlavi{
+	\pagestyle{fancy}
+	\lhead{\parbox[b][][b]{0.8cm}{
+		\includegraphics[scale=0.03]{\logo@zahl}}CTU in Prague
+	}
+	\cfoot{\thepage}
+
+
+\renewcommand{\headrulewidth}{0.4pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Nastaveni poli PDF dokumentu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifTT@cvutstyle
+	\newcommand{\nastavenipdf}{
+		\hypersetup{   																% Nastaven\'{\i} pol\'{\i} PDF dokumentu
+		  pdftitle={\nazev@cz},                       % Pole 'Document Title'
+		  pdfauthor={\@autor@jmeno\ \@autor@prijmeni},% Pole 'Author'
+		  pdfsubject={\oznaceniprace@cz},             % Pole 'Subject'
+		  pdfkeywords={\keywords@cz}              	  % Pole 'Keywords'
+		}
+	}
+\else
+	\newcommand{\nastavenipdf}{
+		\hypersetup{   									% Nastaven\'{\i} pol\'{\i} PDF dokumentu
+		  pdftitle={\nazev@cz},                     	% Pole 'Document Title'
+		  pdfauthor={\@autor},  											% Pole 'Author'
+		  pdfsubject={\oznaceniprace@cz}             	% Pole 'Subject'
+		}
+	}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Obecne vlastnosti %%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifTT@cvutstyle
+	%% Parametry stranky
+	%% Okraje 2.5 cm nahore a dole
+	%% Okraje 2.5 cm vlevo a vpravo
+	%% Okraje 1 cm u hrbetu
+	\hoffset -1.54cm
+	\voffset -0.04pt
+	\evensidemargin 1.5cm
+	\oddsidemargin 2.5cm
+	\topmargin -1.6cm
+	%% Vyska textu 237 mm
+	%% Sirka textu 150 mm
+	\textheight 237mm
+	\textwidth 150mm
+	%% Zahlavi
+	\headheight 1cm
+	\headsep 1cm
+	\footskip 1.5cm
+	%% Poznamky u okraje
+	\marginparwidth 5em
+	\marginparsep 5pt
+	%% Radkovani 1.4
+	\renewcommand\baselinestretch{1.4}
+	%% Nastaveni penalt pro sirotky a vdovy
+	\widowpenalty10000
+	\clubpenalty10000
+	%% Nastaveni penalty za rozdeleni slova na dve stranky
+	\brokenpenalty10000
+\else
+	%% Parametry stranky
+	%% Okraje 3 cm nahore a dole
+	%% Okraje 2.5 cm vlevo a vpravo
+	%% Okraje 2 cm u hrbetu
+	\hoffset -0.04cm
+	\voffset -0.04pt
+	\evensidemargin 0.2cm
+	\oddsidemargin 1.8cm
+	\topmargin -1.6cm
+	%% Vyska textu 237 mm
+	%% Sirka textu 140 mm
+	\textheight 237mm
+	\textwidth 140mm
+	%% Zahlavi
+	\headheight 1cm
+	\headsep 1cm
+	\footskip 1.5cm
+	%% Poznamky u okraje
+	\marginparwidth 0pt
+	\marginparsep 0pt
+	%% Radkovani 1.3
+	\renewcommand\baselinestretch{1.3}
+\fi
+
+%% Velikost pisma a mezery mezi vzorci
+\def\@normalsize{\@setsize\normalsize{12pt}\xpt\@xpt
+\abovedisplayskip=3mm plus6pt minus 4pt
+\belowdisplayskip=3mm plus6pt minus 4pt
+\abovedisplayshortskip=0mm plus6pt minus 2pt
+\belowdisplayshortskip=0mm plus4pt minus 4pt
+\let\@listi\@listI} 
+
+%% Definice prechodu na novou lichou stranku u oboustranne sazby
+\def\cleardoublepage{
+  \clearpage
+  \if@twoside
+    \ifodd
+      \c@page
+    \else
+      \hbox{}
+      \thispagestyle{empty}
+      \newpage
+      \if@twocolumn
+        \hbox{}
+        \newpage
+      \fi
+    \fi
+  \fi
+} 
+
+%% Zarovnani rovnic vlevo
+%\input{fleqn.clo}   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Vlozene objekty a definice nazvu %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Nazvy vlozenych objektu
+%\renewcommand{\figurename}{Obr.}
+%\renewcommand{\tablename}{Tab.}
+%\renewcommand{\refname}{Pouité zdroje}
+
+%\def\figurename{Obr.}
+%\def\tablename{Tab.}
+%\def\refname{Pouité zdroje}
+
+\addto\captionsenglish{%
+   \def\tablename{Tabulka}%
+   \def\figurename{Obrázek}%
+% %  \def\refname{Pouité zdroje}
+}%
+
+\addto\captionsczech{%
+   \def\tablename{Table}%
+   \def\figurename{Figure}%
+% %  \def\refname{Pouité zdroje}
+}%
+
+%% Popis obrazku a tabulek
+\def\fnum@table{\tablename\,\,\thetable}
+\def\fnum@figure{\figurename\,\,\thefigure}
+
+%% Popisky obrazku a tabulek
+%% se zarovnanim doleva
+%\setlength{\belowcaptionskip}{6pt}
+ 
+%\long\def\@makecaption#1#2{%
+%  \vskip\abovecaptionskip
+%  \sbox\@tempboxa{#1:\,\,#2}
+%  \ifdim \wd\@tempboxa >\hsize
+%      \settowidth{\leftskip}{#1:\,\,}
+%      \setlength{\parindent}{-\leftskip}
+%      #1:\,\,#2\par
+%  \else
+%    \global \@minipagefalse
+%    \hb@xt@\hsize{\box\@tempboxa\hfil}
+%  \fi
+%  \vskip\belowcaptionskip
+%}
+
+%% Cislovani od ctvrte urovne nadpisu
+\renewcommand\thesubsubsection{\@alph\c@subsubsection)}
+\renewcommand\theparagraph    {\alph{subsubsection}.\@arabic\c@paragraph)}
+\renewcommand\thesubparagraph {\alph{subsubsection}.\arabic{paragraph}.\@arabic\c@subparagraph)}
+
+%% Sazba nadpisu kapitoly
+\renewcommand\chapter{\cleardoublepage\@startsection {chapter}{0}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%   %puvodne 2.3ex
+                                   {\normalfont\LARGE\bfseries}}   %pro konverzi do html
+                                   %{\normalfont\Large\bfseries\MakeUppercase}} %pro sazeni kapitol velkými písmeny
+
+%% Predefinovani obsahu
+\newcommand{\obsah}{
+	{% vlozene prostredi z duvodu pagestyle
+	  \cleardoublepage
+	  \pagestyle{empty}
+	  \tableofcontents
+	  \newpage
+	
+	  \if@twoside
+	     \pagestyle{empty}
+	     \cleardoublepage
+	  \fi
+	}%
+}
+
+\addto\captionsczech{%
+   \def\contentsname{Contents}%
+%   \def\listoftables{Seznam tabulek}%
+}%
+
+\addto\captionsenglish{%
+   \def\contentsname{Obsah}%
+%   \def\listoftables{Seznam tabulek}%
+}%
+
+%% Predefinovani seznamu obrazku
+
+\newcommand{\seznamobrazku}{
+  {	% vlozene prostredi z duvodu pagestyle
+  	\cleardoublepage
+	  \pagestyle{empty}
+	  \listoffigures
+	  \newpage
+	
+	  \if@twoside
+	     \pagestyle{empty}
+	     \cleardoublepage
+	  \fi
+	} %
+}
+
+\addto\captionsczech{%
+   \def\listfigurename{Content of figures}%
+}%
+
+\addto\captionsenglish{%
+   \def\listfigurename{Seznam obrázků}%
+}%
+
+%% Predefinovani seznamu tabulek
+\newcommand{\seznamtabulek}{
+	{ % vlozene prostredi z duvodu pagestyle
+	  \cleardoublepage
+	  \pagestyle{empty}
+	  \listoftables
+	  \newpage
+	
+	  \if@twoside
+	     \pagestyle{empty}
+	     \cleardoublepage
+	  \fi
+	} %
+}
+
+\addto\captionsczech{%
+  \def\listtablename{Content of tables}%
+}
+
+\addto\captionsenglish{%
+  \def\listtablename{Seznam tabulek}%
+}
+
+
+%% Predefinovani seznamu zkratek a symbolu
+\ifTT@cvutstyle
+	\newenvironment{seznamzkratek}[1]{
+		\cleardoublepage
+		\chapter*{List of abbreviations}
+		\addcontentsline{toc}{chapter}{List of abbreviations}
+		\markboth{\MakeUppercase {List of abbreviations}}{}
+		\begin{acronym}[#1]
+	}{
+		\end{acronym}
+		\newpage
+	}
+\fi
+
+%% Predefinovani seznamu literatury
+\newenvironment{literatura}[1]%
+	{\cleardoublepage \begin{thebibliography}{#1}}%
+	{\end{thebibliography} \newpage}
+	
+%% Predefinovani seznamu priloh
+\newcommand\loaname{Přílohy}
+\newcommand\seznampriloh{%
+  \chapter*{		%PŘÍLOHY}
+  \loaname
+   \@mkboth{%
+     \MakeUppercase\loaname}{\MakeUppercase\loaname}}%
+  \addcontentsline{toc}{chapter}{\loaname}
+		
+  \@starttoc{loa}%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Seznam zdoju, symbolu a zkratek, priloh ...  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Literatura bez zahlavi
+\renewenvironment{thebibliography}[1]
+     {\chapter*{\refname}%
+     \markboth{\MakeUppercase\refname}{} %vloí text, který je uloen v promínné \refname do záhlaví 
+      \addcontentsline{toc}{chapter}{\refname}
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+       {\def\@noitemerr
+       {\@latex@warning{Nezadana zadna literatura}}%
+      \endlist}
+
+%% Formatovani kratke verze zkratky
+\ifTT@cvutstyle
+	\renewcommand*{\acsfont}[1]{%
+		\fontfamily{\familydefault}%
+		\fontseries{\mddefault}%
+		\fontshape{\updefault}\selectfont #1}
+	%% Formatovani dlouhe verze zkratky pri plnem vypisovani \acf
+	\renewcommand*{\acffont}[1]{%
+		\fontfamily{\familydefault}%
+		\fontseries{\mddefault}%
+		\fontshape{\updefault}\selectfont #1}
+	%% Formatovani kratke verze zkratky pri plnem vypisovani \acf
+	\renewcommand*{\acfsfont}[1]{%
+		\fontfamily{\familydefault}%
+		\fontseries{\mddefault}%
+		\fontshape{\updefault}\selectfont #1}
+	
+	%% Definice nove zkratky nebo symbolu
+	\newcommand{\novazkratka}[3]%
+		{\acro{#1}[#2]{#3}}
+	
+	%% Vysazeni zkratky
+	\newcommand{\zkratka}[1]%
+		{\ac{#1}}
+	
+	%% Vysazeni kratke verze zkratky
+	\newcommand{\zk}[1]%
+		{\acs{#1}}
+	
+	%% Vysazeni dlouhe verze zkratky
+	\newcommand{\zkratkatext}[1]%
+		{\acl{#1}}
+\fi
+
+%% Prilohy
+\newcommand{\prilohy}{\par
+  \setcounter{chapter}{0}%
+    \setcounter{section}{0}%
+    \gdef\@chapapp{\appendixname}%
+      \gdef\thechapter{\@Alph\c@chapter}%
+%% Zmena souboru pro seznam pro kapitoly
+\gdef\@chapter[##1]##2{\ifnum \c@secnumdepth >\m@ne%
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+                         \addcontentsline{toc}{chapter}%
+                                   {\protect\numberline{\thechapter}##1}%
+                         \addcontentsline{loa}{chapter}%
+                                   {\protect\numberline{\thechapter}##1}%
+                    \else
+                      \addcontentsline{toc}{chapter}{##1}%
+                      \addcontentsline{loa}{chapter}{##1}%
+                    \fi
+                    \chaptermark{##1}%
+                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{##2}]%
+                    \else
+                      \@makechapterhead{##2}%
+                      \@afterheading
+                    \fi}
+%% Zmena souboru pro seznam pro casti
+\gdef\@sect##1##2##3##4##5##6[##7]##8{%
+  \ifnum ##2>\c@secnumdepth
+    \let\@svsec\@empty
+  \else
+    \refstepcounter{##1}%
+    \protected@edef\@svsec{\@seccntformat{##1}\relax}%
+  \fi
+  \@tempskipa ##5\relax
+  \ifdim \@tempskipa>\z@
+    \begingroup
+      ##6{%
+        \@hangfrom{\hskip ##3\relax\@svsec}%
+          \interlinepenalty \@M ##8\@@par}%
+    \endgroup
+    \csname ##1mark\endcsname{##7}%
+    \addcontentsline{toc}{##1}{%
+      \ifnum ##2>\c@secnumdepth \else
+        \protect\numberline{\csname the##1\endcsname}%
+      \fi
+      ##7}%
+    \addcontentsline{loa}{##1}{%
+      \ifnum ##2>\c@secnumdepth \else
+        \protect\numberline{\csname the##1\endcsname}%
+      \fi
+      ##7}%
+  \else
+    \def\@svsechd{%
+      ##6{\hskip ##3\relax
+      \@svsec ##8}%
+      \csname ##1mark\endcsname{##7}%
+      \addcontentsline{toc}{##1}{%
+        \ifnum ##2>\c@secnumdepth \else
+          \protect\numberline{\csname the##1\endcsname}%
+        \fi
+        ##7}%
+      \addcontentsline{loa}{##1}{%
+        \ifnum ##2>\c@secnumdepth \else
+          \protect\numberline{\csname the##1\endcsname}%
+        \fi
+        ##7}}%
+  \fi
+  \@xsect{##5}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Zruseni standardnich prikazu pro autora, sazbu obalky atd. %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\global\let\maketitle\relax
+\global\let\@maketitle\relax
+\global\let\thanks\relax
+\global\let\@thanks\@empty
+\global\let\author\relax
+\global\let\@author\@empty
+\global\let\date\relax
+\global\let\@date\@empty
+\global\let\and\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Pomocne delkove registry                              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\thesis@tmp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sazba titulnich stranek s obsahem zarovnanym svisle   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\stranka}[3]{
+	% prvni parametr bude zarovnan na hornim okraji stranky
+	% druhy parametr bude svisle vycentrovan na strance
+	% treti parametr bude zarovnan na spodni okraj stranky
+  \newpage
+	\thispagestyle{empty}
+	\noindent%
+	\makebox[0pt][l]{%
+		\vspace{\stretch{1}}%
+		
+		\parbox[c][0pt][c]{\textwidth}{#2}%
+	 	
+		\vspace{\stretch{1}}%
+	}%
+	\parbox[c][\textheight][c]{\textwidth}{%
+		\parbox[t][][t]{\textwidth}{#1}%
+		
+		\vspace{\stretch{1}}
+				
+		\parbox[b][][b]{\textwidth}{#3}%
+	}
+  \newpage
+
+  \if@twoside
+     \thispagestyle{empty}
+     \cleardoublepage
+  \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sazba komletniho prebalu prace prikazem \vytvorobalku %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\vytvorobalku{\par  
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+      	\ifTT@cvutstyle
+        	\@vytvorobalku@cvut
+        \else
+        	\@vytvorobalku
+        \fi
+      \else
+        \twocolumn[
+	        \ifTT@cvutstyle
+	        	\@vytvorobalku@cvut
+	        \else
+	        	\@vytvorobalku
+	        \fi
+				]
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+    	\ifTT@cvutstyle
+      	\@vytvorobalku@cvut
+      \else
+      	\@vytvorobalku
+      \fi
+    \fi
+  \endgroup
+
+  %% Tady zrusime prikazy
+  \global\let\vytvorobalku\relax
+  \global\let\@vytvorobalku\relax
+}
+
+\def\@vytvorobalku{%
+	\stranka{%
+		%nahore
+    \begin{center}%
+      \Large\sffamily \bfseries%
+      	\ifTT@english %
+	      	\MakeUppercase{\skola@en}\\[0.4em] %
+	      \else %
+	      	\MakeUppercase{\skola@cz}\\[0.4em] %
+	      \fi
+	    \large\sffamily\bfseries%
+	    	\ifTT@english %
+	    		\MakeUppercase{\fakulta@en} \\[0.4em] %
+	    	\else %
+	    		\MakeUppercase{\fakulta@cz} \\[0.4em]
+				\fi %
+%	    	\ifTT@english %
+%	    		\oborstudia@en \\[-0.2em] %
+%	    	\else %
+%	    		\oborstudia@cz \\[-0.2em]
+%				\fi
+    \end{center}%
+  }{%uprostred
+		\begin{center}%
+			\Huge \sffamily \bfseries %
+	    	\ifTT@english %
+					\MakeUppercase{\oznaceniprace@en} %
+	    	\else %
+					\MakeUppercase{\oznaceniprace@cz} %
+				\fi %
+		\end{center}%
+	}{%dole
+	  \large \sffamily \bfseries %
+	  	\@rok \hfill \@autor%
+	}  
+
+  \newpage
+
+  \if@twoside
+     \thispagestyle{empty}
+     \cleardoublepage
+  \fi
+
+  \setcounter{page}{1}      %% Obalka se do poctu stran nepocita
+}
+
+\def\@vytvorobalku@cvut{%
+	\renewcommand{\baselinestretch}{1.0}
+  \newpage
+	\thispagestyle{empty}
+	\noindent
+	\raisebox{5mm}[8mm][0mm]{%
+		\begin{minipage}[t][247mm]{\linewidth}%
+			\noindent %
+			\parbox%[t][26mm][t]
+				{\linewidth}{%
+				%\raggedright%
+				\centering
+				\sffamily \LARGE %huge %
+					\MakeUppercase{\skola@cz} \\%
+				%\normalsize %
+				%	\MakeUppercase{\skola@en}%
+			}
+			\parbox[c][10mm][c]{\linewidth}{%
+				%\raggedright%
+				\centering
+				\sffamily \large %
+					\MakeUppercase{\fakulta@cz} \\
+				%	\MakeUppercase{\ustav@cz}
+			}
+			\vfill
+			%\parbox[t][16mm][t]{\linewidth}{%
+			%	\raggedright%
+			%	\centering
+			%	\sffamily \normalsize %
+			%		\MakeUppercase{\fakulta@en} \\
+			%		\MakeUppercase{\ustav@en}
+			%}
+			\parbox[c][1cm][t]{\linewidth}{%
+			%	\raggedright%
+				\centering
+				\sffamily \huge \MakeUppercase{\oznaceniprace@cz}\\
+			}
+			\vfill
+			\noindent %
+			%\parbox[t][17mm][t]{\linewidth}{%
+			%	\raggedright%
+			%	\sffamily \large \MakeUppercase{\oznaceniprace@cz}\\
+			%	\sffamily \normalsize \MakeUppercase{\oznaceniprace@en}
+			%}
+		%	\parbox[b][32mm][t]{\linewidth}{%
+		%		\raggedright%
+		%		\sffamily \large %
+					%\makebox[62mm][l]{\MakeUppercase{\autortext@cz}}
+			%		\MakeUppercase{\@misto} \@rok
+			%		\hfill
+			%		\MakeUppercase{\@autor@jmeno}
+			%		\MakeUppercase{\@autor@prijmeni}\\
+			%	\sffamily \normalsize %
+			%		\MakeUppercase{\autortext@en}
+		%	}
+			\parbox[t][5mm][t]{\linewidth}{%
+				\raggedright%
+				\sffamily \large {%
+					\MakeUppercase{\@misto} {\@rok}
+					\hfill{\@autor@jmeno}
+					\MakeUppercase{\@autor@prijmeni}\\}
+					%\MakeUppercase{\@misto} \@rok
+			}
+		\end{minipage}%
+	}
+
+  \newpage
+	
+  \if@twoside
+     \thispagestyle{empty}
+     \cleardoublepage
+  \fi
+
+  \setcounter{page}{1}      %% Obalka se do poctu stran nepocita
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sazba komletni uvodni stranky prikazem \vytvortitulku %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\vytvortitulku{\par  
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \ifTT@cvutstyle
+        	\@vytvortitulku@cvut
+        \else
+        	\@vytvortitulku
+        \fi
+      \else
+        \twocolumn[
+	        \ifTT@cvutstyle
+	        	\@vytvortitulku@cvut
+	        \else
+	        	\@vytvortitulku
+	        \fi
+        ]
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \ifTT@cvutstyle
+      	\@vytvortitulku@cvut
+      \else
+      	\@vytvortitulku
+      \fi
+    \fi
+  \endgroup
+  
+  %% Po vysazeni zrusime prikazy
+  \global\let\vytvortitulku\relax
+  \global\let\@vytvortitulku\relax
+}
+
+\def\@vytvortitulku{%
+  \stranka{%nahore
+    \begin{center} %
+      \Large \sffamily \bfseries %
+      	\ifTT@english %
+      		\MakeUppercase{\skola@en} \\[0.4em] %
+      	\else %
+      		\MakeUppercase{\skola@cz} \\[0.4em] %
+      	\fi %
+      \large \sffamily \bfseries %
+      	\ifTT@english %
+      		\MakeUppercase{\fakulta@en} \\[0.4em] %
+      	\else
+      		\MakeUppercase{\fakulta@cz} \\[0.4em] %
+      	\fi %
+		  	\vspace{0.5cm}
+      	\ifTT@english %
+      	  \ustav@en %
+      	\else %
+      		\ustav@cz %
+      	\fi %      	  
+		\end{center}
+	}{%uprostred
+		\begin{center} %
+	 		\Large \sffamily \bfseries %
+	 			\ifTT@english %
+	 				\nazev@en \\[0.5cm] %
+	 			\else %
+	 				\nazev@cz \\[0.5cm] %
+	 			\fi %
+	 		\large %
+	 			\ifTT@english %
+	 				\MakeLowercase{\oznaceniprace@en} %
+	 			\else %
+	 				\MakeLowercase{\oznaceniprace@cz} %
+	 			\fi %
+	 	\end{center}
+  }{%dole
+		\large \sffamily %
+		\noindent %
+		\ifTT@english %
+			\begin{tabular}{ll}
+		    {\slshape \oborstudiatext@en:} & \oborstudia@en \\
+		    {\slshape \autortext@en:}      & \@autor \\
+		    {\slshape \garanttext@en:}     & \@garant \\
+		  \end{tabular}%
+		\else %
+			\begin{tabular}{ll}
+		    {\slshape \oborstudiatext@cz:} & \oborstudia@cz \\
+		    {\slshape \autortext@cz:}      & \@autor \\
+		    {\slshape \garanttext@cz:}     & \@garant \\
+		  \end{tabular}%
+		\fi %
+	}
+
+  \newpage
+	
+  \if@twoside
+     \thispagestyle{empty}
+     \cleardoublepage
+  \fi
+}
+
+\def\@vytvortitulku@cvut{%
+  \renewcommand\baselinestretch{1.0}
+  \newpage
+	\thispagestyle{empty}
+	\noindent
+	\raisebox{5mm}[42mm][0mm]{%
+		\begin{minipage}[t][247mm]{\linewidth}%
+			\noindent%
+	%			\parbox[b][42mm][t]{37mm}{%
+	%				\includegraphics{\logo@skola}
+	%			}%
+				%\setlength{\thesis@tmp}{\linewidth}%
+				%\addtolength{\thesis@tmp}{-37mm}%
+				\parbox[b][42mm][t]%{\thesis@tmp}
+								    {\linewidth}{
+					%\raggedright%
+					\centering
+					\sffamily \LARGE 
+						\MakeUppercase{\skola@cz}\\
+	%				\normalsize %
+	%					\MakeUppercase{\skola@en}
+					\sffamily \Large	
+						\MakeUppercase{\fakulta@cz}\\
+						\MakeUppercase{\oborstudiatext@cz} \MakeUppercase{\oborstudia@cz}\\
+	%					\MakeUppercase{\ustav@cz}
+				}
+				
+				%\scalebox{1.50}{%
+					\parbox[b][55mm][b]{\linewidth}{%
+						\centering
+						\scalebox{1.30}{%
+						\includegraphics{\logo@skola}
+						}
+					}
+				%\scalebox{.50}{%
+				%	\centering
+				%	\includegraphics{\logo@skola}
+				%	}
+%				\setlength{\thesis@tmp}{\linewidth}%
+%				\addtolength{\thesis@tmp}{-37mm}%
+%				\parbox[b][42mm][t]{37mm}{%
+%					\includegraphics{\logo@fakulta}
+%				}%
+%				\setlength{\thesis@tmp}{\linewidth}%
+%				\addtolength{\thesis@tmp}{-37mm}%
+%				\parbox[b][42mm][t]{\thesis@tmp}{%
+%					\parbox[t][21mm][t]{\thesis@tmp}{%
+%						\raggedright%
+%							\sffamily \large %
+%								\MakeUppercase{\fakulta@cz}\\
+%								\MakeUppercase{\ustav@cz} 
+%					}
+%					\parbox[t][21mm][t]{\thesis@tmp}{%
+%						\raggedright%
+%							\sffamily \normalsize %
+%								\MakeUppercase{\fakulta@en} \\%
+%								\MakeUppercase{\ustav@en} %
+%					}
+%				}
+			\parbox[t][75mm][c]{\linewidth}{%
+				%\raggedright%
+				\centering
+				\sffamily \LARGE \MakeUppercase{\oznaceniprace@cz}\\
+				\sffamily \Large \MakeUppercase{\nazev@cz}\\%
+				\sffamily \normalsize \MakeUppercase{\nazev@en}%
+			}
+			\vfill
+%			\parbox[t][17mm][t]{\linewidth}{%
+%				\raggedright%
+%				\sffamily \large \MakeUppercase{\oznaceniprace@cz}\\
+%				\sffamily \normalsize \MakeUppercase{\oznaceniprace@en}
+%			}
+%			\parbox[t][13mm][t]{\linewidth}{%				
+%				\raggedright%
+%				\sffamily \large %
+%					\makebox[62mm][l]{\MakeUppercase{\autortext@cz}}
+%						\MakeUppercase{\@autor@jmeno}
+%						\MakeUppercase{\@autor@prijmeni}\\
+%				\sffamily \normalsize %
+%					\MakeUppercase{\autortext@en}
+%			}
+			\parbox[t][33mm][t]{\linewidth}{%
+				\centering%
+				\sffamily \large %
+					\makebox{\garanttext@cz} {\@garant}\\
+					\makebox{\ustav@cz}
+%					\makebox{\oborstudiatext@cz} {\oborstudia@cz}
+%				\sffamily \normalsize %
+%					\MakeUppercase{\garanttext@en}
+			}
+			\parbox[t][5mm][t]{\linewidth}{%
+				\raggedright%
+				\sffamily \large %
+					\MakeLowercase{\@mesic} \@rok\, \@misto \hfill {\@autor@jmeno}
+						\MakeUppercase{\@autor@prijmeni}
+			}
+		\end{minipage}%
+	}
+
+  \newpage
+	
+  \if@twoside
+     \thispagestyle{empty}
+     \cleardoublepage
+  \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sazba stranky s abstraktem prikazem \vytvorabstrakt                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\vytvorabstrakt{\par  
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+      	\ifTT@cvutstyle\@vytvorabstrakt@cvut\else\@vytvorabstrakt\fi
+      \else
+        \twocolumn[%
+        	\ifTT@cvutstyle\@vytvorabstrakt@cvut\else\@vytvorabstrakt\fi%
+        ]
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \ifTT@cvutstyle\@vytvorabstrakt@cvut\else\@vytvorabstrakt\fi
+    \fi
+  \endgroup
+
+  %% Tady si nesmazeme titul
+  \setcounter{footnote}{0}%
+  \global\let\vytvorabstrakt\relax
+  \global\let\@vytvorabstrakt\@empty
+}
+
+\def\@vytvorabstrakt{%
+  \newpage
+  \thispagestyle{empty}
+    \begin{center}
+    	\large \sffamily \bfseries %
+    		\ifTT@english
+		      \skola@cz \\
+		      \fakulta@cz \\
+		      \ustav@cz
+		    \else
+		      \skola@en \\
+		      \fakulta@en \\
+		      \ustav@en
+		    	
+		    \fi
+	  \end{center}
+    \vspace{\stretch{1}}
+    \begin{center}
+     	\Large \sf \bfseries %
+     		\ifTT@english
+     			\nazev@cz \par
+     		\else
+     			\nazev@en \par
+     		\fi
+    \end{center}  
+    \begin{center}
+    	\ifTT@english
+      	\large \sffamily \oznaceniprace@cz
+      \else
+      	\large \sffamily \MakeLowercase{\oznaceniprace@en}
+      \fi
+    \end{center}
+    \vspace{\stretch{1}}
+		{ \large \sffamily %
+			\ifTT@english
+				\begin{tabular}{ll}
+			    \oborstudiatext@cz: & \oborstudia@cz \\
+			    \autortext@cz:      & \@autor \\
+			    \garanttext@cz:     & \@garant \\
+			  \end{tabular}
+			\else
+				\begin{tabular}{ll}
+			    \oborstudiatext@en: & \oborstudia@en \\
+			    \autortext@en:      & \@autor \\
+			    \garanttext@en:     & \@garant \\
+			  \end{tabular}
+			\fi			 
+	  }\par
+    \begin{center}
+      \large \sffamily \bfseries %
+      	\ifTT@english
+      		ABSTRACT
+      	\else
+      		ABSTRAKT
+      	\fi
+    \end{center}
+  	\par\noindent
+    {\sffamily %
+    		\rule[-23em]{0pt}{24em}%
+    		\parbox[t][][t]{\linewidth}{%
+    				\abstrakt%
+    		}%
+    }
+}
+
+\def\@vytvorabstrakt@cvut{%
+  \newpage
+  \thispagestyle{empty}
+  \noindent
+  \parbox[t][0.5\textheight][t]{\linewidth}{%
+  	\parbox[t][][t]{\linewidth}{%
+  		\large\sffamily\bfseries ABSTRACT
+		}
+		\parbox[t][][t]{\linewidth}{%
+		  \sffamily %
+	  		\rule[-19em]{0pt}{20em}%
+	  		\parbox[t][][t]{\linewidth}{%
+					\abstrakt@cz
+	  		}%
+	  }
+  	\parbox[t][][t]{\linewidth}{%
+  		\large\sffamily\bfseries KEYWORDS
+		}
+		\parbox[t][][t]{\linewidth}{%
+		  \sffamily %
+	  		\rule[-3em]{0pt}{4em}%
+	  		\parbox[t][][t]{\linewidth}{%
+					\keywords@cz
+	  		}%
+	  }
+	}
+  \parbox[t][0.5\textheight][t]{\linewidth}{%
+  	\parbox[t][][t]{\linewidth}{%
+  		\large\sffamily\bfseries ABSTRAKT
+		}
+		\parbox[t][][t]{\linewidth}{%
+		  \sffamily %
+	  		\rule[-19em]{0pt}{20em}%
+	  		\parbox[t][][t]{\linewidth}{%
+					\abstrakt@en
+	  		}%
+	  }
+  	\parbox[t][][t]{\linewidth}{%
+  		\large\sffamily\bfseries KL\'{I}\v{C}OV\'{A} SLOVA
+		}
+		\parbox[t][][t]{\linewidth}{%
+		  \sffamily %
+	  		\rule[-3em]{0pt}{4em}%
+	  		\parbox[t][][t]{\linewidth}{%
+					\keywords@en
+	  		}%
+	  }
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sazba prohlaseni o samostatnosti prace \vytvorprohlaseni  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\vytvorprohlaseni{\par  
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \vytvorprohlaseni@cz
+      \else
+        \twocolumn[\vytvorprohlaseni@cz]
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \vytvorprohlaseni@cz
+    \fi
+  \endgroup
+  
+  %% Tady si nesmazeme titul
+  \setcounter{footnote}{0}%
+  \global\let\vytvorprohlaseni\relax
+  \global\let\vytvorprohlaseni@cz\@empty
+}
+
+\def\vytvorprohlaseni@cz{%
+	\cleardoublepage
+	\stranka{%nahore
+	}		{%uprostred
+	}		{%dole
+	\sffamily
+		\begin{flushleft}
+			\large
+			\MakeUppercase{\oznaceniprohlaseni@cz}
+		\end{flushleft}
+
+		\vspace{1em}
+		\noindent
+		\prohlasenitext@cz
+
+		\vspace{3em}
+		\mistoprohlaseni@cz\hspace{1em}\makebox[7em][c]{\dotfill} \hfill
+		\begin{minipage}[t][][t]{15em}
+			\begin{center}
+				\dotfill \\
+				(author sign)					
+			\end{center}
+		\end{minipage}}
+}
+
+
+\newcommand*{\img}[1]{%
+    \raisebox{-.1\baselineskip}{%
+        \includegraphics[
+        height=.7\baselineskip,
+        width=.7\baselineskip,
+        keepaspectratio,
+        ]{#1}%
+    }%
+}
+
+\endinput
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% zada kapitolu s Literaturou do obsahu
+\def\@openbib@code{\addcontentsline{toc}{chapter}{\bibname}}
+
+%
+%%  End of file thesis.sty

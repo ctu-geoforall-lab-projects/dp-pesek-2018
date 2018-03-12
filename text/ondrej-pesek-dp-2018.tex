@@ -1,0 +1,258 @@
+% ========================================================================
+% 
+% DIPLOMA THESIS - Mask R-CNN in GRASS GIS
+% 
+% Ondřej Pešek
+% 
+% ========================================================================
+
+\documentclass[
+  12pt,         			% velikost základního písma je 12 bodů
+  a4paper,      			% formát papíru je A4
+  oneside,       			% Oboustranný tisk
+  pdftex,				    % překlad bude proveden programem 'pdftex' do PDF
+  english
+]{report}       			% dokument třídy 'zpráva'
+
+
+\newcommand{\Fbox}[1]{\fbox{\strut#1}}
+
+\usepackage[english, czech]{babel}	% použití češtiny, angličtiny
+\usepackage[utf8]{inputenc}			% kódování zdrojových souborů je UTF8
+
+\usepackage[square,sort,comma,numbers]{natbib}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage[dvipsnames]{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+
+\captionsetup{font=small}
+\usepackage{enumitem} 
+\setlist{leftmargin=*} % bez odsazení
+
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatletter
+
+\usepackage[dvips]{graphicx}   
+\usepackage{color}
+\usepackage{transparent}
+\usepackage{wrapfig}
+\usepackage{float} 
+
+\usepackage{cmap}           
+\usepackage[T1]{fontenc}    
+
+\usepackage{textcomp}
+\usepackage[compact]{titlesec}
+\usepackage{amsmath}
+\addtolength{\jot}{1em} 
+
+\usepackage{chngcntr}
+\counterwithout{footnote}{chapter}
+
+\usepackage{acronym}
+
+\usepackage[
+    unicode,                
+    breaklinks=true,        
+    hypertexnames=false,
+    colorlinks=true, % true for print version
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+]{hyperref}         
+
+\usepackage{url}
+\usepackage{fancyhdr}
+%\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{algcompatible}
+\renewcommand{\ALG@name}{Pseudokód}% update algorithm name
+\def\ALG@name{Pseudokód}
+
+\usepackage[
+  cvutstyle,          
+  diploma   
+]{thesiscvut}
+
+
+\newif\ifweb
+\ifx\ifHtml\undefined % mimo HTML.
+    \webfalse
+\else % v HTML.
+    \webtrue
+\fi 
+
+\renewcommand{\figurename}{Obrázek}
+\def\figurename{Obrázek}
+
+\lstdefinestyle{python}{
+   language=python,
+   basicstyle={\footnotesize\ttfamily},
+   keywordstyle=\color{blue}\ttfamily,
+   stringstyle=\color{green}\ttfamily,
+   commentstyle=\color{brown}\ttfamily,
+   showstringspaces=false,
+   morekeywords={True, False, sqrt}
+}
+
+\renewcommand\lstlistingname{Kód}
+\renewcommand*{\lstlistlistingname}{Seznam ukázek kódu}
+
+\usepackage{dirtree}
+
+\lstset{
+	extendedchars=true,
+	literate={á}{{\'a}}1}
+
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\usepackage[justification=centering]{caption}
+
+% ========================================================================
+% Definice informací o dokumentu
+% ========================================================================
+
+% název práce
+\nazev{Mask R-CNN in GRASS GIS}
+{Mask R-CNN v prostředí GRASS GIS}
+
+% jméno a příjmení autora
+\autor{Bc. Ondřej}{Pešek}
+
+% jméno a příjmení vedoucího práce včetně titulů
+\garant{Ing.~Martin~Landa,~Ph.D.}
+
+% označení oboru studia
+\oborstudia{Geomatics}{}
+
+% označení ústavu
+\ustav{Department of geomatics}{}
+
+% rok obhajoby
+\rok{2018}
+
+% měsíc obhajoby
+\mesic{}
+
+% místo obhajoby
+\misto{Praha}
+
+% abstrakt
+\abstrakt 
+{TODO: THIS WILL BE ABSTRACT.}
+{A TOHLE TAKY.}
+
+
+% klíčová slova
+\klicovaslova
+{GIS, GRASS GIS, Python, artificial neural networks, Mask R-CNN, instance segmentation}
+{GIS, GRASS GIS, Python, umělé neuronové sítě, Mask R-CNN, instanční segmentace}
+
+% ========================================================================
+% Nastavení polí ve vlastnostech dokumentu PDF
+% ========================================================================
+\nastavenipdf
+
+% začátek dokumentu
+\begin{document}
+
+\catcode`\-=12  % pro vypnutí aktivního znaku '-' používaného např. v \cline 
+
+% aktivace záhlaví
+\zahlavi
+
+% předefinování vzhledu záhlaví
+\renewcommand{\chaptermark}[1]{%
+	\markboth{\MakeUppercase
+	{%
+	\thechapter.%
+	\ #1}}{}}
+
+% vysázení přebalu práce
+%\vytvorobalku
+
+% vysázení titulní stránky práce
+\vytvortitulku
+
+% Vysázení listu zadani
+\stranka{}%
+	{\includegraphics[scale=0.7]{./pictures/zadanidp.pdf}}%\sffamily\Huge\centering\ }%ZDE VLOŽIT LIST ZADÁNÍ}%
+	%{\sffamily\centering Z~důvodu správného číslování stránek}
+
+% vysázení stránky s abstraktem
+\vytvorabstrakt
+
+% vysázení prohlaseni o samostatnosti
+\vytvorprohlaseni
+
+% vysázení poděkování
+\stranka{%nahore
+       }{%uprostred
+       }{%dole
+       \sffamily
+	\begin{flushleft}
+		\large
+		\MakeUppercase{Acknowledgement}
+	\end{flushleft}
+	\vspace{1em}
+		%\noindent
+	\par\hspace{2ex}
+	{TODO: I SHOULD THANK SBODY HERE.}
+}
+
+% vysázení obsahu
+\setcounter{tocdepth}{1}
+\obsah
+
+% vysázení seznamu obrázků
+\seznamobrazku
+
+% vysázení seznamu tabulek
+\seznamtabulek
+
+% vysázení seznamu ukázek kódu
+\cleardoublepage
+\thispagestyle{empty}
+% \lstlistoflistings
+\newpage
+
+% jednotlivé kapitoly
+\include{1-intro}
+\include{2-bg}
+\include{3-image-ann}
+\include{4-technologies}
+\include{5-implementation}
+\include{6-conclusion}
+
+% vysázení seznamu zkratek
+\include{zkratky}
+
+% literatura
+\nocite{*}
+\def\refname{References}
+\bibliographystyle{mystyle}
+\bibliography{literatura}
+
+
+% začátek příloh
+%\def\figurename{Figure}%
+\prilohy
+
+% vysázení seznamu příloh
+\seznampriloh
+
+% Vložení souboru s přílohami
+\include{prilohy}
+
+% konec dokumentu
+\end{document}
