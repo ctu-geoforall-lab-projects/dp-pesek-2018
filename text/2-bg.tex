@@ -1,19 +1,75 @@
-\chapter{Background}
-\label{bg}
+\chapter{Convolutional neural networks}
+\label{cnn}
 
-\section{Basic terms}
-\label{terminology}
+Although it is assumed that the reader has sufficient prior knowledge of artificial neural networks and convolutional neural networks, this part briefly introduces convolutional neural networks, their layer types and few selected architectures. 
 
-\subsection{Loss function}
-\label{loss}
+For better understanding of the topic, it is recommended to take a look at the holy book of deep learning, \cite{dl}.
 
-\subsection{Learning rate}
-\label{rate}
+\section{Introducing convolutional neural networks}
+\label{understanding-cnn}
 
-\subsection{Convolution}
-\label{loss}
+If you try to find an introduction to \zk{CNN}s on the internet, you may bump into a common statement that \zk{CNN}s are neuroscience-based deep neural networks using convolution and presumpting the input is an image. It is not exact. 
 
-\section{Brief history of artificial neural networks}
-\label{history}
+Though images are the most common input, according to \cite{dl}, \zk{CNN}s presumpt the input has a grid-like topology; apart from the computer vision, other applications include  for example natural language processing (as in \cite{cnn-nlp}) or anything representable as a grid-like topology (audio waveform as 1-D grid, RGB images as multichannel 2-D, CT scan as 3-D, etc.). 
 
-% perceptron, multilayer perceptron (here backprop?), CNN (subsampling/conv layers and their backprop, evolution)
+A paradox inexactness is the term \textit{convolution} as in mathematical meaning, many \zk{CNN}s implement cross-correlation instead of real convolution. Cross-correlation may be seen as convolution without a kernel flipping. The reader can get more mathematical insight about the difference and harmlessness of this change from \cite{dl}. 
+
+It is true that \zk{CNN}s are based on a neuroscience. They are inspired by Nobel prize laureates Hubel's and Wiesel's research on mammalian vision systems (firstly cats in \cite{hubel-cats1} and \cite{hubel-cats2}, later monkeys in \cite{hubel-monkeys}). Hubel and Wiesel found that some neurons (sorted in columns) strongly respond to specific to specific edge-like patterns but just a bit to other patterns. 
+
+The eye stimulus on the retina is transferred through the optic nerve and the lateral geniculate nucleus into the primary visual cortex (sometimes referred to as V1), a part of the visual cortex located in the posterior pole of the occipital lobe. The primary visual cortex is organized in a 2-D spatial map representing visual stimuli from the retina and contains two cell types, simple cells and complex cells. Simple cells purpose is to compute a linear function (although some counterarguments against the linearity have been raised, see \cite{simple-cells}) of the image in a spatially localized field, while complex cells operations are to some extent position and lighting invariant. 
+
+\section{Layer types}
+\label{layers}
+
+
+
+\subsection{Convolutional layers}
+\label{conv-layers}
+
+\subsection{ReLU layers}
+\label{relu-layers}
+
+\subsection{Subsampling layers}
+\label{subsampling}
+
+\subsection{Normalization layers}
+\label{norm-layers}
+
+\subsection{Fully connected layers}
+\label{fc-layers}
+
+\section{Architectures of convolutional neural networks}
+\label{cnn-architectures}
+
+\subsection{LeNet5} %
+\label{lenet}
+
+\subsection{Dan Ciresan Net}
+\label{ciresan}
+
+\subsection{AlexNet} %
+\label{alexnet}
+
+\subsection{ZF Net}
+\label{zfnet}
+
+\subsection{VGG} %
+\label{vgg}
+
+\subsection{Network-in-network}
+\label{nin}
+
+\subsection{GoogLeNet}
+\label{googlenet}
+
+\subsection{Inception V3}
+\label{inception}
+
+\subsection{ResNet} %
+\label{resnet}
+
+\subsection{SqueezeNet}
+\label{squeezenet}
+
+\subsection{ENet}
+\label{enet}

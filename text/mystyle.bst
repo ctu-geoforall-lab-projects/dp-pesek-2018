@@ -526,7 +526,7 @@ FUNCTION {format.vol.num.pages}
 { volume  field.or.null
   number empty$
     'skip$
-    { ", č.~" number * *
+    { ", n.~" number * *
       volume empty$
         { "there's a number but no volume in " cite$ * warning$ }
         'skip$
@@ -537,7 +537,7 @@ FUNCTION {format.vol.num.pages}
     'skip$
     { duplicate$ empty$
         { pop$ format.pages }
-        { ", s.~" * pages n.dashify * }
+        { ", pp.~" * pages n.dashify * }
       if$
     }
   if$
