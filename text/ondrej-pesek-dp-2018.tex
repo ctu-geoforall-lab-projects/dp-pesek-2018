@@ -11,7 +11,8 @@
   a4paper,      			% formát papíru je A4
   oneside,       			% Oboustranný tisk
   pdftex,				    % překlad bude proveden programem 'pdftex' do PDF
-  english
+  english,
+  draft
 ]{report}       			% dokument třídy 'zpráva'
 
 
@@ -25,7 +26,6 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{listings}
-\usepackage{color}
 
 \usepackage[dvipsnames]{xcolor}
 \definecolor{light-gray}{gray}{0.95}
@@ -207,24 +207,26 @@
 	\vspace{1em}
 		%\noindent
 	\par\hspace{2ex}
-	{TODO: I SHOULD THANK SBODY HERE.}
+	{TODO: \\
+	THIS IS DEDICATED TO\\
+	SOMEONE ELSE, NOT YOU.}
 }
 
 % vysázení obsahu
-\setcounter{tocdepth}{1}
+% \setcounter{tocdepth}{1}
 \obsah
 
 % vysázení seznamu obrázků
 \seznamobrazku
 
 % vysázení seznamu tabulek
-\seznamtabulek
+% \seznamtabulek
 
 % vysázení seznamu ukázek kódu
-\cleardoublepage
-\thispagestyle{empty}
+%\cleardoublepage
+%\thispagestyle{empty}
 % \lstlistoflistings
-\newpage
+%\newpage
 
 % jednotlivé kapitoly
 \include{1-intro}
