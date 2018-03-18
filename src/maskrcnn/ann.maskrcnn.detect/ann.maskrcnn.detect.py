@@ -132,7 +132,7 @@ def main(options, flags):
     masks = list()
     detectedClasses = list()
     for referencing in [file for file in next(
-            os.walk(imagesDir))[2] if os.path.splitext(file)[1] != format]:
+            os.walk(imagesDir))[2] if (os.path.splitext(file)[1] != format and format in file)]:
         fileName, refExtension = referencing.split(format)
         # TODO: Join with converting to one loop
         for i in range(1, len(classes.split(',')) + 1):
@@ -170,7 +170,7 @@ def main(options, flags):
 
         gscript.run_command('v.patch',
                             input=masksString,
-                            output=classes.split(',')[i])
+                            output=classes.split(',')[i - 1])
         gscript.run_command('g.remove',
                             'f',
                             name=masksString,
