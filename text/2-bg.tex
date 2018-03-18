@@ -32,7 +32,7 @@ While the common approach in image processing of classical \zk{ANN}s is to vecto
 
 The first layers through which is the input passed are convolutional layers. So, firstly, what is the convolution? 
 
-In the geomatics field, we very often encounter the term \textit{kernel}. Kernel can be seen as a matrix (or a window) sliding across all the image pixels. The pixels contained in this window are a receptive field. As both the kernel and the receptive field are matrices of the same shape, in each position element wise multiplication is computed and outputed as an output matrix element. Because after such a filtering, the output matrix contains a 2-D activation map (a map where each position values say with witch probability the requested feature is on that position in the original image), the output is called a feature map. Kernels / filters are the subject of training. 
+In the geomatics field, we very often encounter the term \textit{kernel}. Kernel can be seen as a matrix (or a window) sliding across all the image pixels. The pixels contained in this window are a receptive field. As both the kernel and the receptive field are matrices of the same shape, in each position element wise multiplication is computed and outputed as an output matrix element. Because after such a filtering, the output matrix contains a 2-D activation map (a map where each position values say with witch probability the requested feature is on that position in the original image), the output is called a \textit{feature map}. Kernels / filters are the subject of training. 
 
 In case of stride 1 and without zero-padding, the feature map is naturally of shape $[original\_width - kernel\_width + 1] \times [original\_height - kernel\_height + 1]$. An example may be seen in figure \ref{fig:conv}. 
 
@@ -56,7 +56,13 @@ Their input is the previous layer output. Output of the first layer is the featu
 \subsection{ReLU layers}
 \label{relu-layers}
 
+Since the real data we are using to train our \zk{CNN}s are mostly non-linear, it is useful to introduce some non-linearity into the network. In the past, functions like hyperbolic tangent or sigmoid were used, but Rectified Linear Unit(\zk{ReLU}) has been found to be trained faster and mitigate the vanishing gradient problem (problem of slow training of low layers due to the exponential decrease of the gradient). 
 
+\zk{ReLU} output is defined by a function:
+
+$f(x) = max(0, x)$
+
+After applying the \zk{ReLU} function to of the input values, we have a feature map where all negative values of the input were changed to zero. This output is called \textit{rectified feature map}. 
 
 \subsection{Subsampling layers}
 \label{subsampling}
