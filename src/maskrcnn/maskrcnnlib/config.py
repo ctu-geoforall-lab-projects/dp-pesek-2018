@@ -113,8 +113,7 @@ class ModelConfig(object):
         # Give the configuration a recognizable name
         self.NAME = name
 
-        # We use a GPU with 12GB memory, which can fit two images.
-        # Adjust down if you use a smaller GPU.
+        # Number of images per GPU
         self.IMAGES_PER_GPU = imagesPerGPU
 
         # NUMBER OF GPUs to use. For CPU training, use 1

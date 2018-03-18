@@ -85,6 +85,16 @@
 #% answer: 64
 #% guisection: Training parameters
 #%end
+#%option
+#% key: images_per_gpu
+#% type: integer
+#% label: Number of images per GPU
+#% description: Bigger number means faster training but needs a bigger GPU
+#% required: no
+#% multiple: no
+#% answer: 1
+#% guisection: Training parameters
+#%end
 
 
 import grass.script as gscript
@@ -115,6 +125,7 @@ def main(options, flags):
     epochs = int(options['epochs'])
     stepsPerEpoch = int(options['steps_per_epoch'])
     ROIsPerImage = int(options['rois_per_image'])
+    imagesPerGPU = int(options['images_per_gpu'])
 
     flagsString = ''
     for flag, value in flags.items():
@@ -125,13 +136,14 @@ def main(options, flags):
     # unfortunately, redirect everything to python3
     ###########################################################
     call('python3 {}{}py3train.py --dataset={} --model={} --logs={} '
-         '--name={} --epochs={} --steps_per_epoch={} --classes={} '
-         '--rois_per_image={} --flags={}'.format(
+         '--name={} --images_per_gpu={} --epochs={} --steps_per_epoch={} '
+         '--classes={} --rois_per_image={} --flags={}'.format(
             path, os.sep,
             dataset,
             initialWeights,
             logs,
             name,
+            imagesPerGPU,
             epochs,
             stepsPerEpoch,
             classes,

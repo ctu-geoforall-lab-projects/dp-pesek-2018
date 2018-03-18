@@ -34,15 +34,15 @@ import model as modellib
 from sys import exit
 
 
-def train(dataset, modelPath, classes, logs, modelName, epochs=200,
-          stepsPerEpoch=3000, ROIsPerImage=64, flags=''):
+def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
+          epochs=200, stepsPerEpoch=3000, ROIsPerImage=64, flags=''):
 
     print("Logs: ", logs)
 
     # Configurations
     # TODO: Make as user parameters
     config = ModelConfig(name=modelName,
-                         imagesPerGPU=1,
+                         imagesPerGPU=imagesPerGPU,
                          GPUcount=1,
                          numClasses=len(classes) + 1,
                          trainROIsPerImage=ROIsPerImage,
@@ -60,7 +60,8 @@ def train(dataset, modelPath, classes, logs, modelName, epochs=200,
                               model_dir=logs)
 
     # Load weights
-    print("Loading weights ", modelPath)
+    if modelPath:
+        print("Loading weights ", modelPath)
     if modelPath and "e" in flags:
         model.load_weights(modelPath, by_name=True,
                            exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
@@ -144,6 +145,9 @@ if __name__ == '__main__':
                         help='Logs and checkpoints directory')
     parser.add_argument('--name', required=True,
                         help='Name of output models')
+    parser.add_argument('--images_per_gpu', required=False,
+                        default=1, type=int,
+                        help='Number of images in the GPU memory at paralell')
     parser.add_argument('--epochs', required=False,
                         default=200, type=int,
                         help='Number of epochs')
