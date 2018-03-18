@@ -35,7 +35,8 @@ from sys import exit
 
 
 def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
-          epochs=200, stepsPerEpoch=3000, ROIsPerImage=64, flags=''):
+          GPUcount=1, epochs=200, stepsPerEpoch=3000, ROIsPerImage=64,
+          flags=''):
 
     print("Logs: ", logs)
 
@@ -43,7 +44,7 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
     # TODO: Make as user parameters
     config = ModelConfig(name=modelName,
                          imagesPerGPU=imagesPerGPU,
-                         GPUcount=1,
+                         GPUcount=GPUcount,
                          numClasses=len(classes) + 1,
                          trainROIsPerImage=ROIsPerImage,
                          stepsPerEpoch=stepsPerEpoch,
@@ -147,7 +148,10 @@ if __name__ == '__main__':
                         help='Name of output models')
     parser.add_argument('--images_per_gpu', required=False,
                         default=1, type=int,
-                        help='Number of images in the GPU memory at paralell')
+                        help='Number of images in the GPU memory at parallel')
+    parser.add_argument('--gpu_count', required=False,
+                        default=1, type=int,
+                        help='Number of GPUs to be used')
     parser.add_argument('--epochs', required=False,
                         default=200, type=int,
                         help='Number of epochs')

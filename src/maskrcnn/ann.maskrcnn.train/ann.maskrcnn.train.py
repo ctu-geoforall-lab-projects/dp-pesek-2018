@@ -95,6 +95,15 @@
 #% answer: 1
 #% guisection: Training parameters
 #%end
+#%option
+#% key: gpu_count
+#% type: integer
+#% label: Number of GPUs to be used
+#% required: no
+#% multiple: no
+#% answer: 1
+#% guisection: Training parameters
+#%end
 
 
 import grass.script as gscript
@@ -126,6 +135,7 @@ def main(options, flags):
     stepsPerEpoch = int(options['steps_per_epoch'])
     ROIsPerImage = int(options['rois_per_image'])
     imagesPerGPU = int(options['images_per_gpu'])
+    GPUcount = int(options['gpu_count'])
 
     flagsString = ''
     for flag, value in flags.items():
@@ -136,14 +146,16 @@ def main(options, flags):
     # unfortunately, redirect everything to python3
     ###########################################################
     call('python3 {}{}py3train.py --dataset={} --model={} --logs={} '
-         '--name={} --images_per_gpu={} --epochs={} --steps_per_epoch={} '
-         '--classes={} --rois_per_image={} --flags={}'.format(
+         '--name={} --images_per_gpu={} --gpu_count={} --epochs={} '
+         '--steps_per_epoch={} --classes={} --rois_per_image={} '
+         '--flags={}'.format(
             path, os.sep,
             dataset,
             initialWeights,
             logs,
             name,
             imagesPerGPU,
+            GPUcount,
             epochs,
             stepsPerEpoch,
             classes,
