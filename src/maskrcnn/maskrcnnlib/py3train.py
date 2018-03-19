@@ -25,7 +25,8 @@ import model as modellib
 
 def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
           GPUcount=1, epochs=200, stepsPerEpoch=3000, ROIsPerImage=64,
-          validationSteps=100, imMaxDim=768, imMinDim=768, flags=''):
+          miniMaskSize=None, validationSteps=100, imMaxDim=768, imMinDim=768,
+          flags=''):
 
     print("Logs: ", logs)
 
@@ -37,7 +38,7 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
                          numClasses=len(classes) + 1,
                          trainROIsPerImage=ROIsPerImage,
                          stepsPerEpoch=stepsPerEpoch,
-                         miniMaskShape=(128, 128),
+                         miniMaskShape=miniMaskSize,
                          validationSteps=validationSteps,
                          imageMaxDim=imMaxDim,
                          imageMinDim=imMinDim)
@@ -150,6 +151,8 @@ if __name__ == '__main__':
     parser.add_argument('--rois_per_image', required=False,
                         default=64, type=int,
                         help='Number of ROIs trained per each image')
+    parser.add_argument('--mini_mask_size', required=False, default=None,
+                        help='Size of mini mask separated with ","')
     parser.add_argument('--validation_steps', required=False,
                         default=100, type=int,
                         help='Number of validation steps')
@@ -165,9 +168,18 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    train(args.dataset, args.model, args.classes.split(','), args.logs,
-          args.name, imagesPerGPU=args.images_per_gpu, GPUcount=args.gpu_count,
-          epochs=args.epochs, stepsPerEpoch=args.steps_per_epoch,
-          ROIsPerImage=args.rois_per_image, imMaxDim=args.im_max_dim,
-          validationSteps=args.validation_steps, imMinDim=args.im_min_dim,
+    train(args.dataset,
+          args.model,
+          args.classes.split(','),
+          args.logs,
+          args.name,
+          imagesPerGPU=args.images_per_gpu,
+          GPUcount=args.gpu_count,
+          epochs=args.epochs,
+          stepsPerEpoch=args.steps_per_epoch,
+          ROIsPerImage=args.rois_per_image,
+          miniMaskSize=args.mini_mask_size,
+          validationSteps=args.validation_steps,
+          imMaxDim=args.im_max_dim,
+          imMinDim=args.im_min_dim,
           flags=args.flags)

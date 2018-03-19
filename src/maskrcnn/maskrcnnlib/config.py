@@ -52,10 +52,6 @@ class ModelConfig(object):
     POST_NMS_ROIS_TRAINING = 2000
     POST_NMS_ROIS_INFERENCE = 1000
 
-    # If enabled, resizes instance masks to a smaller size to reduce
-    # memory load. Recommended when using high-resolution images.
-    USE_MINI_MASK = True
-
     # If True, pad images with zeros such that they're (max_dim by max_dim)
     IMAGE_PADDING = True  # currently, the False option is not supported
 
@@ -106,7 +102,7 @@ class ModelConfig(object):
 
     def __init__(self, name='model', imagesPerGPU=1, GPUcount=1, numClasses=1,
                  trainROIsPerImage=64, stepsPerEpoch=1500,
-                 miniMaskShape=(128, 128), validationSteps=100,
+                 miniMaskShape=None, validationSteps=100,
                  imageMaxDim=768, imageMinDim=768):
         """Set values of computed attributes."""
 
@@ -123,10 +119,17 @@ class ModelConfig(object):
         self.NUM_CLASSES = numClasses
         self.TRAIN_ROIS_PER_IMAGE = trainROIsPerImage
         self.STEPS_PER_EPOCH = stepsPerEpoch // self.IMAGES_PER_GPU
-        self.MINI_MASK_SHAPE = miniMaskShape
         self.VALIDATION_STEPS = validationSteps
         self.IMAGE_MAX_DIM = imageMaxDim
         self.IMAGE_MIN_DIM = imageMinDim
+
+        # mini_mask to save memory
+        if miniMaskShape:
+            self.USE_MINI_MASK = True
+            self.MINI_MASK_SHAPE = tuple(int(a) for a in miniMaskShape.split(','))
+        else:
+            self.USE_MINI_MASK = False
+            self.MINI_MASK_SHAPE = None
 
         # Effective batch size
         self.BATCH_SIZE = self.IMAGES_PER_GPU * self.GPU_COUNT
