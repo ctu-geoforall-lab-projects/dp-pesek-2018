@@ -104,6 +104,26 @@
 #% answer: 1
 #% guisection: Training parameters
 #%end
+#%option
+#% key: images_min_dim
+#% type: integer
+#% label: Minimum length of images sides
+#% description: Images will be resized to have their shortest side of this size (has to be a multiple of 256)
+#% required: no
+#% multiple: no
+#% answer: 256
+#% guisection: Training parameters
+#%end
+#%option
+#% key: images_max_dim
+#% type: integer
+#% label: Maximum length of images sides
+#% description: Images will be resized to have their longest side of this size (has to be a multiple of 256)
+#% required: no
+#% multiple: no
+#% answer: 2560
+#% guisection: Training parameters
+#%end
 
 
 import grass.script as gscript
@@ -136,6 +156,8 @@ def main(options, flags):
     ROIsPerImage = int(options['rois_per_image'])
     imagesPerGPU = int(options['images_per_gpu'])
     GPUcount = int(options['gpu_count'])
+    imMaxDim = int(options['images_max_dim'])
+    imMinDim = int(options['images_min_dim'])
 
     flagsString = ''
     for flag, value in flags.items():
@@ -148,7 +170,7 @@ def main(options, flags):
     call('python3 {}{}py3train.py --dataset={} --model={} --logs={} '
          '--name={} --images_per_gpu={} --gpu_count={} --epochs={} '
          '--steps_per_epoch={} --classes={} --rois_per_image={} '
-         '--flags={}'.format(
+         '--im_max_dim={} --im_min_dim={} --flags={}'.format(
             path, os.sep,
             dataset,
             initialWeights,
@@ -160,6 +182,8 @@ def main(options, flags):
             stepsPerEpoch,
             classes,
             ROIsPerImage,
+            imMaxDim,
+            imMinDim,
             flagsString),
          shell=True)
 

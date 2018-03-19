@@ -107,7 +107,7 @@ class ModelConfig(object):
     def __init__(self, name='test', imagesPerGPU=1, GPUcount=1, numClasses=1,
                  trainROIsPerImage=64, stepsPerEpoch=1500,
                  miniMaskShape=(128, 128), validationSteps=100,
-                 imageMaxDim=256*3, imageMinDim=256*3):
+                 imageMaxDim=768, imageMinDim=768):
         """Set values of computed attributes."""
 
         # Give the configuration a recognizable name

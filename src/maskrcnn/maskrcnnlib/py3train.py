@@ -36,7 +36,7 @@ from sys import exit
 
 def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
           GPUcount=1, epochs=200, stepsPerEpoch=3000, ROIsPerImage=64,
-          flags=''):
+          imMaxDim=768, imMinDim=768, flags=''):
 
     print("Logs: ", logs)
 
@@ -50,8 +50,8 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
                          stepsPerEpoch=stepsPerEpoch,
                          miniMaskShape=(128, 128),
                          validationSteps=100,
-                         imageMaxDim=256*3,
-                         imageMinDim=256*3)
+                         imageMaxDim=imMaxDim,
+                         imageMinDim=imMinDim)
     config.display()
 
     # raise SystemExit(0)
@@ -161,6 +161,12 @@ if __name__ == '__main__':
     parser.add_argument('--rois_per_image', required=False,
                         default=64, type=int,
                         help='Number of ROIs trained per each image')
+    parser.add_argument('--im_max_dim', required=False,
+                        default=64, type=int,
+                        help='Minimum length of images sides')
+    parser.add_argument('--im_min_dim', required=False,
+                        default=64, type=int,
+                        help='Maximum length of images sides')
     parser.add_argument('--flags', required=False,
                         default='',
                         help='Flags')
@@ -168,5 +174,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     train(args.dataset, args.model, args.classes.split(','), args.logs,
-          args.name, args.epochs, args.steps_per_epoch, args.rois_per_image,
-          args.flags)
+          args.name, imagesPerGPU=args.images_per_gpu, GPUcount=args.gpu_count,
+          epochs=args.epochs, stepsPerEpoch=args.steps_per_epoch,
+          ROIsPerImage=args.rois_per_image, imMaxDim=args.im_max_dim,
+          imMinDim=args.im_min_dim, flags=args.flags)
