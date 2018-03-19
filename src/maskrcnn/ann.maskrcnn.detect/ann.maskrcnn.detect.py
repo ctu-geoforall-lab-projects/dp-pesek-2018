@@ -45,12 +45,6 @@
 #% required: yes
 #% multiple: yes
 #%end
-#%option
-#% key: name
-#% type: string
-#% label: Name for output models
-#% required: yes
-#%end
 #%option G_OPT_M_DIR
 #% key: masks_output
 #% label: Directory where masks will be saved
@@ -88,7 +82,6 @@ def main(options, flags):
     imagesDir = options['images_directory']
     modelPath = options['model']
     classes = options['classes']
-    name = options['name']
     outputType = options['output_type']
     if options['images_format'][0] != '.':
         format = '.{}'.format(options['images_format'])
@@ -111,13 +104,12 @@ def main(options, flags):
     # unfortunately, redirect everything to python3
     ###########################################################
     call('python3 {}{}py3detect.py --images_dir={} --model={} --classes={} '
-         '--name={} --masks_dir={} --output_type={} --colours={} '
+         '--masks_dir={} --output_type={} --colours={} '
          '--format={}'.format(
             path, os.sep,
             imagesDir,
             modelPath,
             classes,
-            name,
             masksDir,
             outputType,
             ','.join([str(col) for col in classesColours]),

@@ -104,7 +104,7 @@ class ModelConfig(object):
     # train the RPN.
     USE_RPN_ROIS = True
 
-    def __init__(self, name='test', imagesPerGPU=1, GPUcount=1, numClasses=1,
+    def __init__(self, name='model', imagesPerGPU=1, GPUcount=1, numClasses=1,
                  trainROIsPerImage=64, stepsPerEpoch=1500,
                  miniMaskShape=(128, 128), validationSteps=100,
                  imageMaxDim=768, imageMinDim=768):

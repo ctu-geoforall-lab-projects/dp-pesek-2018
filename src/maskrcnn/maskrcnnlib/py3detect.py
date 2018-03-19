@@ -26,10 +26,10 @@ from config import ModelConfig
 
 # Create Model and Load Trained Weights
 
-def detect(imagesDir, modelPath, classes, name, masksDir, outputType,
+def detect(imagesDir, modelPath, classes, masksDir, outputType,
            classesColours, format):
     # Create model object in inference mode.
-    config = ModelConfig(name=name, numClasses=len(classes) + 1)
+    config = ModelConfig(numClasses=len(classes) + 1)
     model = modellib.MaskRCNN(mode="inference", model_dir=modelPath,
                               config=config)
 
@@ -72,8 +72,6 @@ if __name__ == '__main__':
                         help="Path to weights .h5 file")
     parser.add_argument('--classes', required=True,
                         help="Names of classes")
-    parser.add_argument('--name', required=True,
-                        help='Name of output models')
     parser.add_argument('--masks_dir', required=True,
                         help='Name of output models')
     parser.add_argument('--output_type', required=True,
@@ -85,5 +83,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    detect(args.images_dir, args.model, args.classes.split(','), args.name,
+    detect(args.images_dir, args.model, args.classes.split(','),
            args.masks_dir, args.output_type, args.colours, args.format)
