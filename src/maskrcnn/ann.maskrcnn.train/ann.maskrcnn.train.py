@@ -105,6 +105,16 @@
 #% guisection: Training parameters
 #%end
 #%option
+#% key: validation_steps
+#% type: integer
+#% label: Number of validation steps
+#% description: Bigger number means more accurate estimation of the model precision
+#% required: no
+#% multiple: no
+#% answer: 100
+#% guisection: Training parameters
+#%end
+#%option
 #% key: images_min_dim
 #% type: integer
 #% label: Minimum length of images sides
@@ -153,6 +163,7 @@ def main(options, flags):
     ROIsPerImage = int(options['rois_per_image'])
     imagesPerGPU = int(options['images_per_gpu'])
     GPUcount = int(options['gpu_count'])
+    validationSteps = int(options['validation_steps'])
     imMaxDim = int(options['images_max_dim'])
     imMinDim = int(options['images_min_dim'])
 
@@ -167,7 +178,8 @@ def main(options, flags):
     call('python3 {}{}py3train.py --dataset={} --model={} --logs={} '
          '--name={} --images_per_gpu={} --gpu_count={} --epochs={} '
          '--steps_per_epoch={} --classes={} --rois_per_image={} '
-         '--im_max_dim={} --im_min_dim={} --flags={}'.format(
+         '--validation_steps={} --im_max_dim={} --im_min_dim={} '
+         '--flags={}'.format(
             path, os.sep,
             dataset,
             initialWeights,
@@ -179,6 +191,7 @@ def main(options, flags):
             stepsPerEpoch,
             classes,
             ROIsPerImage,
+            validationSteps,
             imMaxDim,
             imMinDim,
             flagsString),
