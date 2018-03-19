@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.lines as lines
 from matplotlib.patches import Polygon
-import IPython.display
+# import IPython.display
 
 import utils
 
@@ -468,18 +468,18 @@ def draw_boxes(image, boxes=None, refined_boxes=None,
     ax.imshow(masked_image.astype(np.uint8))
 
 
-def display_table(table):
-    """Display values in a table format.
-    table: an iterable of rows, and each row is an iterable of values.
-    """
-    html = ""
-    for row in table:
-        row_html = ""
-        for col in row:
-            row_html += "<td>{:40}</td>".format(str(col))
-        html += "<tr>" + row_html + "</tr>"
-    html = "<table>" + html + "</table>"
-    IPython.display.display(IPython.display.HTML(html))
+# def display_table(table):
+#     """Display values in a table format.
+#     table: an iterable of rows, and each row is an iterable of values.
+#     """
+#     html = ""
+#     for row in table:
+#         row_html = ""
+#         for col in row:
+#             row_html += "<td>{:40}</td>".format(str(col))
+#         html += "<tr>" + row_html + "</tr>"
+#     html = "<table>" + html + "</table>"
+#     IPython.display.display(IPython.display.HTML(html))
 
 
 def display_weight_stats(model):
@@ -507,4 +507,4 @@ def display_weight_stats(model):
                 "{:+10.4f}".format(w.max()),
                 "{:+9.4f}".format(w.std()),
             ])
-    display_table(table)
+    # display_table(table)
