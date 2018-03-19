@@ -105,7 +105,7 @@ def save_instances(image, boxes, masks, class_ids, class_names,
     # Show area outside image boundaries.
     height, width = image.shape[:2]
 
-    if which == 'areas':
+    if which == 'area':
         for classId in set(class_ids):
             fig = plt.figure(figsize=figsize)
             ax = fig.add_axes([0, 0, 1, 1])
@@ -150,7 +150,7 @@ def save_instances(image, boxes, masks, class_ids, class_names,
                     os.path.splitext(title)[0] + '_' + str(class_ids[index])),
                 dpi=dpi)
             plt.close()
-    elif which =='points':
+    elif which =='point':
         for classId in set(class_ids):
             fig = plt.figure(figsize=figsize)
             ax = fig.add_axes([0, 0, 1, 1])
