@@ -128,7 +128,6 @@
 
 import grass.script as gscript
 from grass.pygrass.utils import get_lib_path
-import sys
 import os
 from subprocess import call
 
@@ -140,8 +139,6 @@ if path is None:
 ###########################################################
 # unfortunately, it needs python3, see file py3train.py
 ###########################################################
-# sys.path.append(path)
-# from configs import ModelConfig
 
 
 def main(options, flags):

@@ -15,23 +15,12 @@
 
 
 import os
-import sys
-import time
-import cv2
-import numpy as np
 from random import shuffle
-import skimage
 import argparse
-
-import zipfile
-import urllib.request
-import shutil
 
 from config import ModelConfig
 import utils
 import model as modellib
-
-from sys import exit
 
 
 def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,

@@ -69,11 +69,10 @@
 
 import grass.script as gscript
 from grass.pygrass.utils import get_lib_path
-import sys
 import os
-from subprocess import call, Popen, check_output
+from subprocess import call
 from shutil import copyfile
-from random import uniform, randint
+from random import randint
 
 path = get_lib_path(modname='maskrcnn', libname='py3detect')
 if path is None:
@@ -82,8 +81,6 @@ if path is None:
 ###########################################################
 # unfortunately, it needs python3, see file py3train.py
 ###########################################################
-# sys.path.append(path)
-# from configs import ModelConfig
 
 
 def main(options, flags):
@@ -132,7 +129,8 @@ def main(options, flags):
     masks = list()
     detectedClasses = list()
     for referencing in [file for file in next(
-            os.walk(imagesDir))[2] if (os.path.splitext(file)[1] != format and format in file)]:
+            os.walk(imagesDir))[2] if (
+                os.path.splitext(file)[1] != format and format in file)]:
         fileName, refExtension = referencing.split(format)
         # TODO: Join with converting to one loop
         for i in range(1, len(classes.split(',')) + 1):

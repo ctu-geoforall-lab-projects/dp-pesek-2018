@@ -15,14 +15,8 @@
 
 
 import os
-import sys
-import random
-import math
 import argparse
-import numpy as np
 import skimage.io
-import matplotlib
-import matplotlib.pyplot as plt
 
 import utils
 import model as modellib
