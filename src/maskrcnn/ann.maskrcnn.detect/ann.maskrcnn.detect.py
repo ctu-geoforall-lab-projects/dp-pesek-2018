@@ -60,9 +60,9 @@
 #%option
 #% key: output_type
 #% type: string
-#% label: Type of output
-#% options: areas, points
-#% answer: areas
+#% label: Type of output (TODO: point output)
+#% options: area, point
+#% answer: area
 #% required: no
 #%end
 
