@@ -95,7 +95,7 @@ def main(options, flags):
     # TODO: (3 different brands in case of lot of classes?)
     if len(classes.split(',')) > 255:
         raise SystemExit('Too many classes. Must be less than 256.')
-    classesColours = [0] + [i for i in range(len(classes.split(',')))]
+    classesColours = [0] + [i + 1 for i in range(len(classes.split(',')))]
 
     if len(set(classes.split(','))) != len(classes.split(',')):
         raise SystemExit('ERROR: Two or more classes have the same name.')
@@ -154,7 +154,7 @@ def main(options, flags):
                                 's',
                                 input=maskName,
                                 output=maskName,
-                                type='area')
+                                type=outputType)
             gscript.run_command('r.mask',
                                 'r')
 

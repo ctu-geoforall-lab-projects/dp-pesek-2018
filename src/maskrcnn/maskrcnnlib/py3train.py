@@ -31,7 +31,6 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
     print("Logs: ", logs)
 
     # Configurations
-    # TODO: Make as user parameters
     config = ModelConfig(name=modelName,
                          imagesPerGPU=imagesPerGPU,
                          GPUcount=GPUcount,
