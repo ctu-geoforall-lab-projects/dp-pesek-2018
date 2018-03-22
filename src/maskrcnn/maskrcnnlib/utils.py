@@ -377,7 +377,10 @@ class Dataset(object):
 
         # TODO: drop self.classes and use self.class_info
         a = glob.glob(os.path.join(os.path.split(info['path'])[0], '*.png'))
-        maskImage = skimage.io.imread(a[0])[:, :, 0]
+        try:
+            maskImage = skimage.io.imread(a[0])[:, :, 0]
+        except:
+            return None, None, 1
         mask = np.zeros([maskImage.shape[0], maskImage.shape[1], 1])
         maskAppend = np.zeros([maskImage.shape[0], maskImage.shape[1], 1])
         class_ids = np.array([self.classes[a[0].split('-')[-2]]])
@@ -385,10 +388,13 @@ class Dataset(object):
 
         for i in range(1, len(a)):
             np.append(class_ids, self.classes[a[i].split('-')[-2]])
-            maskAppend[:, :, 0] = skimage.io.imread(a[i])[:, :, 0]
+            try:
+                maskAppend[:, :, 0] = skimage.io.imread(a[i])[:, :, 0]
+            except:
+                return None, None, 1
             np.concatenate((mask, maskAppend), 2)
 
-        return mask, class_ids
+        return mask, class_ids, 0
 
 
 def resize_image(image, min_dim=None, max_dim=None, padding=False):

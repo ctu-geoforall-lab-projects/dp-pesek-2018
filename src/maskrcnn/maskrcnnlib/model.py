@@ -1160,7 +1160,11 @@ def load_image_gt(dataset, config, image_id, augment=False,
     """
     # Load image and mask
     image = dataset.load_image(image_id)
-    mask, class_ids = dataset.get_mask(image_id)
+    mask, class_ids, error = dataset.get_mask(image_id)
+
+    if error:
+        return None, None, None, None, None, 1
+
     shape = image.shape
     image, window, scale, padding = utils.resize_image(
         image,
@@ -1194,7 +1198,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
     # Image meta data
     image_meta = compose_image_meta(image_id, shape, window, active_class_ids)
 
-    return image, image_meta, class_ids, bbox, mask
+    return image, image_meta, class_ids, bbox, mask, 0
 
 
 def build_detection_targets(rpn_rois, gt_class_ids, gt_boxes, gt_masks, config):
@@ -1599,9 +1603,15 @@ def data_generator(dataset, config, shuffle=True, augment=True, random_rois=0,
 
             # Get GT bounding boxes and masks for image.
             image_id = image_ids[image_index]
-            image, image_meta, gt_class_ids, gt_boxes, gt_masks = \
+            image, image_meta, gt_class_ids, gt_boxes, gt_masks, error = \
                 load_image_gt(dataset, config, image_id, augment=augment,
                               use_mini_mask=config.USE_MINI_MASK)
+
+            if error:
+                print('WARNING: Problems while processing masks of image '
+                      '{}. This image is skipped in the training and should be checked.'.format(
+                        image_id))
+                continue
 
             # Skip images that have no instances. This can happen in cases
             # where we train on a subset of classes and the image doesn't
