@@ -1608,9 +1608,12 @@ def data_generator(dataset, config, shuffle=True, augment=True, random_rois=0,
                               use_mini_mask=config.USE_MINI_MASK)
 
             if error:
-                print('WARNING: Problems while processing masks of image '
-                      '{}. This image is skipped in the training and should be checked.'.format(
-                        image_id))
+                import warnings
+                warnings.warn(
+                    'Problems while processing masks of image '
+                    '{}. This image is skipped in the training and should be checked.'.format(
+                        image_id),
+                    stacklevel=2)
                 continue
 
             # Skip images that have no instances. This can happen in cases
