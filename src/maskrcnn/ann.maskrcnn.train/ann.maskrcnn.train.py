@@ -143,6 +143,16 @@
 #% answer: 2560
 #% guisection: Training parameters
 #%end
+#%option
+#% key: backbone
+#% type: string
+#% label: Backbone architecture
+#% required: no
+#% multiple: no
+#% answer: resnet101
+#% options: resnet50,resnet101
+#% guisection: Training parameters
+#%end
 
 
 import grass.script as gscript
@@ -176,6 +186,7 @@ def main(options, flags):
     validationSteps = int(options['validation_steps'])
     imMaxDim = int(options['images_max_dim'])
     imMinDim = int(options['images_min_dim'])
+    backbone = options['backbone']
 
     flagsString = ''
     for flag, value in flags.items():
@@ -189,7 +200,7 @@ def main(options, flags):
          '--name={} --images_per_gpu={} --gpu_count={} --epochs={} '
          '--steps_per_epoch={} --classes={} --rois_per_image={} '
          '--mini_mask_size={} --validation_steps={} --im_max_dim={} '
-         '--im_min_dim={} --flags={}'.format(
+         '--im_min_dim={} --backbone={} --flags={}'.format(
             path, os.sep,
             dataset,
             initialWeights,
@@ -205,6 +216,7 @@ def main(options, flags):
             validationSteps,
             imMaxDim,
             imMinDim,
+            backbone,
             flagsString),
          shell=True)
 

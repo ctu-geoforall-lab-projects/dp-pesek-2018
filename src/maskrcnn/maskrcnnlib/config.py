@@ -103,7 +103,7 @@ class ModelConfig(object):
     def __init__(self, name='model', imagesPerGPU=1, GPUcount=1, numClasses=1,
                  trainROIsPerImage=64, stepsPerEpoch=1500,
                  miniMaskShape=None, validationSteps=100,
-                 imageMaxDim=768, imageMinDim=768):
+                 imageMaxDim=768, imageMinDim=768, backbone='resnet101'):
         """Set values of computed attributes."""
 
         # Give the configuration a recognizable name
@@ -137,6 +137,9 @@ class ModelConfig(object):
         # Input image size
         self.IMAGE_SHAPE = np.array(
             [self.IMAGE_MAX_DIM, self.IMAGE_MAX_DIM, 3])
+
+        # Set the backbone architecture
+        self.BACKBONE = backbone
 
         # Compute backbone size from input image size
         self.BACKBONE_SHAPES = np.array(

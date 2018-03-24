@@ -26,7 +26,7 @@ import model as modellib
 def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
           GPUcount=1, epochs=200, stepsPerEpoch=3000, ROIsPerImage=64,
           miniMaskSize=None, validationSteps=100, imMaxDim=768, imMinDim=768,
-          flags=''):
+          backbone='resnet101', flags=''):
 
     print("Logs: ", logs)
 
@@ -40,7 +40,8 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
                          miniMaskShape=miniMaskSize,
                          validationSteps=validationSteps,
                          imageMaxDim=imMaxDim,
-                         imageMinDim=imMinDim)
+                         imageMinDim=imMinDim,
+                         backbone=backbone)
     config.display()
 
     # raise SystemExit(0)
@@ -161,6 +162,9 @@ if __name__ == '__main__':
     parser.add_argument('--im_min_dim', required=False,
                         default=256, type=int,
                         help='Maximum length of images sides')
+    parser.add_argument('--bacbone', required=False,
+                        default='resnet101',
+                        help='Maximum length of images sides')
     parser.add_argument('--flags', required=False,
                         default='',
                         help='Flags')
@@ -181,4 +185,5 @@ if __name__ == '__main__':
           validationSteps=args.validation_steps,
           imMaxDim=args.im_max_dim,
           imMinDim=args.im_min_dim,
+          bacbone=args.backbone,
           flags=args.flags)
