@@ -45,9 +45,9 @@ In case of stride 1 and without zero-padding, the feature map is naturally of sh
 
 With convolution, we reduce both computational requirements and a threat of overfitting by using local connections (representing weights) between input and output. However, these connections are local only in two dimensions, in width and height of the input; these connections have to be full along the channels depth - e.g. in RGB images, the last dimension of connections is always 3. Different is it with the output; its third dimension is determined by the number of neurons referencing the same spatial location, e.g. by the number of kernels we use. 
 
-In chapter \ref{understanding-cnn}, translational invariance was mentioned. In convolutional layers, this invariance was achieved by another huge parameter reduction, by parameter sharing. Idea of parameter sharing raised from the premise that when one feature is useful in one location, it could be useful also in another one. This simple presumption which works except for for example centered special structures allows sharing a set of parameters throughout the whole depth slice. 
+In chapter \ref{understanding-cnn}, translational invariance was mentioned. In convolutional layers, the first step to this invariance was achieved by another huge parameter reduction, by parameter sharing. Idea of parameter sharing raised from the premise that when one feature is useful in one location, it could be useful also in another one. This simple presumption which works except for for example centered special structures allows sharing a set of parameters throughout the whole depth slice. 
 
-Using the parameters from \cite{conv-imagenet} as an example, assumpt that the feature map has size $55 \times 55 \times 96$ and we apply it on images of size $227 \times 227 \times 3$ using kernels of size $11 \times 11 \times 3$. Sharing parameters within a depth slice, we can reduce the parameter amount from $55 * 55 * 96 * (11 * 11 * 3 + 1)$ to $96 * (11 * 11 * 3 + 96)$ (1 and 96 are biases), it means from more than 105 millions to less than 35 thousands. Speaking only about the first layer. I believe that this example said it all. 
+Using the parameters from \cite{cnn-classification} as an example, assumpt that the feature map has size $55 \times 55 \times 96$ and we apply it on images of size $227 \times 227 \times 3$\footnote{The paper claims that the images were of size $224 \times 224 \times 3$, but it is assumpted that it was either a typo or authors forgot to mention a zero-padding} using kernels of size $11 \times 11 \times 3$. Sharing parameters within a depth slice, we can reduce the parameter amount from $55 * 55 * 96 * (11 * 11 * 3 + 1)$ to $96 * (11 * 11 * 3 + 96)$ (1 and 96 are biases), it means from more than 105 millions to less than 35 thousands. Speaking only about the first layer. I believe that this example said it all. 
 
 An inquiring reader may raise a question: In the chapter name, there is a plural. What happens in deeper layers? 
 
@@ -56,7 +56,7 @@ Their input is the previous layer output. Output of the first layer is the featu
 \subsection{ReLU layers}
 \label{relu-layers}
 
-Since the real data we are using to train our \zk{CNN}s are mostly non-linear, it is useful to introduce some non-linearity into the network. In the past, functions like hyperbolic tangent or sigmoid were used, but Rectified Linear Unit(\zk{ReLU}) has been found to be trained faster and mitigate the vanishing gradient problem (problem of slow training of low layers due to the exponential decrease of the gradient). 
+Since the real data we are using to train our \zk{CNN}s are mostly non-linear, it is useful to introduce some non-linearity into the network. In the past, functions like hyperbolic tangent or sigmoid were used, but Rectified Linear Unit (\zk{ReLU}) has been found to be trained faster and mitigate the vanishing gradient problem (problem of slow training of low layers due to the exponential decrease of the gradient). 
 
 \zk{ReLU} output is defined by a function:
 
@@ -64,14 +64,42 @@ $f(x) = max(0, x)$
 
 After applying the \zk{ReLU} function to of the input values, we have a feature map where all negative values of the input were changed to zero. This output is called \textit{rectified feature map}. 
 
-\subsection{Subsampling layers}
-\label{subsampling}
+\subsection{Pooling layers}
+\label{pooling}
+
+Eventhough the input size reduction might already be included in convolutional layers, it is very common to include another layers with this purpose. Because of this purpose, they are called \textit{pooling layers} or \textit{subsampling layers} (they can do both downsampling or upsampling). 
+
+Pooling layers work again with a kernel. But this time, the stride is bigger than one which is quite uncommon for convolutional layers. It means that when we use a pooling layer with kernel of size 2$\times$2 and stride 2, the output will be half in first two dimensions (the third one is preserved). One pooling like this reduces parameters by 75 percent. 
+
+Aside from the parameter reduction, there are two more positive effects. Because of the detail mute, it reduces a threat of overfitting and it also strengthens the shift invariance. The advantage of pooling layers is also the fact that they do not introduce no new parameters to the network. 
+
+The function for the kernel can vary, but the most-used one is max-pooling\footnote{Choosing the biggest value from those overlaid by the kernel.} having the advantage that it does not matter where in the region was the value detected. Other customary approaches apply average (compared with max-pooling in \cite{avg-pooling}), $L2$ (\cite{l2-pooling}) or Stochastic pooling (\cite{stoch-pooling}). Also used kernel size and stride vary, the most common ones are 2$\times$2 with stride 2 and 3$\times$3 with stride 2. 
+
+Also, architectures without pooling layers are not so uncommon today. One research on this approach can be seen in \cite{all-conv-net}. It introduces an architecture called \textit{all convolutional net} where the subsampling may be done by increasing the stride and compares it with other approaches. 
 
 \subsection{Normalization layers}
 \label{norm-layers}
 
+Besides neural exhibition, neural inhibition is also found in the human brain. These doors of perception stay half-closed and filter or inhibit human receptions.
+
+Normalization layers can be seen as an attempt to imitate this structure, but there are more reasons for these layers in deep learning. As was written above, input for higher (deeper) layer is the output of lower level. It means that the highest (deepest) layer input is dependent on the first layer output. Because functions of layers are changed each training step, a small change of the first layer output may have huge effect on the last layer input and therefore also on the last layer output, which may lead to completely wrong behaviour of deeper layers. This problem is called a \textit{covariate shift} or, following terminology from \cite{batch-norm}, an \textit{internal covariate shift}. 
+
+This change in the distribution can be to some extent reduced by using a small learning rate and right initialization of the network. Because small learning rate radically extends the training time, other solutions were needed. Normalization layers. 
+
+One of the most widely used approaches is called \textit{batch normalization} (\cite{batch-norm}). In \zk{CNN}s, it is common to use batches (or mini-batches) of training examples instead of one-at-a-time as the computation parallelism saves time. Batch normalization computes a mean and variance over a batch using the distribution of the summed neuron input and whiten\footnote{Set means equal to zero and variances unit; idea proposed in \cite{tricks}.} it for each training batch. According to \cite{batch-norm}, it reduced the number of training steps 14 times allowing the user to use much higher learning rate and being less careful about initialization.
+
+Another types of normalization layers include local response normalization or $L2$ normalization.
+
 \subsection{Fully connected layers}
 \label{fc-layers}
+
+As their name prompts, fully connected (\zk{FC}) layers are layers where each neuron in a layer is connected to each neuron of the previous layer. Their activations can be seen simply as a matrix multiplication enhanced by a bias.  
+
+The purpose of \zk{FC} layers is to take the high-level feature map as an input and return a classification vector as an output. Each value in the output refers to one class occurrence, e.g. the length of the output vector is $n$ where $n$ is the number of classes. \zk{FC} layers are not so hard to train to use non-linear combinations of features in input which is widely used whereas the combinations of high-level features are the things we are looking for. For example, if we are looking for a platypus, the last layer output will have high values in the neurons that represent things like a duck-like snout, four legs, flat tail or a calcaneous spur; if we are looking for a jelly, we will most probably not be interested in any of these features. 
+
+Using popular \textit{softmax} classifier\footnote{Softmax transforms a vector of real-valued values to a vector of values between zero and one that sum to one.}, the output is a vector of probabilities representing each class. Other classifiers like \zk{SVM} can also be used. 
+
+% non-linear combinations of high level features
 
 \section{Architectures of convolutional neural networks}
 \label{cnn-architectures}
