@@ -185,5 +185,5 @@ if __name__ == '__main__':
           validationSteps=args.validation_steps,
           imMaxDim=args.im_max_dim,
           imMinDim=args.im_min_dim,
-          bacbone=args.backbone,
+          backbone=args.backbone,
           flags=args.flags)
