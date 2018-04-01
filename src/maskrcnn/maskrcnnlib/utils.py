@@ -379,10 +379,11 @@ class Dataset(object):
         # TODO: drop self.classes and use self.class_info
         a = glob.glob(os.path.join(os.path.split(info['path'])[0], '*.png'))
         try:
-            if len(a[0]) == 2:
-                maskImage = skimage.io.imread(a[0])
+            loadedImage = skimage.io.imread(a[0])
+            if len(np.shape(loadedImage)) == 2:
+                maskImage = loadedImage
             else:
-                maskImage = skimage.io.imread(a[0])[:, :, 0]
+                maskImage = loadedImage[:, :, 0]
         except:
             return None, None, 1
         mask = np.zeros([maskImage.shape[0], maskImage.shape[1], 1])
@@ -393,10 +394,11 @@ class Dataset(object):
         for i in range(1, len(a)):
             np.append(class_ids, self.classes[a[i].split('-')[-2]])
             try:
-                if len(a[i]) == 2:
-                    maskAppend[:, :, 0] = skimage.io.imread(a[i])
+                loadedImage = skimage.io.imread(a[0])
+                if len(np.shape(loadedImage)) == 2:
+                    maskAppend[:, :, 0] = loadedImage
                 else:
-                    maskAppend[:, :, 0] = skimage.io.imread(a[i])[:, :, 0]
+                    maskAppend[:, :, 0] = loadedImage[:, :, 0]
             except:
                 return None, None, 1
             np.concatenate((mask, maskAppend), 2)
