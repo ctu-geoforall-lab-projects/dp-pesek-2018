@@ -162,7 +162,7 @@ if __name__ == '__main__':
     parser.add_argument('--im_min_dim', required=False,
                         default=256, type=int,
                         help='Maximum length of images sides')
-    parser.add_argument('--bacbone', required=False,
+    parser.add_argument('--backbone', required=False,
                         default='resnet101',
                         help='Maximum length of images sides')
     parser.add_argument('--flags', required=False,
