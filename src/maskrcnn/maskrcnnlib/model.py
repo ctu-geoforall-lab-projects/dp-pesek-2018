@@ -17,6 +17,7 @@ import itertools
 import json
 import re
 import logging
+import multiprocessing
 from collections import OrderedDict
 import numpy as np
 import skimage.transform
@@ -2212,7 +2213,7 @@ class MaskRCNN():
         if os.name is 'nt':
             workers = 0
         else:
-            workers = max(self.config.BATCH_SIZE // 2, 2)
+            workers = multiprocessing.cpu_count()
 
         self.keras_model.fit_generator(
             train_generator,
