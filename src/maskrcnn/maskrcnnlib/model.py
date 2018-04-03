@@ -1344,10 +1344,11 @@ def build_detection_targets(rpn_rois, gt_class_ids, gt_boxes, gt_masks, config):
             gt_h = gt_y2 - gt_y1
             # Resize mini mask to size of GT box
             placeholder[gt_y1:gt_y2, gt_x1:gt_x2] = \
-                np.round(skimage.transform.resize(class_mask,
-                                                  (gt_h, gt_w),
-                                                  order=1,
-                                                  mode="reflect")).astype(bool)
+                np.round(skimage.transform.resize(
+                    class_mask,
+                    (gt_h, gt_w),
+                    order=1,
+                    mode="constant")).astype(bool)
             # Place the mini batch in the placeholder
             class_mask = placeholder
 
@@ -1355,7 +1356,7 @@ def build_detection_targets(rpn_rois, gt_class_ids, gt_boxes, gt_masks, config):
         y1, x1, y2, x2 = rois[i].astype(np.int32)
         m = class_mask[y1:y2, x1:x2]
         mask = skimage.transform.resize(m, config.MASK_SHAPE, order=1,
-                                        mode="reflect")
+                                        mode="constant")
         masks[i, :, :, class_id] = mask
 
     return rois, roi_gt_class_ids, bboxes, masks
