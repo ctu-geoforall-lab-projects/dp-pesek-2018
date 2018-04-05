@@ -202,7 +202,7 @@ FUNCTION {format.names.full}
               if$
               t "OTHERS" = % CHANGE mudrd8mz 2005-10-12 because of capitalize 
                 { " et~al." * }
-                { " a " * t * } % CHANGE mudrd8mz 2005-10-12 : between the last and the one before
+                { " and " * t * } % CHANGE mudrd8mz 2005-10-12 : between the last and the one before
               if$
             }
           if$
