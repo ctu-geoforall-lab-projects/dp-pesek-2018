@@ -103,7 +103,8 @@ class ModelConfig(object):
     def __init__(self, name='model', imagesPerGPU=1, GPUcount=1, numClasses=1,
                  trainROIsPerImage=64, stepsPerEpoch=1500,
                  miniMaskShape=None, validationSteps=100,
-                 imageMaxDim=768, imageMinDim=768, backbone='resnet101'):
+                 imageMaxDim=768, imageMinDim=768, backbone='resnet101',
+                 trainBatchNorm=False):
         """Set values of computed attributes."""
 
         # Give the configuration a recognizable name
@@ -146,6 +147,12 @@ class ModelConfig(object):
             [[int(math.ceil(self.IMAGE_SHAPE[0] / stride)),
               int(math.ceil(self.IMAGE_SHAPE[1] / stride))]
              for stride in self.BACKBONE_STRIDES])
+
+        # Train or freeze batch normalization layers
+        #  None: Train BN layers in a normal mode
+        #  False: Freeze BN layers (recommended for small batch size)
+        #  True: Set layer in training mode even when inferencing
+        self.TRAIN_BN = False
 
     def display(self):
         """Display Configuration values."""

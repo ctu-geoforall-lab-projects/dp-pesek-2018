@@ -30,6 +30,12 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
 
     print("Logs: ", logs)
 
+    if 'b' not in flags:
+        trainBatchNorm = False
+    else:
+        # None means train in normal mode but do not force it when inferencing
+        trainBatchNorm = None
+
     # Configurations
     config = ModelConfig(name=modelName,
                          imagesPerGPU=imagesPerGPU,
@@ -41,7 +47,8 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
                          validationSteps=validationSteps,
                          imageMaxDim=imMaxDim,
                          imageMinDim=imMinDim,
-                         backbone=backbone)
+                         backbone=backbone,
+                         trainBatchNorm=trainBatchNorm)
     config.display()
 
     # raise SystemExit(0)

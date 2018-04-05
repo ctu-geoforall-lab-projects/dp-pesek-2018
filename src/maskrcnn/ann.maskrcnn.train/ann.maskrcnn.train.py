@@ -27,6 +27,10 @@
 #%  key: s
 #%  description: Save also a list of images unused for training to logs dir
 #%end
+#%flag
+#%  key: b
+#%  description: Train also batch normalization layers (not recommended for small batches)
+#%end
 #%option G_OPT_M_DIR
 #% key: training_dataset
 #% label: Path to the dataset with images and masks
