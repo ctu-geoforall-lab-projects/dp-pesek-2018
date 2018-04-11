@@ -156,7 +156,7 @@ If LeNet-5 represents the first step of \zk{CNN}s, AlexNet is the first marathon
 \subsection{ZF Net}
 \label{zfnet}
 
-After the success of AlexNet, the number of \zk{CNN}s rapidly competing in the ImageNet Large Scale Visual Recognition Challenge (\zk{ILSVRC}) noticeably increased. Matthew Zeiler and Rob Fergus built an architecture called ZF Net and won the \zk{ILSVRC} 2013 with top 5 error rating of 11.2 \%. 
+After the success of AlexNet, the number of \zk{CNN}s competing in the ImageNet Large Scale Visual Recognition Challenge (\zk{ILSVRC}) noticeably increased. Matthew Zeiler and Rob Fergus built an architecture called ZF Net and won the \zk{ILSVRC} 2013 with top 5 error rating of 11.2 \%. 
 
 ZF Net architecture was based on AlexNet and described in \cite{zf-net}. Because it was believed that the $11 \times 11$ filtering in the first layer of AlexNet skipped too much information, it was replaced with a filter of size $7 \times 7$ with a decreased stride. Besides the parameter tweaking, the size of the middle convolutional layers expanded and the cross-entropy loss function was used as well as stochastic gradient descent with a mini-batch size of 128. The architecture can be seen in figure \ref{fig:zf-net}.
 
