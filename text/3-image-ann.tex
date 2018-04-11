@@ -32,14 +32,43 @@ To get a better view into the field of computer vision, it is recommended to rea
 \section{Classification}
 \label{classification}
 
+The idea is simple, image classification is the task of assigning an image to one class. It means that the user is interested in the result of a guess of what the image contains. A good example are camera traps. When the user is interested in mooses, he can train his model to predict mooses and automatically filter all outputs from the camera trap through this validator.
+
+The idea of training a model to sorting a list of numbers is quite straightforward. Due to differences in pictures of the same object caused by influences mentioned in chapter \ref{computer-vision}, the classification task needs a bit of oblique, but still strictly logical thinking. It needs a data-driven approach. Instead of defining how exactly should moose look like, we feed the model with a bunch of labeled examples. It is the same process as with human children.
+
+However, the number of classes does not have to be equal to one. The user can have a set of multple classes and even his classifier may differ. A popular simple classifier is a binary classifier returning just 1 or 0 (representing True or False/Yes or no) for each class per image, but much more widely used one is a softmax function giving a vector of probabilities for classes. This classifier also somehow more represents the human mind, as we may be unsure if there is a moose or a wapiti in the picture, if it was taken with bad conditions.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/classification.png}
+	\caption[Classification example]{An example of the classification output with softmax function, source: \cite{cnn-classification}}
+      \label{fig:class}
+\end{figure}
+
+The pioneering work in the field of \zk{CNN}-based classification is AlexNet proposed in \cite{cnn-classification} and described in chapter \ref{alexnet}. Another interesting implementation is the CNN-RNN framework for multi-label image classification\footnote{Real world images often contain more features; multi-label image classification tries to predict more than just one of them. The problem of one-label classification can be seen in the seventh image in figure \ref{fig:class}.} proposed in \cite{multi-classification}.
+
 \section{Classification with localization}
 \label{classification-localization}
 
+Although classification with localization is sometimes ignored in similar lists as a subtype of object detection, I believe it is useful to mention it as a step between pure classification and object detection.
+
+Classification was already explained in the previous chapter. Classification with localization uses classification in its one-class form together with bounding boxes (bounding boxes may be multiple). The goal is to draw the bounding box as tight around the object as possible and predict the class of the object, so the user ends up with two outputs:
+\begin{itemize}
+	\item \textbf{Class:} Class label
+	\item \textbf{Bounding box:} Box in the image defined by two coordinates and its width and height.
+\end{itemize}
+
+Because multiple values are returned, this task can be considered as a kind of a regression problem. Outputs from the regression are enough to get a result as the one illustrated in figure \ref{fig:class-loc}. 
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.7\linewidth]{./pictures/class-loc.JPG}
+	\caption[Classification with localization example]{An example of classification with localization}
+      \label{fig:class-loc}
+\end{figure}
+
 \section{Object detection}
 \label{object-detection}
-
-\subsection{R-CNN}
-\label{r-cnn}
 
 % R-CNN, Fast, Faster
 % Single-Shot MultiBox Detector (SSD) You Only Look Once (YOLO)
