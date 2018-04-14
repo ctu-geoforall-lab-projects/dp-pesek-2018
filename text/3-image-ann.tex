@@ -70,7 +70,83 @@ Because multiple values are returned, this task can be considered as a kind of a
 \section{Object detection}
 \label{object-detection}
 
-% R-CNN, Fast, Faster
+Object detection is the classification with localization for multiple classes.
+
+Shared basics with the task from the previous chapter instigate to use the similar approach, but applied on each single class individually. However, this method could be very, very inefficient. Different architectures use different practice to solve it and few of them will be presented here.
+
+\subsection{R-CNN}
+\label{r-cnn}
+
+The Region-based convolutional neural network (\zk{R-CNN}) is a model proposed in 2014 in \cite{rcnn}, which combines region proposals with convolutional neural networks to detect objects in image via bounding boxes. 
+
+The first step of the detection and also an answer to individual passes of classes is to generate category-independent region proposals containing probable objects. Instead of the whole image, those proposals are passed to a deep convolutional neural network which returns a feature vector for each region proposal. The last step is to pass this vector through a set of class-specific linear support vector machines (\zk{SVM}s).
+
+Although diverse methods may be used for the region proposals generation\footnote{In the case of interest see an \textit{objectness measure} \cite{objectness} or \textit{category-independent object proposals with diverse ranking} \cite{cat-independent-proposals}.}, authors of the original R-CNN paper decided to use the selective search. The selective search was proposed in \cite{selective-search} and mixes advantages of both an exhaustive search and segmentation. From the exhaustive search, an effort to catch all possible object locations is used; from segmentation, the idea of following the image structure to guide the sampling process is used. To deal with many diverse image conditions, the selective search uses a variety of complementary image partitions.
+
+After regions proposition, their features must be computed. Because the network works with a fixed-size input, the region must be warped into $227 \times 227$ square RGB image, and then it can be forward propagated through an architecture composed of five convolutional layers and two fully connected layers (a modified architecture of AlexNet, see chapter \ref{alexnet}).
+
+The third step is scoring those extracted features (deciding which class the feature is and whether it is any class at all). This is done for each feature separately using a \zk{SVM} trained for that class.
+
+In general, the bounding box has a large overlap with the background. This is the last problem with which the algorithm has to deal. To improve the localization (make bounding boxes tighter), a linear bounding box regression method proposed in \cite{object-det} is used with one modification - R-CNN applies regression on features computed by the CNN instead of on geometric features computed on the inferred deformable part model (\zk{DPM}) locations.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.9\linewidth]{./pictures/rcnn.png}
+	\caption[R-CNN architecture]{R-CNN architecture schema, source: \cite{rcnn}}
+      \label{fig:rcnn}
+\end{figure}
+
+Although R-CNN outperformed similar architectures\footnote{\cite{rcnn} claims a mean average precision (\zk{mAP}) of $53.3 \%$.}, there were still some shortcomings. The biggest one was the slowness caused mainly by three elements - the forward propagation through \zk{CNN} (each region of every image must be passed separately), by its triplicated training (a network for generating image features, a network for the class decision and the bounding box regression model) and by the generating of bounding box proposals.
+
+\subsection{Fast R-CNN}
+\label{fast-rcnn}
+
+Then, in year 2015, a new architecture came to solve first two of these issues. Because the main reason for a new architecture was to speed-up \zk{R-CNN}, Ross Girshick named his new architecture proposed in \cite{fast-rcnn} simply Fast \zk{R-CNN}. Besides the main purpose to avoid first two issues mentioned in chapter \ref{r-cnn}, it also improves its accuracy\footnote{\cite{fast-rcnn} claims a \zk{mAP} of $66 \%$ on Pascal Visual object classes (\zk{VOC}) 2012. To find more info about the Pascal \zk{VOC} datasets and challenges, please see \cite{voc}.}.
+
+The first issue, the separate forward propagations for all region proposals, was solved by propagating the entire image to obtain a feature map before the region proposition. For each object proposal is from the feature map extracted a fixed-length feature vector by a region of interest \zk{RoI} pooling layer.
+
+The \zk{RoI} pooling layer can be seen as an one-level spatial pyramid pooling layer, a max pooling-based downsampling algorithm proposed in \cite{spp}. Its purpose is to decompose separately each valid \zk{RoI} into a fixed size $7 \times 7$ feature map. The decomposition is made by quantization each \zk{RoI} to the rounded discrete grid which is filled using max pooling on the corresponding kernel of the feature map.
+
+These feature vectors are inputs for a set of \zk{FC} layers. This propagation is followed by the last, branched step, where two different outputs are obtained depending on the last layer - class probabilities from a softmax function and a bounding box defined by 4 values from a regressor.
+
+There can be seen also a solution of the second problem named in chapter \ref{r-cnn}. Instead of three separate models, all steps are joint into only one model by appending classification (using a softmax layer instead of a separate \zk{SVM}) and bounding box regression as parallel layers to the end of the model.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.9\linewidth]{./pictures/fastrcnn.png}
+	\caption[Fast R-CNN architecture]{Fast R-CNN architecture schema, source: \cite{fast-rcnn}}
+      \label{fig:fast-rcnn}
+\end{figure}
+
+There can be raised a question whether is the \zk{SVM} replacement with the softmax layer as accurate as the original approach. According to tests performed in \cite{fast-rcnn}, the softmax layer is even slightly outperforming \zk{SVM} by 0.1 to 0.8 \zk{mAP} points depending on the depth of the network\footnote{Different models were tried. Suprisingly, with deeper network, smaller \zk{mAP} difference was noticed.}.
+
+\subsection{Faster R-CNN}
+\label{faster-rcnn}
+
+The third speed issue mentioned in chapter \ref{r-cnn}, the region proposer based on the selective search, was solved in year 2016 in an architecture imaginatively named Faster \zk{R-CNN}, proposed in \cite{faster-rcnn}.
+
+Microsoft Research team found that the feature map computed in the first part of Fast \zk{R-CNN} can be used to generate region proposals instead of using slower selective search algorithm. Authors did it by by including Region Proposal Network \zk{RPN} after the feature maps extraction of Fast R-CNN.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.5\linewidth]{./pictures/fasterrcnn-anchors.png}
+	\caption[Region proposal network]{\zk{RPN} schema, source: \cite{faster-rcnn}}
+      \label{fig:rpn}
+\end{figure}
+
+\zk{RPN} approach is different than the ones used in other architectures. Instead of pyramids of images or filters, \zk{RPN} uses anchor boxes - a set of rectangular bounding boxes proposals and scores created by sliding a spatial window over the entire feature map. The sliding window is a $n \times n$ fully convolutional network. The anchor boxes are defined by a scale and aspect ratio, so they are of different shapes. Powerful attributes of anchor boxes are that they are translation-invariant and multi-scale, which concludes also into a reduction of the model size.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.55\linewidth]{./pictures/fasterrcnn.png}
+	\caption[Faster R-CNN architecture]{Faster \zk{R-CNN} architecture schema, source: \cite{faster-rcnn}}
+      \label{fig:faster-rcnn}
+\end{figure}
+
+As can be seen in figure \ref{fig:faster-rcnn}, the training scheme alternates between training (or fine-tuning) for the region proposition and for object detection. This approach with shared convolutional features quickly converges.
+
+Besides the speed improvement, Faster \zk{R-CNN} improves also the accuracy. \cite{faster-rcnn} claims a \zk{mAP} of $73.2 \%$ on Pascal \zk{VOC} 2007 and of $70.4 \%$ on Pascal \zk{VOC} 2012.
+
 % Single-Shot MultiBox Detector (SSD) You Only Look Once (YOLO)
 
 \section{Semantic segmentation}
