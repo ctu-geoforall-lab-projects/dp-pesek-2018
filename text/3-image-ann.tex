@@ -5,7 +5,7 @@ A paper Visualizing and Understanding Convolutional Networks by Matthew D. Zeile
 
 I tried to disperse such clouds a bit in the previous chapter, but now I would like to focus on another undertone connected with those statements. On their applications in the computer vision.
 
-Almost everything mentioned in chapter \ref{cnn} was already tied to the computer vision. The following text will briefly describe the field of computer vision itself and then introduce few tasks in that field connected with the topic of the thesis. In each task, few \zk{CNN} models will be mentioned. This text structure was chosen also to depict the models evolution concluding in the one selected for the practical part of this thesis - an implementation into GRASS GIS.
+Almost everything mentioned in chapter \ref{cnn} was already tied to the computer vision. The following text will briefly describe the field of computer vision itself and then introduce few tasks in that field connected with the topic of the thesis. In each task, the models that were considered during the research for the practical part of this thesis - an implementation into GRASS GIS - will be mentioned. Models are also mentioned and described to depict the models evolution concluding in the selected one.
 
 % different sizes
 
@@ -147,15 +147,110 @@ As can be seen in figure \ref{fig:faster-rcnn}, the training scheme alternates b
 
 Besides the speed improvement, Faster \zk{R-CNN} improves also the accuracy. \cite{faster-rcnn} claims a \zk{mAP} of $73.2 \%$ on Pascal \zk{VOC} 2007 and of $70.4 \%$ on Pascal \zk{VOC} 2012.
 
-% Single-Shot MultiBox Detector (SSD) You Only Look Once (YOLO)
+% TODO: Single-Shot MultiBox Detector (SSD) You Only Look Once (YOLO)
 
 \section{Semantic segmentation}
 \label{semantic-segmentation}
 
-% CNN
+Semantic segmentation is a labelling of each pixel in an image to a certain class without differentiating between instances of objects.
+
+The first conception in our minds is to slide the kernel across an entire image and classify each pixel individually. However, I think that everyone surmises that this conception is not very efficient.
+
+Two terms are connected with semantic segmentation, \textit{encoder} and \textit{decoder}. While the encoder is a classification network as one of these described in chapter \ref{cnn-architectures}, the decoder is a network projecting a lower resolution (a feature map) to a higher one (pixel space of the original image size), e.g. the task of the decoder is to recover the spatial information lost in the encoder. Different versions of decoders were proposed.
+
+\subsection{Fully convolutional network}
+\label{fcns}
+
+The Fully convolutional network (\zk{FCN}) was proposed by Jonathan Long and the UC Berkeley team in 2015 in \cite{fcns}.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/fcns.png}
+	\caption[Fully convolutional network]{Semantic segmentation with \zk{FCN} schema, source: \cite{fcns}}
+      \label{fig:fcns}
+\end{figure}
+
+Imagine for example VGG-16 as the backbone architecture, but the same process can be applied for any other classification architecture. Following the approach of \cite{fcns}, cut off the last classification layer and convert the fully connected layers into convolutional ones. $1 \times 1$ convolution was appended to predict scores for each class. 
+
+Everything must be then passed through the decoder; the decoder is here represented by a backward convolution, by a \textit{deconvolution}. Deconvolution consists of upsampling using a bilinear interpolation. With a few of deconvolutional layers, the network can learn even a nonlinear upsampling. When using more layers, it is useful to fuse the output of each layer with predictions computed in the backbone layer with corresponding resolution using similar bypass (skip connections) as that described in chapter \ref{resnet}.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=\linewidth]{./pictures/fcns-bypass.png}
+	\caption[Bypass in Fully convolutional network]{\zk{FCN} skip connections schema; only pooling and prediction layers are shown, source: \cite{fcns}}
+      \label{fig:fcns-bypass}
+\end{figure}
+
+% segnet, fully convolutional densenet 
 
 \section{Instance segmentation}
 \label{instance-segmentation}
+
+Instance segmentation can be seen as a combination of object detection and semantic segmentation; the task is in detecting all instances of different objects and marking their pixels. In other words, the difference between semantic segmentation and instance segmentation is that instance segmentation allows to mark two objects of the same class separately.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.8\linewidth]{./pictures/instance-segmentation.png}
+	\caption[Instance segmentation example]{Instance segmentation example, source: \cite{mask-rcnn}}
+      \label{fig:instance-segmentation}
+\end{figure}
+
+\subsection{Mask R-CNN}
+\label{mask-rcnn}
+
+So we had \zk{R-CNN}, Fast \zk{R-CNN} and Faster \zk{R-CNN}. What could be the next step? The first answer that comes to your mind is wrong - instead of expected \textit{The Fastest \zk{R-CNN}}, the Mask \zk{R-CNN} was proposed in year 2017 by Facebook AI Research \zk{FAIR} in \cite{mask-rcnn}.
+
+\zk{FAIR} stood in a front of another question. According to \cite{faster-rcnn}, Faster R-CNN outperformed most of their concurrents in the field of object detection. But it was still unusable for some users looking for a semantic segmentation neural network. They had a powerful network for object detection, so the question was: Is there any way to use the current network for the semantic segmentation?
+
+Obviously, the answer was \textit{yes}. But instead of the semantic segmentation, they proposed more advanced approach, the instance segmentation. To implement the instance segmentation with sufficient accuracy, there was a need for some changes in the architecture of Faster \zk{R-CNN}. Following the original terminology from \cite{mask-rcnn}, in the following part, I will distinguish between the backbone architecture for feature extraction and the head architecture for classification, bounding box regression and mask prediction. Those will be described in following parts of this chapter along with an extra focus on a RoIAlign, a new approach in the \zk{RoI} generation.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.4\linewidth]{./pictures/maskrcnn.png}
+	\caption[Mask R-CNN architecture]{Mask \zk{R-CNN} architecture schema, source: \cite{mask-rcnn}}
+      \label{fig:mask-rcnn}
+\end{figure}
+
+\subsubsection{Backbone architecture}
+\label{backbone}
+
+For the backbone architecture, more models can be used, but in the original paper \cite{mask-rcnn}, ResNet was used. ResNet was already described in chapter \ref{resnet}.
+
+Moreover, authors experimented also with ResNet extended by a feature pyramid network (\zk{FPN}), a top-down architecture with skip connections (in the original paper called \textit{lateral connections}) developed for building high-level semantic feature maps at different scales proposed in \cite{fpn}.
+
+\zk{FPN} uses the fact that by subsampling, we obtain a different spatial resolution feature hierarchy with multi-scale, pyramidal shape. To achieve strong semantics at all scales, \zk{FPN} uses bottom-up, top-down pathways and skip connections to create predictions independently on each pyramid level. The feature hierarchy is created by propagating an image through the convolutional network (bottom-up pathway). There are stacks of layers producing feature maps of the same size; they are thought of being in the same stage. One level of the \zk{FPN} is created from output of the last layer of each stage except of the first stage due to its memory claims. The top-down pathway is done by upsampling feature maps from higher levels by a factor of 2 and using nearest neighbour upsampling, and then enhancing them via skip connections with features from the bottom-up pathway as can be seen in figure \ref{fig:fpn}.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.4\linewidth]{./pictures/top-down.png}
+	\caption[Feature pyramid network]{The \zk{FPN} schema, source: \cite{fpn}}
+      \label{fig:fpn}
+\end{figure}
+
+\subsubsection{Head architecture}
+\label{head}
+
+In the head architecture, there was the most important change to allow the instance segmentation - including the mask branch in parallel with branches for the classification and bounding box regression. 
+
+The mask branch is a pixel-to-pixel \zk{FCN} predicting a mask individually for each \zk{RoI}, where mask is a binary matrix of ones (object location) and zeros (elsewhere).
+
+In figure \ref{fig:head}, we can see two implementations of the head architecture. The left one is based on ResNet-C4 (4 stage ResNet) and extends it with the compute intensive fifth stage, the right one is based on \zk{FPN} which already includes the fifth stage. In these implementations, the last convolution is $1 \times 1$ and the other ones are $3 \times 3$ and are the ones with preserved shapes; deconvolutions are $2 \times 2$ with stride 2 and increase shapes. 
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.7\linewidth]{./pictures/maskrcnn-head.png}
+	\caption[Mask R-CNN head architecture]{Different Mask \zk{R-CNN} head architectures schema, source: \cite{mask-rcnn}}
+      \label{fig:head}
+\end{figure}
+
+\subsubsection{RoIAlign}
+\label{roialign}
+
+In figure \ref{fig:mask-rcnn}, we can see a RoIAlign layer instead of Fast \zk{R-CNN} \zk{RoI} pooling from figure \ref{fig:fast-rcnn}.
+
+This change was needed because of spatial inaccuracy of \zk{RoI} pooling due to the fact that it was not intended to be used for a pixel-to-pixel alignment. This inaccuracy is caused by quantizations and roundings and RoIAlign avoids it simply by skipping the rounding. To compute the value of the input, a bilinear interpolation at regular sampled locations (usually 4) is used.
+
+According to \cite{mask-rcnn}, RoiAlign improved Mask R-CNN mask accuracy by relative 10 \% to 50 \%.
 
 % Mask R-CNN
 
