@@ -14,7 +14,7 @@
 #############################################################################
 
 #%module
-#% description: Train your Mask R-CNN network
+#% description: Detect features in images using a Mask R-CNN model
 #% keyword: ann
 #% keyword: vector
 #% keyword: raster
@@ -54,7 +54,7 @@
 #%option
 #% key: output_type
 #% type: string
-#% label: Type of output (TODO: point output)
+#% label: Type of output
 #% options: area, point
 #% answer: area
 #% required: no

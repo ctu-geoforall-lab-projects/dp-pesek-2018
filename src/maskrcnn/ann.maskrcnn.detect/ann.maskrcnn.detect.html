@@ -1,0 +1,39 @@
+<h2>DESCRIPTION</h2>
+
+<em>ann.maskrcnn.detect</em> allows user to use a Mask R-CNN model to detect
+features in georeferenced files. Files must be in one directory and must be
+georeferenced externally by an <em>.aux.xml</em> file.
+
+<h2>NOTES</h2>
+
+<p>
+When detecting, you can use new names of classes. Classes in the model are not
+referenced by their name, but by their order. It means that if the model was
+trained with classes <em>corn,rice</em> and you use
+<em>ann.maskrcnn.detect</em> with classes <em>zea,oryza</em>, zea areas will
+present areas detected as corn and oryza areas will present areas detected as
+rice.
+
+<h2>EXAMPLES</h2>
+
+<h3>Detect buildings and lakes and import them as areas</h3>
+
+<div class="code"><pre>
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=jpg
+</pre></div>
+
+<h3>Detect cottages and plattenbaus and import them as points</h3>
+
+<div class="code"><pre>
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=cottages,plattenbaus model=/home/user/Documents/logs/mask_rcnn_houses_0100.h5 images_format=png output_type=point
+</pre></div>
+
+<h2>SEE ALSO</h2>
+
+<em>
+    <a href="ann.maskrcnn.train.html">ann.maskrcnn.train</a>
+</em>
+
+<h2>AUTHORS</h2>
+
+Ondrej Pesek

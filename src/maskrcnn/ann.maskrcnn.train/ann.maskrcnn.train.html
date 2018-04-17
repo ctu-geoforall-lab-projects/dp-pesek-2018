@@ -1,10 +1,10 @@
 <h2>DESCRIPTION</h2>
 
 <em>ann.maskrcnn.train</em> allows user to train a Mask R-CNN model on his own
-dataset.
+dataset. The dataset has to be prepared in a predefined structure.
 
 <h3>DATASET STRUCTURE</h3>
-
+<p>
 Training dataset should be in the following structure:
 
 <p>
@@ -28,7 +28,22 @@ dataset-directory
      </ul>
 
 <p>
-For example:
+The described structure of directories is required. Pictures must be *.jpg
+files with 3 channels (for example RGB), masks must be *.png files consisting
+of 255s (object instance) and 0s (elsewhere). A mask file for each instance of
+object should be provided separately distinguished by the suffix number.
+
+<h2>NOTES</h2>
+<p>
+Epochs are divided into three segments. Firstly training layers 5+, then
+fine-tuning layers 4+ and the last segment is fine-tuning the whole
+architecture. Ending number of epoch is shown for your segment, not for
+the whole training.
+
+<h2>EXAMPLES</h2>
+
+<p>
+Dataset for examples:
 
 <p>
 crops
@@ -40,7 +55,7 @@ crops
           <li>000000-corn-1.png</li>
           <li>...</li>
          </ul>
-          </li>
+        </li>
         <li>000001
          <ul>
             <li>000001.jpg</li>
@@ -48,6 +63,60 @@ crops
             <li>000001-rice-0.png</li>
             <li>...</li>
          </ul>
+        </li>
+     </ul>
+
+
+<h3>Training from scratch</h3>
+<p>
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
+</pre></div>
+After default number of epochs we will get a model where the first class is
+trained to detect corn fields and the second one to detect rice fields.
+
+<p>
+If we use the command with reversed classes order, we will get a model where
+the first class is trained to detect rice fields and the second one to detect
+corn fields.
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
+</pre></div>
+
+<p>
+The name of the model does not have to be the same as the dataset folder, but
+should be referring to the task of the dataset. A good name for this one
+(referring also to the order of classes) could be also this one:
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
+</pre></div>
+
+<h3>Training from a pretrained model</h3>
+<p>
+We can use a pretrained model to make our training faster. It is necessary for
+the model to be trained on the same channels and similar features, but it does
+not have to be the same ones (e.g. model trained on swimming pools in maps can
+be used for a training on buildings in maps).
+
+<p>
+A model trained on different classes.
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
+</pre></div>
+
+<p>
+A model trained on the same classes.
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
+</pre></div>
+
+<h3>Fine-tuning a model</h3>
+<p>
+It is also possible to stop your training and then continue. To continue in
+the training, just use the last saved epoch as a pretrained model.
+<div class="code"><pre>
+ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
+</pre></div>
 
 <h2>SEE ALSO</h2>
 

@@ -144,7 +144,7 @@
 #% description: Images will be resized to have their longest side of this size (has to be a multiple of 256)
 #% required: no
 #% multiple: no
-#% answer: 2560
+#% answer: 1280
 #% guisection: Training parameters
 #%end
 #%option
