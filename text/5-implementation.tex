@@ -1,5 +1,36 @@
 \chapter{Implementation}
 \label{implementation}
 
+Mask \zk{R-CNN} tools created for the practical part of the thesis consist of two modules. \verb|ann.maskrcnn.train| allows user to train a Mask R-CNN model on his own dataset, \verb|ann.maskrcnn.detect| allows him to use that model to detect features in georeferenced files. 
+
+Along with these modules, a library of Mask \zk{R-CNN} tools was prepared. This library was heavily based on a Python implementation of Mask \zk{R-CNN} written by Waleed Abdulla from Matterport, Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published their implementation under the MIT License \cite{mit}. The MIT License is a license granting the permission to use the code, copy it, modify it, publish and even to sell it free of charge and is compatible with GNU General Public License 2 (or newer) \cite{gplv2} of GRASS GIS. Scripts in the library based on Abdulla's code are also under the MIT License and moreover, Waleed Abdulla himself agreed with the usage and modifications of his code for purposes of the GRASS GIS usage. The Matterport, Inc. Mask \zk{R-CNN} implementation can be found in their github repository\footnote{\url{https://github.com/matterport/Mask\_RCNN}}.
+
+% TODO: Tensorflow and Keras usage
+
+The following text will briefly describe the structure of the mentioned modules together with their workflow. Because aspects of the Mask \zk{R-CNN} architecture were already mentioned in chapter \ref{mask-rcnn}, this facet will be a bit overshadowed and the main focus will be given to the code implementation. The library will be also introduced altogether with notes on my modifications connected with this thesis to distinguish them from Abdulla's code.
+
+\section{Mask R-CNN library}
+\label{library}
+
+The library consists of five files:
+\begin{itemize}
+	\item \verb|config.py|: The configuration file for the model. 
+	 \item \verb|model.py|: The core of the Mask \zk{R-CNN} model. Builds up the model.
+	 \item \verb|parallel_model.py|: Contains the ParallelModel class, a subclass of the standard Keras model allowing the parallelized computation. This file is in the original state written by Waleed Abdulla without any modification.
+	 \item \verb|utils.py|: Utilities for the model. Utilities are box overlaps computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the Dataset class loading and parsing images in the dataset.
+	 \item \verb|visualize.py|: The file providing visualization tools for the detection. The most important part is saving detected objects as raster files.
+\end{itemize}
+
+\subsection{Configuration file}
+\label{config}
+
+
+
+\section{ann.maskrcnn.train}
+\label{train-module}
+
+\section{ann.maskrcnn.detect}
+\label{detect-module}
+
 \section{License}
 \label{license}
