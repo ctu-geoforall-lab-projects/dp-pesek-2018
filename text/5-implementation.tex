@@ -14,17 +14,19 @@ The following text will briefly describe the structure of the mentioned modules 
 
 The library consists of five files:
 \begin{itemize}
-	\item \verb|config.py|: The configuration file for the model. 
+	 \item \verb|config.py|: The configuration file for the model. 
 	 \item \verb|model.py|: The core of the Mask \zk{R-CNN} model. Builds up the model.
 	 \item \verb|parallel_model.py|: Contains the ParallelModel class, a subclass of the standard Keras model allowing the parallelized computation. This file is in the original state written by Waleed Abdulla without any modification.
 	 \item \verb|utils.py|: Utilities for the model. Utilities are box overlaps computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the Dataset class loading and parsing images in the dataset.
 	 \item \verb|visualize.py|: The file providing visualization tools for the detection. The most important part is saving detected objects as raster files.
 \end{itemize}
 
-\subsection{Configuration file}
+\subsection{config.py}
 \label{config}
 
+In the Matterport implementation, \verb|config.py| is the configuration class setting model attributes like the learning rate, \zk{RPN} anchor scales and aspect ratios (desribed in chapter \ref{faster-rcnn}). It is recommended not to use this class directly but to subclass it; in the subclassed class, user should override model attributes to fit his future model.
 
+Instead of overriding the \verb|ModelConfig| class, I implemented an initialization method. The \verb|__init__| method is automatically called when a class object is being constructed and allows to construct it in a specific state; in \verb|ModelConfig|, \verb|__init__| sets model attributes either to a default or a user defined state. The attribute value pass is made through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| modules.
 
 \section{ann.maskrcnn.train}
 \label{train-module}
