@@ -20,6 +20,7 @@ import numpy as np
 class ModelConfig(object):
     """
     Base configuration class.
+    Written by Waleed Abdulla (Matterport, Inc.)
     """
 
     # NOT RECOMMENDED TO MODIFY:
@@ -105,7 +106,8 @@ class ModelConfig(object):
                  miniMaskShape=None, validationSteps=100,
                  imageMaxDim=768, imageMinDim=768, backbone='resnet101',
                  trainBatchNorm=False):
-        """Set values of computed attributes."""
+        """Set values of attributes.
+        Written by Ondrej Pesek"""
 
         # Give the configuration a recognizable name
         self.NAME = name
@@ -152,7 +154,7 @@ class ModelConfig(object):
         #  None: Train BN layers in a normal mode
         #  False: Freeze BN layers (recommended for small batch size)
         #  True: Set layer in training mode even when inferencing
-        self.TRAIN_BN = False
+        self.TRAIN_BN = trainBatchNorm
 
     def display(self):
         """Display Configuration values."""
