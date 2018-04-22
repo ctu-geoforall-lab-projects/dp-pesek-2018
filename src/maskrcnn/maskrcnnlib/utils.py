@@ -12,9 +12,7 @@ Modified by Ondrej Pesek
     A little refactoring made
 """
 
-import sys
 import os
-import math
 import random
 import numpy as np
 import tensorflow as tf
@@ -23,8 +21,8 @@ import skimage.color
 import skimage.io
 import skimage.transform
 import urllib.request
-import shutil
 import glob
+import warnings
 
 # URL from which to download the latest COCO trained weights
 # https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5
