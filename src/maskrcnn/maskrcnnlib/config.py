@@ -185,6 +185,10 @@ class ModelConfig(object):
         # Set the backbone architecture
         self.BACKBONE = backbone
 
+        # Input image size
+        self.IMAGE_SHAPE = np.array(
+            [self.IMAGE_MAX_DIM, self.IMAGE_MAX_DIM, 3])
+
         # Compute backbone size from input image size
         self.BACKBONE_SHAPES = np.array(
             [[int(math.ceil(self.IMAGE_SHAPE[0] / stride)),
@@ -196,10 +200,6 @@ class ModelConfig(object):
         #  False: Freeze BN layers (recommended for small batch size)
         #  True: Set layer in training mode even when inferencing
         self.TRAIN_BN = trainBatchNorm
-
-        # Input image size
-        self.IMAGE_SHAPE = np.array(
-            [self.IMAGE_MAX_DIM, self.IMAGE_MAX_DIM, 3])
 
         # Image meta data length
         # See compose_image_meta() for details
