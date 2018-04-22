@@ -36,6 +36,13 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
         # None means train in normal mode but do not force it when inferencing
         trainBatchNorm = None
 
+    if 'n' not in flags:
+        # Resize and pad with zeros to get a square image of
+        # size [max_dim, max_dim].
+        resizeMode = 'square'
+    else:
+        resizeMode = 'none'
+
     # Configurations
     config = ModelConfig(name=modelName,
                          imagesPerGPU=imagesPerGPU,
@@ -48,10 +55,9 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
                          imageMaxDim=imMaxDim,
                          imageMinDim=imMinDim,
                          backbone=backbone,
-                         trainBatchNorm=trainBatchNorm)
+                         trainBatchNorm=trainBatchNorm,
+                         resizeMode=resizeMode)
     config.display()
-
-    # raise SystemExit(0)
 
     # Create model
     model = modellib.MaskRCNN(mode="training", config=config,
@@ -89,16 +95,18 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
 
     evalImagesThreshold = int(testImagesThreshold * .75)
 
+    # augmentation = imgaug/augmenters.Fliplr(0.5)
+
     # Training dataset
     trainImages = images[:evalImagesThreshold]
     dataset_train = utils.Dataset()
-    dataset_train.import_contains(classes, trainImages, modelName)
+    dataset_train.import_contents(classes, trainImages, modelName)
     dataset_train.prepare()
 
     # Validation dataset
     evalImages = images[evalImagesThreshold:testImagesThreshold]
     dataset_val = utils.Dataset()
-    dataset_val.import_contains(classes, evalImages, modelName)
+    dataset_val.import_contents(classes, evalImages, modelName)
     dataset_val.prepare()
 
     # Training - Stage 1
@@ -107,7 +115,7 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
                 epochs=int(epochs / 7),
-                layers='heads')
+                layers='heads')  # augmentation=augmentation
 
     # Training - Stage 2
     # Finetune layers from ResNet stage 4 and up
@@ -115,7 +123,7 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE / 10,  # no dividing orig
                 epochs=int(epochs / 7) * 3,
-                layers='4+')
+                layers='4+')  # augmentation=augmentation
 
     # Training - Stage 3
     # Fine tune all layers
@@ -123,7 +131,7 @@ def train(dataset, modelPath, classes, logs, modelName, imagesPerGPU=1,
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE / 100,  # just 10 original
                 epochs=epochs,
-                layers='all')
+                layers='all')  # augmentation=augmentation
 
 if __name__ == '__main__':
 

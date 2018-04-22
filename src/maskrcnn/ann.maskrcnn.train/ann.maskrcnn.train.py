@@ -31,6 +31,10 @@
 #%  key: b
 #%  description: Train also batch normalization layers (not recommended for small batches)
 #%end
+#%flag
+#%  key: n
+#%  description: No resizing or padding of images (images must be of the same size)
+#%end
 #%option G_OPT_M_DIR
 #% key: training_dataset
 #% label: Path to the dataset with images and masks

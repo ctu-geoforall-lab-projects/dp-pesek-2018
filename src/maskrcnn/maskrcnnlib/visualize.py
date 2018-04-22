@@ -8,6 +8,8 @@
 # WRITTEN:  	2017 Ondrej Pesek
 #                    Based on visualize.py by Waleed Abdulla (Matterport, Inc.)
 #                       https://github.com/matterport/Mask_RCNN
+#                       Written save_instances
+#                       Deleted display_differences, display_table
 # Licensed under the MIT License (see LICENSE for details)
 #
 #############################################################################
@@ -19,10 +21,8 @@ import os
 import numpy as np
 from skimage.measure import find_contours
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import matplotlib.lines as lines
+from matplotlib import patches,  lines
 from matplotlib.patches import Polygon
-# import IPython.display
 
 import utils
 
@@ -68,13 +68,13 @@ def random_colors(N, bright=True):
     return colors
 
 
-def apply_mask(image, mask, color):
+def apply_mask(image, mask, color, alpha=0.5):
     """Apply the given mask to the image.
     """
     for c in range(3):
         image[:, :, c] = np.where(mask == 1,
-                                  np.zeros([image.shape[0],
-                                            image.shape[1]]) + color[c],
+                                  image[:, :, c] *
+                                  (1 - alpha) + alpha * color[c] * 255,
                                   image[:, :, c])
     return image
 
@@ -90,6 +90,8 @@ def save_instances(image, boxes, masks, class_ids, class_names,
     class_names: list of class names of the dataset
     scores: (optional) confidence scores for each box
     figsize: (optional) the size of the image.
+
+    written by Ondrej Pesek
     """
 
     dpi = 80
@@ -448,20 +450,6 @@ def draw_boxes(image, boxes=None, refined_boxes=None,
     ax.imshow(masked_image.astype(np.uint8))
 
 
-# def display_table(table):
-#     """Display values in a table format.
-#     table: an iterable of rows, and each row is an iterable of values.
-#     """
-#     html = ""
-#     for row in table:
-#         row_html = ""
-#         for col in row:
-#             row_html += "<td>{:40}</td>".format(str(col))
-#         html += "<tr>" + row_html + "</tr>"
-#     html = "<table>" + html + "</table>"
-#     IPython.display.display(IPython.display.HTML(html))
-
-
 def display_weight_stats(model):
     """Scans all the weights in the model and returns a list of tuples
     that contain stats about each weight.
@@ -487,4 +475,3 @@ def display_weight_stats(model):
                 "{:+10.4f}".format(w.max()),
                 "{:+9.4f}".format(w.std()),
             ])
-    # display_table(table)
