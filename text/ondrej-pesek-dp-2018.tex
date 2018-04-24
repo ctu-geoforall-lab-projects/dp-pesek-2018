@@ -12,7 +12,7 @@
   oneside,       			% Oboustranný tisk
   pdftex,				    % překlad bude proveden programem 'pdftex' do PDF
   english,
-  draft
+  %draft
 ]{report}       			% dokument třídy 'zpráva'
 
 
@@ -71,11 +71,11 @@
 
 \usepackage{url}
 \usepackage{fancyhdr}
-%\usepackage{algorithmic}
+% \usepackage{algorithmic}
 \usepackage{algorithm}
 \usepackage{algcompatible}
-\renewcommand{\ALG@name}{Pseudokód}% update algorithm name
-\def\ALG@name{Pseudokód}
+\renewcommand{\ALG@name}{Pseudocode}% update algorithm name
+\def\ALG@name{Pseudocode}
 
 \usepackage[
   cvutstyle,          
@@ -103,8 +103,8 @@
    morekeywords={True, False, sqrt}
 }
 
-\renewcommand\lstlistingname{Kód}
-\renewcommand*{\lstlistlistingname}{Seznam ukázek kódu}
+\renewcommand\lstlistingname{Pseudocode}
+\renewcommand*{\lstlistlistingname}{Content of pseudocodes}
 
 \usepackage{dirtree}
 
@@ -223,10 +223,10 @@
 % \seznamtabulek
 
 % vysázení seznamu ukázek kódu
-%\cleardoublepage
-%\thispagestyle{empty}
-% \lstlistoflistings
-%\newpage
+\cleardoublepage
+\thispagestyle{empty}
+ \lstlistoflistings
+\newpage
 
 % jednotlivé kapitoly
 \include{1-intro}

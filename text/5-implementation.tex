@@ -17,7 +17,7 @@ The library consists of five files:
 	 \item \verb|config.py|: The configuration file for the model. 
 	 \item \verb|model.py|: The core of the Mask \zk{R-CNN} model. Builds up the model.
 	 \item \verb|parallel_model.py|: Contains the ParallelModel class, a subclass of the standard Keras model allowing the parallelized computation. This file is in the original state written by Waleed Abdulla without any modification.
-	 \item \verb|utils.py|: Utilities for the model. Utilities are box overlaps computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the Dataset class loading and parsing images in the dataset.
+	 \item \verb|utils.py|: Utilities for the model. Utilities are bounding box intersection over union (\zk{IoU})\footnote{An evaluation value measuring the accuracy of an object detection.} computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the \verb|Dataset| class loading and parsing images in the dataset.
 	 \item \verb|visualize.py|: The file providing visualization tools for the detection. The most important part is saving detected objects as raster files.
 \end{itemize}
 
@@ -26,13 +26,113 @@ The library consists of five files:
 
 In the Matterport implementation, \verb|config.py| is the configuration class setting model attributes like the learning rate, \zk{RPN} anchor scales and aspect ratios (desribed in chapter \ref{faster-rcnn}). It is recommended not to use this class directly but to subclass it; in the subclassed class, user should override model attributes to fit his future model.
 
-Instead of overriding the \verb|ModelConfig| class, I implemented an initialization method. The \verb|__init__| method is automatically called when a class object is being constructed and allows to construct it in a specific state; in \verb|ModelConfig|, \verb|__init__| sets model attributes either to a default or a user defined state. The attribute value pass is made through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| modules.
+Instead of overriding the \verb|ModelConfig| class, I implemented an initialization method. The \verb|__init__| method is automatically called when a class object is being constructed and allows to construct it in a specific state; in the \verb|ModelConfig| class, \verb|__init__| sets model attributes either to a default or a user defined state. The attribute value pass is made through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| modules.
+
+The \verb|ModelConfig| class also contains the \verb|display| method to display the model attributes.
+
+\subsection{model.py}
+\label{model}
+
+TODO
+
+TODO
+
+TODO
+
+\subsection{parallel\_model.py}
+\label{par-model}
+
+TODO?
+
+\subsection{utils.py}
+\label{utils}
+
+The most important part of the \verb|utils.py| file is the \verb|Dataset| class. It is also the only part of the \verb|utils.py| code that was modified for the needs of GRASS GIS usage (the other changes are just minor refactorings).
+
+The \verb|utils.py| also contains a lot of functions. Only few of them will be mentioned as all of them have sufficient documentation in the code.
+
+\subsubsection{Dataset}
+\label{dataset}
+
+The \verb|Dataset| class is the base class for dataset classes and images. It contains informations about them including their names, identifiers and in the case of images also paths to them.
+
+One of the written methods is the one called \verb|import_contents|, which feeds the \verb|Dataset| object with classes and images. The workflow is illustrated in the pseudocode \ref{code:feed}. Inputs for the method are:
+\begin{itemize}
+	\item List of classes names intended to be learned
+	\item List of directories containing training images and masks
+	\item Name of model
+\end{itemize}
+
+The \verb|add_class| method in the pseudocode \ref{code:feed} import a class into the \verb|Dataset| object dictionary altogether with an unique identifier; an important part is containing the background as the first class with identifier 0 (in the pseudocode represented simplifiedly by the \verb|saved_class| dictionary). The \verb|add_images| line is a loop over all images with the predefined extension contained in a given directory importing them altogether with their identifier and path into the \verb|Dataset| object list. 
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={import\_contents}, captionpos=b, label=code:feed, deletekeywords={and},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+classes = list of classes names intended to be learned
+directories = list of directories containing training images and masks
+saved_classes = {'BG': 0}
+for i in classes:
+	add_class
+for directory in directories:
+	add_images
+\end{lstlisting}}
+
+Another important method written for the needs of the GRASS GIS modules is the one called \verb|get_mask|. The workflow of the method is illustrated in the pseudocode \ref{code:get-mask}. It returns an array containing boolean masks (True for the mask, False elsewhere) for each instance in the picture, an array of class identifiers corresponding each instance in the masks array and an error message. If any error happened during the process of masks loading, the load is skipped for all masks in the directory.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={get\_mask}, captionpos=b, label=code:get-mask, deletekeywords={class},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+masks_list = list of mask files within the directory
+first_mask = masks_list[0]
+masks_array = array containing first_mask transformed to bool
+classes_list = list containing class of the first mask
+for new_mask in masks_list[1:]:
+	concat_mask = new_mask transformed to bool
+	concatenate masks_array with concat_mask
+	append class of new_mask into classes_list
+	if any problem happened:
+		return None, None, 1
+return masks_array, classes_list, 0
+\end{lstlisting}}
+
+From the rest of \verb|Dataset| class methods, one more will be mentioned. \verb|prepare|. \verb|prepare| must be called before the usage of the \verb|Dataset| object as it prepares it for use. The preparation is done through setting object parameters like number of classes, classes names and identifiers or number of images. This setting is based on informations got during the \verb|import_contents| call.
+
+\subsubsection{Bounding boxes tools}
+\label{bbox-funcs}
+
+Because bounding boxes are not required to be provided altogether with masks in the training dataset, the function \verb|extract_boxes| is used to compute bounding boxes from masks. The function searches for the first and last horizontal and vertical positions containing mask along all channels and returns them as an array. It means that each pixel of the mask is contained in the returned horizontal-vertical bounding box and it is also as tight as possible.
+
+A function used to compute the \zk{IoU} is called simply \verb|compute_iou|. Its workflow is illustrated in the pseudocode \ref{code:iou}. The handling of no intersection is also implemented in the function, but for better reading, it is not included in the pseudocode.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={compute\_iou}, captionpos=b, label=code:iou, deletekeywords={from, and},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+predicted_box_area = area of predicted box
+groundtruth_box_area = area of given mask
+y1 = the bigger one from the upper coordinates of the predicted and groundtruth bboxes
+y2 = the smaller one from the lower coordinates of the predicted and groundtruth bboxes
+x1 = the bigger one from the left coordinates of the predicted and groundtruth bboxes
+x2 = the smaller one from the right coordinates of the predicted and groundtruth bboxes
+intersection = (x2 - x1) * (y2 - y1)
+union = predicted_box_area + groundtruth_box_area - intersection
+iou = intersection / union
+return iou
+\end{lstlisting}}
+
+With the comparison of groundtruth boxes and the predicted ones is connected also the function \verb|box_refinement|. It computes differences between groundtruth and predicted coordinates of bounding boxes and returned them as the information of the inaccuracy bounding box inaccuracy.
+
+% TODO: non-max suppression
+
+\subsubsection{Anchors tools}
+\label{anchors-func}
+
+
+
+\subsection{visualize.py}
+\label{visualize}
 
 \section{ann.maskrcnn.train}
 \label{train-module}
 
 \section{ann.maskrcnn.detect}
 \label{detect-module}
-
-\section{License}
-\label{license}
