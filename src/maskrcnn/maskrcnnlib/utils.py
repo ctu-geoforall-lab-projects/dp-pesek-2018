@@ -354,7 +354,10 @@ class Dataset(object):
         return self.image_info[image_id]["path"]
 
     def load_image(self, image_id):
-        """Load the specified image and return a [H,W,3] Numpy array.
+        """
+        Load the specified image and return a [H,W,3] Numpy array.
+
+        Modified by Ondrej Pesek to not care about alpha channel
         """
         # Load image
         image = skimage.io.imread(self.image_info[image_id]['path'])
@@ -369,6 +372,8 @@ class Dataset(object):
         :param classes: List of classes names
         :param directories: List of directories containing training images
         :param modelName: Name of model
+
+        Written by Ondrej Pesek
         """
 
         self.classes = {'BG': 0}
@@ -395,6 +400,8 @@ class Dataset(object):
         masks: A bool array of shape [height, width, instance count] with
             a binary mask per instance.
         class_ids: a 1D array of class IDs of the instance masks.
+
+        Written by Ondrej Pesek
         """
 
         info = self.image_info[image_id]
@@ -410,6 +417,7 @@ class Dataset(object):
         except:
             return None, None, 1
         mask = np.zeros([maskImage.shape[0], maskImage.shape[1], 1])
+        # TODO: Take a look to resizing in square, etc. modes
         maskAppend = np.zeros([maskImage.shape[0], maskImage.shape[1], 1])
         class_ids = np.array([self.classes[a[0].split('-')[-2]]])
         mask[:, :, 0] = maskImage.astype(np.bool)
@@ -417,16 +425,17 @@ class Dataset(object):
         for i in range(1, len(a)):
             np.append(class_ids, self.classes[a[i].split('-')[-2]])
             try:
-                loadedImage = skimage.io.imread(a[0]).astype(np.bool)
+                loadedImage = skimage.io.imread(a[0])
                 if len(np.shape(loadedImage)) == 2:
-                    maskAppend[:, :, 0] = loadedImage
+                    maskAppend[:, :, 0] = loadedImage.astype(np.bool)
                 else:
-                    maskAppend[:, :, 0] = loadedImage[:, :, 0]
+                    maskAppend[:, :, 0] = loadedImage[:, :, 0].astype(np.bool)
             except:
                 return None, None, 1
             np.concatenate((mask, maskAppend), 2)
 
         return mask, class_ids, 0
+
 
 
 def resize_image(image, min_dim=None, max_dim=None, min_scale=None,

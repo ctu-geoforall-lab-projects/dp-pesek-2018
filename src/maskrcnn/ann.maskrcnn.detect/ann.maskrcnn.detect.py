@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 ############################################################################
 #
@@ -62,15 +62,18 @@
 
 
 import grass.script as gscript
-from grass.pygrass.utils import get_lib_path
+from grass.script.utils import get_lib_path
 import os
-from subprocess import call
+# from subprocess import call
 from shutil import copyfile
-from random import randint
+# from random import randint
+import skimage.io
+import sys
 
-path = get_lib_path(modname='maskrcnn', libname='py3detect')
+path = get_lib_path(modname='maskrcnn', libname='model')
 if path is None:
     grass.script.fatal('Not able to find the maskrcnn library directory.')
+sys.path.append(path)
 
 ###########################################################
 # unfortunately, it needs python3, see file py3train.py
@@ -79,44 +82,73 @@ if path is None:
 
 def main(options, flags):
 
-    imagesDir = options['images_directory']
-    modelPath = options['model']
-    classes = options['classes']
-    outputType = options['output_type']
-    if options['images_format'][0] != '.':
-        format = '.{}'.format(options['images_format'])
-    else:
-        format = options['images_format']
-    masksDir = options['masks_output']
-    # TODO: Add checkbox to decide whether keep raster masks or not
-    if masksDir == '':
-        masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
+    # import utils
+    import model as modellib
+    import visualize
+    from config import ModelConfig
+
+    try:
+        imagesDir = options['images_directory']
+        modelPath = options['model']
+        classes = options['classes'].split(',')
+        outputType = options['output_type']
+        if options['images_format'][0] != '.':
+            format = '.{}'.format(options['images_format'])
+        else:
+            format = options['images_format']
+        masksDir = options['masks_output']
+        if masksDir == '':
+            masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
+    except KeyError:
+        # GRASS parses keys and values as bytes instead of strings
+        imagesDir = options[b'images_directory'].decode('utf-8')
+        modelPath = options[b'model'].decode('utf-8')
+        classes = options[b'classes'].decode('utf-8').split(',')
+        outputType = options[b'output_type'].decode('utf-8')
+        if options[b'images_format'].decode('utf-8')[0] != '.':
+            format = '.{}'.format(options[b'images_format'].decode('utf-8'))
+        else:
+            format = options[b'images_format'].decode('utf-8')
+        masksDir = options[b'masks_output'].decode('utf-8')
+        if masksDir == '':
+            masksDir = gscript.core.tempfile().decode('utf-8').rsplit(os.sep,
+                                                                      1)[0]
 
     # TODO: (3 different brands in case of lot of classes?)
-    if len(classes.split(',')) > 255:
+    if len(classes) > 255:
         raise SystemExit('Too many classes. Must be less than 256.')
-    classesColours = [0] + [i + 1 for i in range(len(classes.split(',')))]
 
-    if len(set(classes.split(','))) != len(classes.split(',')):
+    classesColours = range(len(classes) + 1)
+
+    if len(set(classes)) != len(classes):
         raise SystemExit('ERROR: Two or more classes have the same name.')
 
-    ###########################################################
-    # unfortunately, redirect everything to python3
-    ###########################################################
-    call('python3 {}{}py3detect.py --images_dir={} --model={} --classes={} '
-         '--masks_dir={} --output_type={} --colours={} '
-         '--format={}'.format(
-            path, os.sep,
-            imagesDir,
-            modelPath,
-            classes,
-            masksDir,
-            outputType,
-            ','.join([str(col) for col in classesColours]),
-            format),
-         shell=True)
+    # Create model object in inference mode.
+    config = ModelConfig(numClasses=len(classes) + 1)
+    model = modellib.MaskRCNN(mode="inference", model_dir=modelPath,
+                              config=config)
 
-    # raise SystemExit(0)
+    model.load_weights(modelPath, by_name=True)
+
+    classesWithBG = ['BG'] + [i for i in classes]
+
+    # TODO: Use the whole list instead of iteration
+    for imageFile in [file for file in next(
+            os.walk(imagesDir))[2] if os.path.splitext(file)[1] == format]:
+        image = skimage.io.imread(os.path.join(imagesDir, imageFile))
+
+        # Run detection
+        results = model.detect([image], verbose=1)
+
+        # Save results
+        for r in results:
+            visualize.save_instances(image, r['rois'], r['masks'],
+                                     r['class_ids'], classesWithBG,
+                                     r['scores'],
+                                     outputDir=masksDir, which=outputType,
+                                     title=imageFile,
+                                     colours=classesColours)
+
     print('Masks detected. Georeferencing masks...')
     masks = list()
     detectedClasses = list()
@@ -125,7 +157,7 @@ def main(options, flags):
                 os.path.splitext(file)[1] != format and format in file)]:
         fileName, refExtension = referencing.split(format)
         # TODO: Join with converting to one loop
-        for i in range(1, len(classes.split(',')) + 1):
+        for i in range(1, len(classes) + 1):
             maskName = fileName + '_' + str(i)
             maskFileName = maskName + '.png'
             if os.path.isfile(os.path.join(masksDir, maskFileName)):
@@ -139,33 +171,44 @@ def main(options, flags):
                                     input=os.path.join(masksDir, maskFileName),
                                     output=maskName,
                                     band=1,  # TODO: 3 if 3 band masks
-                                    overwrite=gscript.overwrite())
+                                    overwrite=gscript.overwrite(),
+                                    quiet=True)
 
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
     for i in detectedClasses:
+        print('Processing {} map...'.format(classes[i] - 1))
         for maskName in masks:
             gscript.run_command('g.region',
-                                raster=maskName)
+                                raster=maskName,
+                                quiet=True)
             gscript.run_command('r.mask',
                                 raster=maskName,
-                                maskcats=classesColours[i])
+                                maskcats=classesColours[i],
+                                quiet=True)
             gscript.run_command('r.to.vect',
                                 's',
                                 input=maskName,
                                 output=maskName,
-                                type=outputType)
+                                type=outputType,
+                                quiet=True)
             gscript.run_command('r.mask',
-                                'r')
+                                'r',
+                                quiet=True)
 
         gscript.run_command('v.patch',
                             input=masksString,
-                            output=classes.split(',')[i - 1])
+                            output=classes[i - 1])
         gscript.run_command('g.remove',
                             'f',
                             name=masksString,
-                            type='vector')
-        # TODO: If masks are temporary, delete them
+                            type='vector',
+                            quiet=True)
+    gscript.run_command('g.remove',
+                        'f',
+                        name=masksString,
+                        type='raster',
+                        quiet=True)
 
 
 def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
