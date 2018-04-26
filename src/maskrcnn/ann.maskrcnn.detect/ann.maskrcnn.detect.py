@@ -177,7 +177,7 @@ def main(options, flags):
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
     for i in detectedClasses:
-        print('Processing {} map...'.format(classes[i] - 1))
+        print('Processing {} map...'.format(classes[i - 1]))
         for maskName in masks:
             gscript.run_command('g.region',
                                 raster=maskName,
