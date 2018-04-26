@@ -123,13 +123,37 @@ With the comparison of groundtruth boxes and the predicted ones is connected als
 
 % TODO: non-max suppression
 
-\subsubsection{Anchors tools}
+\subsubsection{Pyramid anchors tools}
 \label{anchors-func}
 
+The theory of scales and pyramids was already described in chapters \ref{faster-rcnn} and \ref{backbone}. Two functions are connected with the generation of the anchors at different levels of a feature pyramid. The called one is \verb|generate_pyramid_anchors| which loops over scales. In the loop, the \verb|generate_anchors| function is called to generate anchors of ratios for a given set of scales. 
 
+The workflow of the \verb|generate_anchors| function is illustrated in the pseudocode \ref{code:anchors}. It took scales, ratios, feature map shape and anchors and feature map strides as inputs. It uses these inputs to compute heights and widths of different anchors (can be seen in the figure \ref{fig:rpn}) and to compute a grid of anchors centers. This grid together with their heights and widths defines the returned value, anchors.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={generate\_anchors}, captionpos=b, label=code:anchors, deletekeywords={range, from, map, in},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+scales = array of scales
+ratios = array of ratios
+feature_map_shape = [height, width]
+anchor_stride = stride of anchors on the featuremap
+feature_stride = stride of the featuremap
+heights = scales divided by square root of ratios (each by each)
+widths = scales multiplied by square root of ratios (each by each)
+shifts_y = grid from 0 to shape[0] with stride anchor_stride
+shifts_y = shifts_y * feature_stride
+shifts_x = grid from 0 to shape[1] with stride anchor_stride
+shifts_x = shifts_x * feature_stride
+anchors_centers = stack of [shifts_y, shifts_x] in each combination
+anchors_sizes = [heights, widths]
+anchors = [anchors_centers - 0.5 * anchors_sizes, anchors_centers + 0.5 * anchors_sizes]
+return anchors
+\end{lstlisting}}
 
 \subsection{visualize.py}
 \label{visualize}
+
+
 
 \section{ann.maskrcnn.train}
 \label{train-module}
