@@ -82,9 +82,7 @@ sys.path.append(path)
 
 def main(options, flags):
 
-    # import utils
     import model as modellib
-    # import visualize
     from config import ModelConfig
 
     try:

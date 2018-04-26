@@ -135,7 +135,7 @@
 #% key: images_min_dim
 #% type: integer
 #% label: Minimum length of images sides
-#% description: Images will be resized to have their shortest side of this size (has to be a multiple of 256)
+#% description: Images will be resized to have their shortest side of this size (has to be a multiple of 64)
 #% required: no
 #% multiple: no
 #% answer: 256
@@ -145,7 +145,7 @@
 #% key: images_max_dim
 #% type: integer
 #% label: Maximum length of images sides
-#% description: Images will be resized to have their longest side of this size (has to be a multiple of 256)
+#% description: Images will be resized to have their longest side of this size (has to be a multiple of 64)
 #% required: no
 #% multiple: no
 #% answer: 1280
@@ -169,7 +169,7 @@ import os
 import sys
 from random import shuffle
 
-path = get_lib_path(modname='maskrcnn', libname='py3train')
+path = get_lib_path(modname='maskrcnn', libname='model')
 if path is None:
     grass.script.fatal('Not able to find the maskrcnn library directory.')
 sys.path.append(path)
