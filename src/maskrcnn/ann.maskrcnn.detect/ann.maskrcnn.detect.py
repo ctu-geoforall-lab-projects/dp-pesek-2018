@@ -61,30 +61,30 @@
 #%end
 
 
-import grass.script as gscript
-from grass.script.utils import get_lib_path
 import os
-# from subprocess import call
 from shutil import copyfile
-# from random import randint
 import skimage.io
 import sys
+
+import numpy as np
+from skimage.measure import find_contours
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+
+import grass.script as gscript
+from grass.script.utils import get_lib_path
 
 path = get_lib_path(modname='maskrcnn', libname='model')
 if path is None:
     grass.script.fatal('Not able to find the maskrcnn library directory.')
 sys.path.append(path)
 
-###########################################################
-# unfortunately, it needs python3, see file py3train.py
-###########################################################
-
 
 def main(options, flags):
 
     # import utils
     import model as modellib
-    import visualize
+    # import visualize
     from config import ModelConfig
 
     try:
@@ -130,8 +130,6 @@ def main(options, flags):
 
     model.load_weights(modelPath, by_name=True)
 
-    classesWithBG = ['BG'] + [i for i in classes]
-
     # TODO: Use the whole list instead of iteration
     for imageFile in [file for file in next(
             os.walk(imagesDir))[2] if os.path.splitext(file)[1] == format]:
@@ -142,12 +140,16 @@ def main(options, flags):
 
         # Save results
         for r in results:
-            visualize.save_instances(image, r['rois'], r['masks'],
-                                     r['class_ids'], classesWithBG,
-                                     r['scores'],
-                                     outputDir=masksDir, which=outputType,
-                                     title=imageFile,
-                                     colours=classesColours)
+            save_instances(image,
+                           r['rois'],
+                           r['masks'],
+                           r['class_ids'],
+                           # ['BG'] + [i for i in classes],
+                           # r['scores'],
+                           outputDir=masksDir,
+                           which=outputType,
+                           title=imageFile,
+                           colours=classesColours)
 
     print('Masks detected. Georeferencing masks...')
     masks = list()
@@ -215,6 +217,146 @@ def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
                         referencing):
     r2 = os.path.join(masksDir, maskFileName + refExtension)
     copyfile(os.path.join(imagesDir, referencing), r2)
+
+
+def apply_mask(image, mask, colour):
+    """
+    Apply the given mask to the image.
+    """
+    for c in range(3):
+        image[:, :, c] = np.where(mask == 1,
+                                  np.zeros([image.shape[0],
+                                            image.shape[1]]) + colour[c],
+                                  image[:, :, c])
+    return image
+
+
+def save_instances(image,
+                   boxes,
+                   masks,
+                   class_ids,
+                   # class_names,
+                   # scores=None,
+                   title="",
+                   # figsize=(16, 16),
+                   # ax=None,
+                   outputDir='',
+                   which='mask',
+                   colours=None):
+    """
+    boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
+    masks: [height, width, num_instances]
+    class_ids: [num_instances]
+    class_names: list of class names of the dataset
+    scores: (optional) confidence scores for each box
+    figsize: (optional) the size of the image.
+
+    May be extended in the future (commented parameters)
+    """
+
+    dpi = 80
+    height, width = image.shape[:2]
+    figsize = width / float(dpi), height / float(dpi)
+
+    N = boxes.shape[0]
+    if not N:
+        print("\n*** No instances to detect in image {}*** \n".format(title))
+    else:
+        assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
+
+    # Show area outside image boundaries.
+    height, width = image.shape[:2]
+
+    if which == 'area':
+        for classId in set(class_ids):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.axis('off')
+            masked_image = np.zeros(image.shape)
+            index = 0
+
+            for i in range(N):
+                if class_ids[i] != classId:
+                    continue
+                colour = (colours[class_ids[i]],) * 3
+
+                # Bounding box
+                if not np.any(boxes[i]):
+                    # Skip this instance. Has no bbox.
+                    # Likely lost in image cropping.
+                    continue
+
+                # Mask
+                mask = masks[:, :, i]
+                masked_image = apply_mask(masked_image, mask, colour)
+
+                # Mask Polygon
+                # Pad to ensure proper polygons for masks that touch image
+                # edges.
+                padded_mask = np.zeros(
+                    (mask.shape[0] + 2, mask.shape[1] + 2), dtype=np.uint8)
+                padded_mask[1:-1, 1:-1] = mask
+                contours = find_contours(padded_mask, 0.5)
+                for verts in contours:
+                    # Subtract the padding and flip (y, x) to (x, y)
+                    verts = np.fliplr(verts) - 1
+                    p = Polygon(verts, facecolor="none", edgecolor='none')
+                    ax.add_patch(p)
+
+                index = i
+                # TODO: write probabilities
+                # score = scores[i] if scores is not None else None
+
+            ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
+            ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
+            plt.savefig(
+                os.path.join(
+                    outputDir,
+                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
+                dpi=dpi)
+            plt.close()
+    elif which == 'point':
+        for classId in set(class_ids):
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_axes([0, 0, 1, 1])
+            ax.axis('off')
+            masked_image = np.zeros(image.shape)
+            index = 0
+            for i in range(N):
+                if class_ids[i] != classId:
+                    continue
+
+                fig = plt.figure(figsize=figsize)
+                ax = fig.add_axes([0, 0, 1, 1])
+                ax.axis('off')
+
+                # Bounding box
+                if not np.any(boxes[i]):
+                    # Skip this instance. Has no bbox.
+                    # Likely lost in image cropping.
+                    continue
+                y1, x1, y2, x2 = boxes[i]
+                masked_image[int((y1 + y2) / 2)][int((x1 + x2) / 2)] = colours[
+                    class_ids[i]]
+
+                index = i
+
+                # TODO: write probabilities
+                # Label
+                # class_id = class_ids[i]
+                # score = scores[i] if scores is not None else None
+                # label = class_names[class_id]
+
+            ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
+            ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
+
+            plt.savefig(
+                os.path.join(
+                    outputDir,
+                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
+                dpi=dpi)
+            # plt.show()
+            plt.close()
 
 
 if __name__ == "__main__":
