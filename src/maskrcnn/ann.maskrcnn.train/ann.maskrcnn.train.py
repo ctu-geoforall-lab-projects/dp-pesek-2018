@@ -175,11 +175,6 @@ if path is None:
 sys.path.append(path)
 
 
-###########################################################
-# unfortunately, it needs python3, see file py3train.py
-###########################################################
-
-
 def main(options, flags):
 
     from config import ModelConfig
@@ -320,16 +315,18 @@ def main(options, flags):
     # Training - Stage 2
     # Finetune layers from ResNet stage 4 and up
     print("Fine tune Resnet stage 4 and up")
+    # divide the learning rate by 10 if ran out of memory or weights exploded
     model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE / 10,  # no dividing orig
+                learning_rate=config.LEARNING_RATE,
                 epochs=int(epochs / 7) * 3,
                 layers='4+')  # augmentation=augmentation
 
     # Training - Stage 3
     # Fine tune all layers
     print("Fine tune all layers")
+    # divide the learning rate by 100 if ran out of memory or weights exploded
     model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE / 100,  # just 10 original
+                learning_rate=config.LEARNING_RATE / 10,
                 epochs=epochs,
                 layers='all')  # augmentation=augmentation
 
