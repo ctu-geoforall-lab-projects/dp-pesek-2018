@@ -3,7 +3,7 @@
 
 Mask \zk{R-CNN} tools created for the practical part of the thesis consist of two modules. \verb|ann.maskrcnn.train| allows user to train a Mask R-CNN model on his own dataset, \verb|ann.maskrcnn.detect| allows him to use that model to detect features in georeferenced files. 
 
-Along with these modules, a library of Mask \zk{R-CNN} tools was prepared. This library was heavily based on a Python implementation of Mask \zk{R-CNN} written by Waleed Abdulla from Matterport, Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published their implementation under the MIT License \cite{mit}. The MIT License is a license granting the permission to use the code, copy it, modify it, publish and even to sell it free of charge and is compatible with GNU General Public License 2 (or newer) \cite{gplv2} of GRASS GIS. Scripts in the library based on Abdulla's code are also under the MIT License and moreover, Waleed Abdulla himself agreed with the usage and modifications of his code for purposes of the GRASS GIS usage. The Matterport, Inc. Mask \zk{R-CNN} implementation can be found in their github repository\footnote{\url{https://github.com/matterport/Mask\_RCNN}}.
+Along with these modules, a library of Mask \zk{R-CNN} tools was prepared. This library was heavily based on a Python implementation of Mask \zk{R-CNN} written by Waleed Abdulla from Matterport, Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published their implementation under the MIT License \cite{mit}. The MIT License is a license granting the permission to use the code, copy it, modify it, publish and even to sell it free of charge and is compatible with GNU General Public License 2 (or newer) \cite{gplv2} of GRASS GIS. Scripts in the library are also under the MIT License and moreover, Waleed Abdulla himself agreed with the usage and modifications of his code for purposes of the GRASS GIS usage. The Matterport, Inc. Mask \zk{R-CNN} implementation can be found in their github repository\footnote{\url{https://github.com/matterport/Mask\_RCNN}}.
 
 % TODO: Tensorflow and Keras usage
 
@@ -12,14 +12,15 @@ The following text will briefly describe the structure of the mentioned modules 
 \section{Mask R-CNN library}
 \label{library}
 
-The library consists of five files:
+The library consists of four files:
 \begin{itemize}
-	 \item \verb|config.py|: The configuration file for the model. 
-	 \item \verb|model.py|: The core of the Mask \zk{R-CNN} model. Builds up the model.
-	 \item \verb|parallel_model.py|: Contains the ParallelModel class, a subclass of the standard Keras model allowing the parallelized computation. This file is in the original state written by Waleed Abdulla without any modification.
-	 \item \verb|utils.py|: Utilities for the model. Utilities are bounding box intersection over union (\zk{IoU})\footnote{An evaluation value measuring the accuracy of an object detection.} computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the \verb|Dataset| class loading and parsing images in the dataset.
-	 \item \verb|visualize.py|: The file providing visualization tools for the detection. The most important part is saving detected objects as raster files.
+	 \item \verb|config.py|: The configuration file for the model. It will be described in chapter \ref{config}.
+	 \item \verb|model.py|: The core of the Mask \zk{R-CNN} model. It builds up the model. It will be described in chapter \ref{model}.
+	 \item \verb|parallel_model.py|: Contains the ParallelModel class, a subclass of the standard Keras model allowing the parallelized computation. Because this file is in the original state written by Waleed Abdulla without any modification, it will not be described further in the text.
+	 \item \verb|utils.py|: Utilities for the model. Utilities are bounding box intersection over union (\zk{IoU})\footnote{An evaluation value measuring the accuracy of an object detection.} computation, bounding box computation from detected masks and their refinements, image resizing, pyramid anchors and most importantly the \verb|Dataset| class loading and parsing images in the dataset. It will be described in chapter \ref{utils}.
 \end{itemize}
+
+Files \verb|config.py|, \verb|model.py|, and \verb|utils.py| will be described in the following text. Because these files have quite ample inner documentation, only the most important functions will be described.
 
 \subsection{config.py}
 \label{config}
@@ -33,16 +34,221 @@ The \verb|ModelConfig| class also contains the \verb|display| method to display 
 \subsection{model.py}
 \label{model}
 
-TODO
+\verb|model.py| builds up the model using tools and features provided by Keras and TensorFlow. Purposes of classes and functions included in this file are diverse and can be summed as follows:
+\begin{itemize}
+	\item Building the ResNet backbone.
+	\item Building the \zk{RPN}.
+	\item Building \zk{RoI}Align layers.
+	\item Building head architectures.
+	\item Building the complete Mask \zk{R-CNN} model and putting everything together.
+	\item Building detection layers.
+	\item Defining loss functions.
+	\item Miscellaneous functions and utilities connected to the model, like batch normalization (see chapter \ref{norm-layers}), data formatting and generating (building up targets, loading groundtruth masks) or bounding boxes normalization.
+\end{itemize}
 
-TODO
+The file is almost without any modification. The only modifications in compare with Waleed Abdulla's original code were made to handle errors that can raise during masks loading; however, all of the functions and classes from \verb|model.py| described below were written by Waleed Abdulla, to see the modifications please take a look into the code where the authorship is explicitly written.
 
-TODO
+\subsubsection{ResNet backbone}
+\label{model-resnet}
 
-\subsection{parallel\_model.py}
-\label{par-model}
+The essential function for the building of the backbone architecture is the function \verb|resnet_graph|. It literally follows the architecture described in the chapter \ref{resnet}. Its workflow is illustrated in the pseudocode \ref{code:resnet}. Some features were simplified in the pseudocode and it uses two functions \verb|identity_block| and \verb|convolutional block|. These features will be described in the following text.
 
-TODO?
+{\scriptsize
+\begin{lstlisting}[style=python, caption={Building the ResNet backbone architecture}, captionpos=b, label=code:resnet, deletekeywords={from, max},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+layers = intended layers
+layers.add(zero padding 3x3)
+layers.add(convolution 7x7)
+layers.add(batch normalization)
+layers.add(ReLu)
+layers.add(maximum pooling)
+layers.add(convolutional block 64x64x256)
+layers.add(2 identity blocks 64x64x256)
+layers.add(convolutional block 128x128x512)
+layers.add(3 identity blocks 128x128x512)
+layers.add(convolutional block 256x256x1024)
+if architecture == 'resnet50':
+    layers.add(5 identity blocks 256x256x1024)
+elif architecture == 'resnet101':
+    layers.add(22 identity blocks 256x256x1024)
+return layers
+\end{lstlisting}}
+
+The real function does not return complete layers, but it returns them in stages $C1$, $C2$, $C3$, $C4$, $C5$ as can be seen in the pseudocode \ref{code:mrcnn}, where this function is called \verb|build_resnet_backbone|. Each of these stages represents the state of art before each convolutional block addition, which is the last layer before changing dimensions of inputs or outputs. It is important for the \zk{FPN} as was mentioned in the chapter \ref{backbone} and illustrated in the model bulding in the pseudocode \ref{code:mrcnn}.
+
+Functions \verb|identity_block| and \verb|convolutional block| are very similar and both builds the bottleneck block from the figure \ref{fig:bottleneck-block}. The only difference is that the \verb|convolutional block| function also implements a $1 \times 1$ convolution in the shortcut connection as it is necessay to change the shape of the input to the one used in the block. The rest of their implementation is more or less the same and is illustrated in the pseudocode \ref{code:id-block} (the convolution should be applied in the output connection step). It uses filters given to each call of the function in the ResNet pseudocode.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={identity\_block}, captionpos=b, label=code:id-block, deletekeywords={from, input},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+original_input = original_input_tensor
+block = intended block of layers
+block.add(convolution 1x1)
+block.add(batch normalization)
+block.add(ReLu)
+block.add(convolution 3x3)
+block.add(batch normalization)
+block.add(ReLu)
+block.add(convolution 1x1)
+block.add(batch normalization)
+block.connect_outputs(block, original_input)
+block.add(ReLu)
+return block
+\end{lstlisting}}
+
+\subsubsection{RPN}
+\label{model-rpn}
+
+The \zk{RPN} is built by two functions, \verb|build_rpn_model| and \verb|rpn_graph|. However, these functions build only the model, e.g. the sliding window and its behaviour, anchors are generated in \verb|utils.py| as described in \ref{anchors-func}. Even in this splitted approach, it follows the idea from the chapter \ref{faster-rcnn}.
+
+\verb|rpn_graph| takes as inputs a feature map, number of anchors per location and anchor stride and returns anchor class logits, probabilities and bounding boxes refinements. The workflow of \verb|rpn_graph| is illustrated in the pseudocode \ref{code:rpn}. \verb|build_rpn_model| creates a model which firstly feed the \verb|rpn_graph| function and then returns the above mentioned values.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={rpn\_graph}, captionpos=b, label=code:rpn, deletekeywords={from, input, map},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+feature_map = input_feature_map
+logits_number_of_filters = 2 * number of anchors per location
+bbox_number_of_filters = 4 * number of anchors per location
+shared_layer = convolution 3x3 on feature_map
+rpn_class_logits = convolution 1x1 on shared_layer with logits_number_of_filters
+rpn_probabilities = softmax on rpn_class_logits
+rpn_bbox_refinements = convolution 1x1 on shared_layer with bbox_number_of_filters 
+return rpn_class_logits, rpn_probabilities, rpn_bbox_refinements
+\end{lstlisting}}
+
+An important class for the \zk{RPN} is the \verb|ProposalLayer| class. It takes anchor probabilities, bounding box refinements and anchors themselves as inputs, trims them to smaller batches while taking into account top anchors and applies refinements to the anchors boxes.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={ProposalLayer}, captionpos=b, label=code:prop-layer, deletekeywords={from, input, map, for},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+probs = anchor probabilities
+deltas = anchor refinements
+anchors = anchors
+threshold = threshold for probabilities
+top_anchors = names_of_anchors_with_top_probs(probs, how_many=min(6000, len(probs)))
+probs_batch = batch_slice(probs, top_anchors)
+deltas_batch = batch_slice(deltas, top_anchors)
+anchors_batch = batch_slice(anchors, top_anchors)
+boxes = apply_refinements(anchors_batch, deltas_batch)
+proposals = [boxes, probs_batch]
+proposals.apply_threshold(threshold)
+return proposals
+\end{lstlisting}}
+
+\subsubsection{RoIAlign}
+\label{model-roi}
+
+As was described already in the chapter \ref{roialign}, \zk{RoI}Align is more or less the \zk{RoI}Pooling algorithm from the chapter \ref{fast-rcnn} without rounding. The implementation is briefly sketched in the pseudocode \ref{code:roialign}.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={RoIAlign}, captionpos=b, label=code:roialign, deletekeywords={from, input, map},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+pool_shape = shape of regions
+image_shape = shape of the image
+boxes = list of RoIs
+feature_maps = list of feature maps
+h, w = compute_heights_and_widths_boxes(boxes)
+image_area = image_shape[0] * image_shape[1]
+roi_level = minimum(5, 4 + log2(sqrt(h * w) / (224 / sqrt(image_area))))
+pooled = list()
+for level in range(2, 6):
+    roi_level_i = 1 where roi_level == level, 0 elsewhere
+    level_boxes = gather(boxes, indices=roi_level_i)
+    pooled.append(crop_and_resize(original_image=feature_maps[level-2], what_process=level_boxes, shape=pool_shape, method='bilinear'))
+pooled.rearrange_to_match_the_order(boxes)
+return pooled
+\end{lstlisting}}
+
+It implements the \zk{RoI}Align algorithm on multiple levels of the feature pyramid and in its enumerations of the $log2$ equation, it follows the ideas behind enumerations in \cite{fpn} and also applies the five-levels approach. The minimum choosing at line 7 and the loop at line 9 the then follows the idea of using only layers two to five from the chapter \ref{model-mrcnn}.
+
+\subsubsection{Head architectures}
+\label{model-head}
+
+As can be seen in the figure \ref{fig:head} and was already described in the chapter \ref{head}, the head architecture is divided into two sections. The head architecture for bounding boxes and class probabilitiex is handled by the \verb|fpn_classifier_graph| function and the mask architecture by the \verb|build_fpn_mask_graph|.
+
+\verb|fpn_classifier_graph| takes as input \zk{RoI}s, feature maps, pool size and number of classes and returns classifier logits, probabilities and bounding boxes refinements. \verb|build_fpn_mask_graph| takes the same input, but returns only a list of masks.
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={fpn\_classifier\_graph}, captionpos=b, label=code:classifier, deletekeywords={from, input, map, in},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+rois = given regions of interest in normalized coordinates
+feature_maps = list of feature maps from layers P2, P3, P4, P5
+pool_size = height of feature maps to be generated from ROIpooling
+num_classes = number of classes
+layers = list of keras layers
+layers.add(ROIAlign(pool_size, input=[rois, feature_maps]))
+layers.add(convolution pool_size X pool_size)
+layers.add(batch_normalization)
+layers.add(ReLU)
+layers.add(convolution 1x1)
+layers.add(batch_normaliztaion)
+layers.add(ReLU)
+shared = squeeze_to_one_tensor(output of layers)
+class_logits = fully_connected_layer(input=shared, number_of_filters=num_classes)
+probabilities = softmax(class_logits)
+bboxes = fully_connected_layer(input=shared, number_of_filters=4 * num_classes)
+return class_logits, probabilities, bboxes
+\end{lstlisting}}
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={build\_fpn\_maskk\_graph}, captionpos=b, label=code:mask, deletekeywords={from, input, map, in},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+rois = given regions of interest in normalized coordinates
+feature_maps = list of feature maps from layers P2, P3, P4, P5
+pool_size = height of feature maps to be generated from ROIpooling
+num_classes = number of classes
+layers = list of keras layers
+layers.add(ROIAlign(pool_size, input=[rois, feature_maps]))
+layers.add(convolution 3x3)
+layers.add(batch_normalization)
+layers.add(ReLU)
+layers.add(convolution 3x3)
+layers.add(batch_normalization)
+layers.add(ReLU)
+layers.add(convolution 3x3)
+layers.add(batch_normalization)
+layers.add(ReLU)
+layers.add(convolution 3x3)
+layers.add(batch_normalization)
+layers.add(ReLU)
+layers.add(deconvolution 2x2 with strides 2)
+layers.add(convolution 1x1 with sigmoid as an activation function)
+return layers
+\end{lstlisting}}
+
+In the pseudocodes above, a ROIAlign object is added as the first one into layers. This object was sketched in the pseudocode \ref{code:roialign}.
+
+\subsubsection{Mask R-CNN model}
+\label{model-mrcnn}
+
+The centrepiece of the \verb|model.py| file is the \verb|MaskRCNN| class which contains methods to build the entire Mask \zk{R-CNN} model by cobbling together different types of layers and to use it for training or detection.
+
+The workflow of the method \verb|build| is illustrated in the pseudocode \ref{code:mrcnn} and follows the architecture described in the chapter \ref{mask-rcnn}. In the pseudocode, we can see that the head architecture differs a bit in the training and in the detection. It is due to the fact that we need loss values to be computed during the training, so we compute them from detected values and \textit{target} values (values based on known targets from the training dataset).
+
+{\scriptsize
+\begin{lstlisting}[style=python, caption={Mask R-CNN.build}, captionpos=b, label=code:mrcnn, deletekeywords={from},
+backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
+C2, C3, C4, C5 = build_resnet_backbone()
+P5, P4, P3, P2 = build_top_down_fpn_layers(C2, C3, C4, C5)
+anchors = generate_anchors()
+rpn = build_rpn()
+rois = ProposalLayer(rpn, anchors)
+if mode == 'training':
+    ground_truth_values = values from the training dataset
+    bbox, classes = fpn_classifier(rois)
+    target_detection = DetectionTargetLayer(ground_truth_values)
+    mask = fpn_mask(rois from target_detection)
+    loss = loss_functions(target_detection, bbox, classes, mask)
+    model = [bbox, classes, mask, loss]
+else:
+    bbox, classes = fpn_classifier(rois)
+    target_detection = DetectionLayer(bbox, classes)
+    mask = fpn_mask(rois)
+    model = [bbox, classes, mask]
+return model
+\end{lstlisting}}
+
+In the pseudocode, we can see few classes. Although their purposes are quite evident, some of them can be seen in different pseudocodes. The \verb|build_resnet_backbone| was described in the pseudocode \ref{code:resnet}, \verb|build_top_down_fpn_layers| is fairly straightforward process connecting layers as in the chapter \ref{backbone}, \verb|generate_anchors| will be described in \ref{code:anchors}, \verb|build_rpn| can be seen in the pseudocode \ref{code:rpn}, \verb|ProposalLayer| in the pseudocode \ref{code:prop-layer}, \verb|fpn_classifier| represents the \verb|fpn_classifier_graph| from the pseudocode \ref{code:classifier} and \verb|fpn_mask| is \verb|build_fpn_mask_graph| from the pseudocode \ref{code:mask}.
 
 \subsection{utils.py}
 \label{utils}
@@ -72,9 +278,9 @@ classes = list of classes names intended to be learned
 directories = list of directories containing training images and masks
 saved_classes = {'BG': 0}
 for i in classes:
-	add_class
+    add_class
 for directory in directories:
-	add_images
+    add_images
 \end{lstlisting}}
 
 Another important method written for the needs of the GRASS GIS modules is the one called \verb|get_mask|. The workflow of the method is illustrated in the pseudocode \ref{code:get-mask}. It returns an array containing boolean masks (True for the mask, False elsewhere) for each instance in the picture, an array of class identifiers corresponding each instance in the masks array and an error message. If any error happened during the process of masks loading, the load is skipped for all masks in the directory.
@@ -87,11 +293,11 @@ first_mask = masks_list[0]
 masks_array = array containing first_mask transformed to bool
 classes_list = list containing class of the first mask
 for new_mask in masks_list[1:]:
-	concat_mask = new_mask transformed to bool
-	concatenate masks_array with concat_mask
-	append class of new_mask into classes_list
-	if any problem happened:
-		return None, None, 1
+    concat_mask = new_mask transformed to bool
+    concatenate masks_array with concat_mask
+    append class of new_mask into classes_list
+    if any problem happened:
+        return None, None, 1
 return masks_array, classes_list, 0
 \end{lstlisting}}
 
@@ -149,11 +355,6 @@ anchors_sizes = [heights, widths]
 anchors = [anchors_centers - 0.5 * anchors_sizes, anchors_centers + 0.5 * anchors_sizes]
 return anchors
 \end{lstlisting}}
-
-\subsection{visualize.py}
-\label{visualize}
-
-
 
 \section{ann.maskrcnn.train}
 \label{train-module}
