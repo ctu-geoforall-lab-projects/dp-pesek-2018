@@ -220,11 +220,6 @@ def main(options, flags):
             newFlags.update({flag.decode('utf-8'): value})
         flags = newFlags
 
-    if flags['n']:
-        print('je')
-    if not flags['n']:
-        print('ne')
-
     if not flags['b']:
         trainBatchNorm = False
     else:
@@ -304,27 +299,35 @@ def main(options, flags):
     dataset_val.import_contents(classes, evalImages, initialWeights)
     dataset_val.prepare()
 
-    # Training - Stage 1
-    # Adjust epochs and layers as needed
-    print("Training network heads")
-    model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE,
-                epochs=int(epochs / 7),
-                layers='heads')  # augmentation=augmentation
+    if initialWeights:
+        # Training - Stage 1
+        # Adjust epochs and layers as needed
+        print("Training network heads")
+        model.train(dataset_train, dataset_val,
+                    learning_rate=config.LEARNING_RATE,
+                    epochs=int(epochs / 7),
+                    layers='heads')  # augmentation=augmentation
 
-    # Training - Stage 2
-    # Finetune layers from ResNet stage 4 and up
-    print("Fine tune Resnet stage 4 and up")
-    # divide the learning rate by 10 if ran out of memory or weights exploded
-    model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE,
-                epochs=int(epochs / 7) * 3,
-                layers='4+')  # augmentation=augmentation
+        # Training - Stage 2
+        # Finetune layers from ResNet stage 4 and up
+        print("Fine tune Resnet stage 4 and up")
+        # divide the learning rate by 10 if ran out of memory or
+        # if weights exploded
+        model.train(dataset_train, dataset_val,
+                    learning_rate=config.LEARNING_RATE,
+                    epochs=int(epochs / 7) * 3,
+                    layers='4+')  # augmentation=augmentation
 
-    # Training - Stage 3
-    # Fine tune all layers
-    print("Fine tune all layers")
-    # divide the learning rate by 100 if ran out of memory or weights exploded
+        # Training - Stage 3
+        # Fine tune all layers
+        print("Fine tune all layers")
+        # out of if statement
+    else:
+        print("Training all layers")
+        # out of if statement
+
+    # divide the learning rate by 100 if ran out of memory or
+    # if weights exploded
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE / 10,
                 epochs=epochs,
