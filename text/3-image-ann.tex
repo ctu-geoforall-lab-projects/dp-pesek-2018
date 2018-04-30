@@ -73,7 +73,7 @@ practice.
 The idea is simple, image classification is the task of assigning an image to 
 one class. It means that the user is interested in the result of a guess of what 
 the image contains. A good example are camera traps. When the user is interested 
-in mooses, he can train his model to predict mooses and automatically filter all 
+in moose, he can train his model to predict moose and automatically filter all 
 outputs from the camera trap through this validator.
 
 The idea of training a model to sorting a list of numbers is quite 
@@ -85,7 +85,7 @@ feed the model with a bunch of labeled examples. It is the same process as with
 human children.
 
 However, the number of classes does not have to be equal to one. The user can 
-have a set of multple classes and even his classifier may differ. A popular 
+have a set of multiple classes and even his classifier may differ. A popular 
 simple classifier is a binary classifier returning just 1 or 0 (representing 
 True or False/Yes or no) for each class per image, but much more widely used one 
 is a softmax function giving a vector of probabilities for classes. This 
@@ -254,7 +254,7 @@ There can be raised a question whether is the \zk{SVM} replacement with the
 softmax layer as accurate as the original approach. According to tests performed 
 in \cite{fast-rcnn}, the softmax layer is even slightly outperforming \zk{SVM} 
 by 0.1 to 0.8 \zk{mAP} points depending on the depth of the 
-network\footnote{Different models were tried. Suprisingly, with deeper network, 
+network\footnote{Different models were tried. Surprisingly, with deeper network, 
 smaller \zk{mAP} difference was noticed.}.
 
 \subsection{Faster R-CNN}
@@ -266,7 +266,7 @@ imaginatively named Faster \zk{R-CNN}, proposed in \cite{faster-rcnn}.
 
 Microsoft Research team found that the feature map computed in the first part of 
 Fast \zk{R-CNN} can be used to generate region proposals instead of using slower 
-selective search algorithm. Authors did it by by including Region Proposal 
+selective search algorithm. Authors did it by including Region Proposal 
 Network \zk{RPN} after the feature maps extraction of Fast R-CNN.
 
 \begin{figure}[H]
@@ -314,8 +314,8 @@ and classify each pixel individually. However, I think that everyone surmises
 that this conception is not very efficient.
 
 Two terms are connected with semantic segmentation, \textit{encoder} and 
-\textit{decoder}. While the encoder is a classification network as one of these 
-described in chapter \ref{cnn-architectures}, the decoder is a network 
+\textit{decoder}. While the encoder is a classification network as one of those 
+described in the chapter \ref{cnn-architectures}, the decoder is a network 
 projecting a lower resolution (a feature map) to a higher one (pixel space of 
 the original image size), e.g. the task of the decoder is to recover the spatial 
 information lost in the encoder. Different versions of decoders were proposed.
@@ -384,7 +384,7 @@ expected \textit{The Fastest \zk{R-CNN}}, the Mask \zk{R-CNN} was proposed in
 year 2017 by Facebook AI Research \zk{FAIR} in \cite{mask-rcnn}.
 
 \zk{FAIR} stood in a front of another question. According to \cite{faster-rcnn}, 
-Faster R-CNN outperformed most of their concurrents in the field of object 
+Faster R-CNN outperformed most of their competitors in the field of object 
 detection. But it was still unusable for some users looking for a semantic 
 segmentation neural network. They had a powerful network for object detection, 
 so the question was: Is there any way to use the current network for the 
@@ -453,7 +453,7 @@ each \zk{RoI}, where mask is a binary matrix of ones (object location) and zeros
 
 In figure \ref{fig:head}, we can see two implementations of the head 
 architecture. The left one is based on ResNet-C4 (4 stage ResNet) and extends it 
-with the compute intensive fifth stage, the right one is based on \zk{FPN} which 
+with the compute-intensive fifth stage, the right one is based on \zk{FPN} which 
 already includes the fifth stage. In these implementations, the last convolution 
 is $1 \times 1$ and the other ones are $3 \times 3$ and are the ones with 
 preserved shapes; deconvolutions are $2 \times 2$ with stride 2 and increase 

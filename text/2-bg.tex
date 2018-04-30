@@ -16,11 +16,11 @@ holy book of deep learning, \cite{dl}.
 
 If you try to find an introduction to \zk{CNN}s on the internet, you may bump 
 into a common statement that \zk{CNN}s are neuroscience-based deep neural 
-networks using convolution and presumpting the input is an image. It is not 
+networks using convolution and presuming the input is an image. It is not 
 exact. 
 
 Though images are the most common input, according to \cite{dl}, \zk{CNN}s 
-presumpt the input has a grid-like topology; apart from the computer vision, 
+presume the input has a grid-like topology; apart from the computer vision, 
 other applications include  for example natural language processing (as in 
 \cite{cnn-nlp}) or anything representable as a grid-like topology (audio 
 waveform as 1-D grid, RGB images as multichannel 2-D, CT scan as 3-D, etc.). 
@@ -32,10 +32,10 @@ reader can get more mathematical insight about the difference and harmlessness
 of this change from \cite{dl}. 
 
 It is true that \zk{CNN}s are based on a neuroscience. They are inspired by 
-Nobel prize laureates Hubel's and Wiesel's research on mammalian vision systems 
+Nobel prize laureates Hubel and Wiesel's research on mammalian vision systems 
 (firstly cats in \cite{hubel-cats1} and \cite{hubel-cats2}, later monkeys in 
 \cite{hubel-monkeys}). Hubel and Wiesel found that some neurons (sorted in 
-columns) strongly respond to specific to specific edge-like patterns but just a 
+columns) strongly respond to specific edge-like patterns but just a 
 bit to other patterns. 
 
 The eye stimulus on the retina is transferred through the optic nerve and the 
@@ -53,7 +53,7 @@ cells operations are to some extent position and lighting invariant.
 
 While the common approach in image processing of classical \zk{ANN}s is to 
 vectorize the input, \zk{CNN}s emulate the neuroscientific approach outlined in 
-chapter \ref{understanding-cnn} using feature maps (each color channel is a 
+chapter \ref{understanding-cnn} using feature maps (each colour channel is a 
 feature map). \zk{CNN}s profit from the fact that pixels in an image are ordered 
 according to some structure. That allows neurons in layers to be connected just 
 to certain region instead of heavily arduous fully-connected architecture. 
@@ -70,10 +70,10 @@ firstly, what is the convolution?
 In the geomatics field, we very often encounter the term \textit{kernel}. Kernel 
 can be seen as a matrix (or a window) sliding across all the image pixels. The 
 pixels contained in this window are a receptive field. As both the kernel and 
-the receptive field are matrices of the same shape, in each position element 
-wise multiplication is computed and outputed as an output matrix element. 
+the receptive field are matrices of the same shape, in each position element-wise
+multiplication is computed and outputted as an output matrix element. 
 Because after such a filtering, the output matrix contains a 2-D activation map 
-(a map where each position values say with witch probability the requested 
+(a map where each position values say with which probability the requested 
 feature is on that position in the original image), the output is called a 
 \textit{feature map}. Kernels / filters are the subject of training. 
 
@@ -105,8 +105,8 @@ useful also in another one. This simple presumption which works except for for
 example centered special structures allows sharing a set of parameters 
 throughout the whole depth slice. 
 
-Using the parameters from \cite{cnn-classification} as an example, assumpt that 
-the feature map has size $55 \times 55 \times 96$ and we apply it on images of 
+Using the parameters from \cite{cnn-classification} as an example, assume that 
+the feature map has size $55 \times 55 \times 96$ and we apply it to images of 
 size $227 \times 227 \times 3$\footnote{The paper claims that the images were of 
 size $224 \times 224 \times 3$, but it is assumpted that it was either a typo or 
 authors forgot to mention a zero-padding} using kernels of size $11 \times 11 
@@ -120,15 +120,15 @@ An inquiring reader may raise a question: In the chapter name, there is a
 plural. What happens in deeper layers? 
 
 Their input is the previous layer output. Output of the first layer is the 
-feature map of the lowest level features. As was already mentioned, each neuron 
+feature map of the lowest-level features. As was already mentioned, each neuron 
 of the next layer is connected with some local neighbourhood and with everything 
 along the third dimension; and because the third dimension of the output is 
 formed by stack of filters / kernels of the first layer, each second layer 
 neuron is connected to all detected features in some location and its 
 neighbourhood. The result? Output feature map from the second layer contains 
-higher level features (simple combinations of the low level ones, like triangles 
-or squares, simply combinations of some edges, curves, etc.). The next layer 
-will output again higher level features and in the end, we may have very 
+higher-level features (simple combinations of the low-level ones, like triangles 
+or squares; combinations of some edges, curves, etc.). The next layer 
+will output again higher-level features and in the end, we may have very 
 specific features like cars, reflective heliports or art deco swimming pools. 
 This principle is illustrated in figure \ref{fig:deconvnet} using a 
 deconvolutional network, a technique described in chapter \ref{zfnet}.
@@ -154,7 +154,7 @@ called \textit{rectified feature map}.
 \subsection{Pooling layers}
 \label{pooling}
 
-Eventhough the input size reduction might already be included in convolutional 
+Even though the input size reduction might already be included in convolutional 
 layers, it is very common to include another layers with this purpose. Because 
 of this purpose, they are called \textit{pooling layers} or \textit{subsampling 
 layers} (they can do both downsampling or upsampling). 
@@ -233,7 +233,7 @@ non-linear combinations of features in input which is widely used whereas the
 combinations of high-level features are the things we are looking for. For 
 example, if we are looking for a platypus, the last layer output will have high 
 values in the neurons that represent things like a duck-like snout, four legs, 
-flat tail or a calcaneous spur; if we are looking for a jelly, we will most 
+flat tail or a calcaneus spur; if we are looking for a jelly, we will most 
 probably not be interested in any of these features. 
 
 Using popular \textit{softmax} classifier\footnote{Softmax transforms a vector 
@@ -247,20 +247,20 @@ Fully connected layers are sometimes referred to also as \textit{dense layers}.
 \label{cnn-architectures}
 
 It is generally resolved\footnote{Roots of \zk{CNN}s are in the end of eighties, 
-but the breakthrough came in nineties.} that the history of succesful \zk{CNN}s 
+but the breakthrough came in nineties.} that the history of successful \zk{CNN}s 
 started in 1998 when Yann LeCun and his team published the paper Gradient-Based 
 Learning Applied to Document Recognition \cite{lenet5}. Although it is just 
 twenty years, \zk{CNN}s have made tremendous progress. During this period, a 
-plenty of various architectures was proposed, more or less succesful.
+plenty of various architectures was proposed, more or less successful.
 
 Because some background of the \zk{CNN} architectures evolution could help in 
 understanding \zk{CNN} fundamentals and deepens the insight into research and 
-decisions made for this thesis, few of the most influental architectures will be 
+decisions made for this thesis, few of the most influential architectures will be 
 mentioned in the following chapters.
 
 In this chapter, ImageNet Large Scale Visual Recognition Challenge (\zk{ILSVRC}) 
 will be mentioned several times as it is something like a fuel for computer 
-vision progress with which are \zk{CNN}s inseperably connected. For the topic of 
+vision progress with which are \zk{CNN}s inseparably connected. For the topic of 
 this thesis, it should be enough to say that \zk{ILSVRC} is a competition in 
 visual recognition including many diverse tasks, for more informations and 
 results take a look into \cite{ILSVRC} which was used also during writing this 
@@ -311,7 +311,7 @@ the advantage of spatial correlations within the input.
 \subsection{AlexNet} %
 \label{alexnet}
 
-As was mentioned, LeNet-5 became very succesful first step. Nevertheless, until 
+As was mentioned, LeNet-5 became very successful first step. Nevertheless, until 
 2010s, development of \zk{CNN}s was out of the main spotlight. Although there 
 were few important events like Dan Ciresan using GPU neural nets in 2010, the 
 main one happened in 2012, when Alex Krizhevsky came with something like a 
@@ -320,7 +320,7 @@ year, AlexNet won the \zk{ILSVRC}\footnote{AlexNet won it by a great margin with
 top 5 error of 16.4 \% compared to the second place with 26 \%.}.
 
 Krizhevsky benefited from years of progress bringing more computing power and 
-more data to be trained on. This well timed entree allowed him to use a deep 
+more data to be trained on. This well-timed entree allowed him to use a deep 
 architecture containing about sixty millions parameters, \zk{ReLU} layers, 
 overlapping max pooling and dropout\footnote{A technique used to prevent 
 overfitting proposed in \cite{dropout}. Dropout selectively ignore individual 
@@ -529,7 +529,7 @@ convolutions, source: \cite{inception-v2}}
 \subsection{ResNet}
 \label{resnet}
 
-In the above described architectures, a trend of going deeper can be noticed. 
+In the above-described architectures, a trend of going deeper can be noticed. 
 Microsoft Research team noticed it too and in \cite{resnet}, they proposed much 
 deeper architecture than previous ones. This architecture was called ResNet, 
 contained 152 layers and won \zk{ILSVRC} 2015 with an error rate of 3.6 \% 
