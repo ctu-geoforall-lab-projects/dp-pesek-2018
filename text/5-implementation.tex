@@ -3,7 +3,7 @@
 
 Mask \zk{R-CNN} tools created for the practical part of the thesis consist of two modules. \verb|ann.maskrcnn.train| allows user to train a Mask R-CNN model on his own dataset, \verb|ann.maskrcnn.detect| allows him to use that model to detect features in georeferenced files. 
 
-Along with these modules, a library of Mask \zk{R-CNN} tools was prepared. This library was heavily based on a Python implementation of Mask \zk{R-CNN} written by Waleed Abdulla from Matterport, Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published their implementation under the MIT License \cite{mit}. The MIT License is a license granting the permission to use the code, copy it, modify it, publish and even to sell it free of charge and is compatible with GNU General Public License 2 (or newer) \cite{gplv2} of GRASS GIS. Scripts in the library are also under the MIT License and moreover, Waleed Abdulla himself agreed with the usage and modifications of his code for purposes of the GRASS GIS usage. The Matterport, Inc. Mask \zk{R-CNN} implementation can be found in their github repository\footnote{\url{https://github.com/matterport/Mask\_RCNN}}.
+Along with these modules, a library of Mask \zk{R-CNN} tools was prepared. This library was heavily based on a Python implementation of Mask \zk{R-CNN} written by Waleed Abdulla from Matterport, Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published their implementation under the MIT License \cite{mit}. The MIT License is a license granting the permission to use the code, copy it, modify it, publish and even to sell it free of charge and is compatible with GNU General Public License 2 (or newer) \cite{gplv2} of GRASS GIS. Scripts in the library are also under the MIT License and moreover, Waleed Abdulla himself agreed with the usage and modifications of his code for purposes of the GRASS GIS usage. The Matterport, Inc. Mask \zk{R-CNN} implementation can be found in their GitHub repository\footnote{\url{https://github.com/matterport/Mask\_RCNN}}.
 
 % TODO: Tensorflow and Keras usage
 
@@ -25,9 +25,9 @@ Files \verb|config.py|, \verb|model.py|, and \verb|utils.py| will be described i
 \subsection{config.py}
 \label{config}
 
-In the Matterport implementation, \verb|config.py| is the configuration class setting model attributes like the learning rate, \zk{RPN} anchor scales and aspect ratios (desribed in chapter \ref{faster-rcnn}). It is recommended not to use this class directly but to subclass it; in the subclassed class, user should override model attributes to fit his future model.
+In the Matterport implementation, \verb|config.py| is the configuration class setting model attributes like the learning rate, \zk{RPN} anchor scales and aspect ratios (described in the chapter \ref{faster-rcnn}). It is recommended not to use this class directly but to subclass it; in the subclassed class, user should override model attributes to fit his future model.
 
-Instead of overriding the \verb|ModelConfig| class, I implemented an initialization method. The \verb|__init__| method is automatically called when a class object is being constructed and allows to construct it in a specific state; in the \verb|ModelConfig| class, \verb|__init__| sets model attributes either to a default or a user defined state. The attribute value pass is made through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| modules.
+Instead of overriding the \verb|ModelConfig| class, I implemented an initialization method. The \verb|__init__| method is automatically called when a class object is being constructed and allows to construct it in a specific state; in the \verb|ModelConfig| class, \verb|__init__| sets model attributes either to a default or a user-defined state. The attribute value pass is made through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| modules.
 
 The \verb|ModelConfig| class also contains the \verb|display| method to display the model attributes.
 
@@ -43,7 +43,7 @@ The \verb|ModelConfig| class also contains the \verb|display| method to display 
 	\item Building the complete Mask \zk{R-CNN} model and putting everything together.
 	\item Building detection layers.
 	\item Defining loss functions.
-	\item Miscellaneous functions and utilities connected to the model, like batch normalization (see chapter \ref{norm-layers}), data formatting and generating (building up targets, loading groundtruth masks) or bounding boxes normalization.
+	\item Miscellaneous functions and utilities connected to the model, like batch normalization (see chapter \ref{norm-layers}), data formatting and generating (building up targets, loading ground truth masks) or bounding boxes normalization.
 \end{itemize}
 
 The file is almost without any modification. The only modifications in compare with Waleed Abdulla's original code were made to handle errors that can raise during masks loading; however, all of the functions and classes from \verb|model.py| described below were written by Waleed Abdulla, to see the modifications please take a look into the code where the authorship is explicitly written.
@@ -74,7 +74,7 @@ elif architecture == 'resnet101':
 return layers
 \end{lstlisting}}
 
-The real function does not return complete layers, but it returns them in stages $C1$, $C2$, $C3$, $C4$, $C5$ as can be seen in the pseudocode \ref{code:mrcnn}, where this function is called \verb|build_resnet_backbone|. Each of these stages represents the state of art before each convolutional block addition, which is the last layer before changing dimensions of inputs or outputs. It is important for the \zk{FPN} as was mentioned in the chapter \ref{backbone} and illustrated in the model bulding in the pseudocode \ref{code:mrcnn}.
+The real function does not return complete layers, but it returns them in stages $C1$, $C2$, $C3$, $C4$, $C5$ as can be seen in the pseudocode \ref{code:mrcnn}, where this function is called \verb|build_resnet_backbone|. Each of these stages represents the state of art before each convolutional block addition, which is the last layer before changing dimensions of inputs or outputs. It is important for the \zk{FPN} as was mentioned in the chapter \ref{backbone} and illustrated in the model building in the pseudocode \ref{code:mrcnn}.
 
 Functions \verb|identity_block| and \verb|convolutional block| are very similar and both builds the bottleneck block from the figure \ref{fig:bottleneck-block}. The only difference is that the \verb|convolutional block| function also implements a $1 \times 1$ convolution in the shortcut connection as it is necessay to change the shape of the input to the one used in the block. The rest of their implementation is more or less the same and is illustrated in the pseudocode \ref{code:id-block} (the convolution should be applied in the output connection step). It uses filters given to each call of the function in the ResNet pseudocode.
 
@@ -315,17 +315,17 @@ A function used to compute the \zk{IoU} is called simply \verb|compute_iou|. Its
 backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
 predicted_box_area = area of predicted box
 groundtruth_box_area = area of given mask
-y1 = the bigger one from the upper coordinates of the predicted and groundtruth bboxes
-y2 = the smaller one from the lower coordinates of the predicted and groundtruth bboxes
-x1 = the bigger one from the left coordinates of the predicted and groundtruth bboxes
-x2 = the smaller one from the right coordinates of the predicted and groundtruth bboxes
+y1 = the bigger one from the upper coordinates of the predicted and ground truth bboxes
+y2 = the smaller one from the lower coordinates of the predicted and ground truth bboxes
+x1 = the bigger one from the left coordinates of the predicted and ground truth bboxes
+x2 = the smaller one from the right coordinates of the predicted and ground truth bboxes
 intersection = (x2 - x1) * (y2 - y1)
 union = predicted_box_area + groundtruth_box_area - intersection
 iou = intersection / union
 return iou
 \end{lstlisting}}
 
-With the comparison of groundtruth boxes and the predicted ones is connected also the function \verb|box_refinement|. It computes differences between groundtruth and predicted coordinates of bounding boxes and returned them as the information of the inaccuracy bounding box inaccuracy.
+With the comparison of ground truth boxes and the predicted ones is connected also the function \verb|box_refinement|. It computes differences between ground truth and predicted coordinates of bounding boxes and returned them as the information of the inaccuracy bounding box inaccuracy.
 
 % TODO: non-max suppression
 
@@ -359,5 +359,53 @@ return anchors
 \section{ann.maskrcnn.train}
 \label{train-module}
 
+Before a child can recognize an object, his or her parents must teach him how does the object look like, what is its name, its common colours and other attributes. The same apply to an \zk{ANN} - the model must be trained before it can detect or predict objects. The training is done in the \verb|ann.maskrcnn.train| GRASS GIS module. The module is written in the file \verb|ann.maskrcnn.train.py| and was written for the practical part of the thesis and its workflow is with few simplifications illustrated in the figure \ref{fig:train}.
+
+The flowchart contains few already-mentioned functions and classes, specifically the \verb|ModelConfig| class and its \verb|display| method from the chapter \ref{config}, the \verb|MaskRCNN| class from the chapter \ref{model-mrcnn} and the \verb|Dataset| class and its methods \verb|import_contents| and \verb|prepare| from the chapter \ref{dataset}.
+
+The last step in this flowchart, a method \verb|model.train()|, has actually two different forms depending on the usage of initial weights. The first form is applied for a training from a scratch and trains all layers. The second one consists of three smaller segments; firstly training layers 5 and higher, then fine-tuning layers 4 and higher and the last and biggest segment is fine-tuning the whole architecture. It is shown in the flowchart in the figure \ref{fig:training} and the idea behind this behaviour is that it is impractical to train the first layers including low-level features, while changes have a huge impact on deeper levels and those features should be ore or less the same for any object.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.95\linewidth]{./pictures/train_dia.png}
+	\caption[ann.maskrcnn.train flowchart]{Flowchart of the ann.maskrcnn.train module}
+      \label{fig:train}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=\linewidth]{./pictures/training_dia.png}
+	\caption[ann.maskrcnn.train training flowchart]{Flowchart of different training branches inside the ann.maskrcnn.train module}
+      \label{fig:training}
+\end{figure}
+
+\verb|ann.maskrcnn.train| also contains its own manual, help and a graphical user interface (\zk{GUI}) to help a user's understanding of the module.
+
 \section{ann.maskrcnn.detect}
 \label{detect-module}
+
+In case we have a trained model, either trained by us or provided by someone else, we can use it to detect features or objects in maps. Such maps have to be a georeferenced raster. The output from the module consists of a set of vector maps for each class. Although the model is to some extent scale-invariant, it is recommended to provide rasters in the same resolution as the ones used for the training. The detection is done in the \verb|ann.maskrcnn.detect| GRASS GIS module. The module is written in the file \verb|ann.maskrcnn.detect.py| and was written for the practical part of the thesis. Its workflow is with some simplifications illustrated in figure \ref{fig:detect}.
+
+As in the \verb|ann.maskrcnn.train| module, the flowchart contains few already-mentioned functions and classes, specifically the \verb|ModelConfig| class from chapter \ref{config} and the \verb|MaskRCNN| class from chapter \ref{model-mrcnn}.
+
+However, more unmentioned functions can be seen in the flowchart. \verb|save_instances| saves masks of detected instances (by default they will be saved in the temporary GRASS folder, but the user is allowed to choose to keep them). These masks are rasters of the same size as the input images where mask pixels have the value of class ID and the rest are zeros. In case the original images were georeferenced internally (for example a \textit{GeoTIFF} format), the georeferencing is copied to saved rasters using \verb|GDAL|; otherwise (a flag \verb|-e| should be used), the function \verb|external_georeferencing| is called to copy georeferencing files to the directory with masks.
+
+Rasters with masks are imported to GRASS GIS using the \verb|r.in.gdal| module, and then cropped and vectorized to get a separate vector map for each class. The process of cropping and vectorizing consists of a bunch of GRASS GIS modules and is illustrated in figure \ref{fig:vectorize}.
+
+The illustrated process works only with detected classes (e.g. when no instance of sties was detected, the loop corresponding to this class will be skipped). The term \verb|vector_map| used in the flowchart corresponds to the same string as the term \verb|raster_map|, but is used to emphasize the difference in the map type; it is also the reason why we can use \verb|v.patch| and \verb|g.remove| with \verb|vector_maps| - because we already have the list of raster maps. The motivation behind the inner loop in the flowchart is a detection made on multiple rasters; classes from them are extracted and vectorized separately and then patched together for each class.
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.6\linewidth]{./pictures/detect_dia.png}
+	\caption[ann.maskrcnn.detect flowchart]{Flowchart of the ann.maskrcnn.detect module}
+      \label{fig:detect}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=0.95\linewidth]{./pictures/vectorize.png}
+	\caption[vectorization in ann.maskrcnn.detect flowchart]{Flowchart of the vectorization and classes extraction in the ann.maskrcnn.detect module}
+      \label{fig:vectorize}
+\end{figure}
+
+\verb|ann.maskrcnn.detect| also contains its own manual, help and a \zk{GUI} to help a user's understanding of the module.
