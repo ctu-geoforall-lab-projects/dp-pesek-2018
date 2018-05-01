@@ -1,8 +1,7 @@
 <h2>DESCRIPTION</h2>
 
 <em>ann.maskrcnn.detect</em> allows user to use a Mask R-CNN model to detect
-features in georeferenced files. Files must be in one directory and must be
-georeferenced externally by an <em>.aux.xml</em> file.
+features in georeferenced files. Files must be in one directory.
 
 <h2>NOTES</h2>
 
@@ -13,6 +12,9 @@ trained with classes <em>corn,rice</em> and you use
 <em>ann.maskrcnn.detect</em> with classes <em>zea,oryza</em>, zea areas will
 present areas detected as corn and oryza areas will present areas detected as
 rice.
+
+<p>
+If the file is georeferenced externally, please use <em>-e</em> flag.
 
 <h2>EXAMPLES</h2>
 

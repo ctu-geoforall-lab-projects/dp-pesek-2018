@@ -19,6 +19,10 @@
 #% keyword: vector
 #% keyword: raster
 #%end
+#%flag
+#%  key: e
+#%  description: External georeferencing in the images folder
+#%end
 #%option G_OPT_M_DIR
 #% key: images_directory
 #% label: Path to a directory with images to detect
@@ -63,8 +67,8 @@
 
 import os
 from shutil import copyfile
-import skimage.io
 import sys
+from io import BytesIO
 
 import numpy as np
 from skimage.measure import find_contours
@@ -73,6 +77,10 @@ from matplotlib.patches import Polygon
 
 import grass.script as gscript
 from grass.script.utils import get_lib_path
+import skimage.io
+from PIL import Image
+
+from osgeo import gdal, osr
 
 path = get_lib_path(modname='maskrcnn', libname='model')
 if path is None:
@@ -91,9 +99,9 @@ def main(options, flags):
         classes = options['classes'].split(',')
         outputType = options['output_type']
         if options['images_format'][0] != '.':
-            format = '.{}'.format(options['images_format'])
+            extension = '.{}'.format(options['images_format'])
         else:
-            format = options['images_format']
+            extension = options['images_format']
         masksDir = options['masks_output']
         if masksDir == '':
             masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
@@ -104,13 +112,18 @@ def main(options, flags):
         classes = options[b'classes'].decode('utf-8').split(',')
         outputType = options[b'output_type'].decode('utf-8')
         if options[b'images_format'].decode('utf-8')[0] != '.':
-            format = '.{}'.format(options[b'images_format'].decode('utf-8'))
+            extension = '.{}'.format(options[b'images_format'].decode('utf-8'))
         else:
-            format = options[b'images_format'].decode('utf-8')
+            extension = options[b'images_format'].decode('utf-8')
         masksDir = options[b'masks_output'].decode('utf-8')
         if masksDir == '':
             masksDir = gscript.core.tempfile().decode('utf-8').rsplit(os.sep,
                                                                       1)[0]
+
+        newFlags = dict()
+        for flag, value in flags.items():
+            newFlags.update({flag.decode('utf-8'): value})
+        flags = newFlags
 
     # TODO: (3 different brands in case of lot of classes?)
     if len(classes) > 255:
@@ -128,10 +141,21 @@ def main(options, flags):
 
     model.load_weights(modelPath, by_name=True)
 
+    masks = list()
+    detectedClasses = list()
+
     # TODO: Use the whole list instead of iteration
     for imageFile in [file for file in next(
-            os.walk(imagesDir))[2] if os.path.splitext(file)[1] == format]:
+            os.walk(imagesDir))[2] if os.path.splitext(file)[1] == extension]:
         image = skimage.io.imread(os.path.join(imagesDir, imageFile))
+        if image.shape[2] > 3:
+            image = image[:,:,0:3]
+        source = gdal.Open(os.path.join(imagesDir, imageFile))
+
+        sourceSrs = osr.SpatialReference()
+        sourceSrs.ImportFromWkt(source.GetProjectionRef())
+        sourceProj = source.GetProjection()
+        sourceTrans = source.GetGeoTransform()
 
         # Run detection
         results = model.detect([image], verbose=1)
@@ -147,32 +171,17 @@ def main(options, flags):
                            outputDir=masksDir,
                            which=outputType,
                            title=imageFile,
-                           colours=classesColours)
+                           colours=classesColours,
+                           proj=sourceProj,
+                           trans=sourceTrans,
+                           mList=masks,
+                           cList=detectedClasses,
+                           externalReferencing=flags['e'])
 
-    print('Masks detected. Georeferencing masks...')
-    masks = list()
-    detectedClasses = list()
-    for referencing in [file for file in next(
-            os.walk(imagesDir))[2] if (
-                os.path.splitext(file)[1] != format and format in file)]:
-        fileName, refExtension = referencing.split(format)
-        # TODO: Join with converting to one loop
-        for i in range(1, len(classes) + 1):
-            maskName = fileName + '_' + str(i)
-            maskFileName = maskName + '.png'
-            if os.path.isfile(os.path.join(masksDir, maskFileName)):
-                if i not in detectedClasses:
-                    detectedClasses.append(i)
-                masks.append(maskName)
-                copy_georeferencing(imagesDir, masksDir, maskFileName,
-                                    refExtension, referencing)
-
-                gscript.run_command('r.in.gdal',
-                                    input=os.path.join(masksDir, maskFileName),
-                                    output=maskName,
-                                    band=1,  # TODO: 3 if 3 band masks
-                                    overwrite=gscript.overwrite(),
-                                    quiet=True)
+    if flags['e']:
+        print('Masks detected. Georeferencing masks...')
+        external_georeferencing(imagesDir, classes, masksDir, masks,
+                                detectedClasses, extension)
 
     print('Converting masks to vectors...')
     masksString = ','.join(masks)
@@ -211,6 +220,32 @@ def main(options, flags):
                         quiet=True)
 
 
+def external_georeferencing(imagesDir, classes, masksDir, mList, cList,
+                            extension):
+    for referencing in [file for file in next(os.walk(imagesDir))[2] if (
+                    os.path.splitext(file)[1] != extension and
+                    extension in file)]:
+        fileName, refExtension = referencing.split(extension)
+        # TODO: Join with converting to one loop
+        for i in range(1, len(classes) + 1):
+            maskName = fileName + '_' + str(i)
+            maskFileName = maskName + '.png'
+            if os.path.isfile(os.path.join(masksDir, maskFileName)):
+                if i not in cList:
+                    cList.append(i)
+                mList.append(maskName)
+                copy_georeferencing(imagesDir, masksDir, maskFileName,
+                                    refExtension, referencing)
+
+                gscript.run_command('r.in.gdal',
+                                    input=os.path.join(masksDir,
+                                                       maskFileName),
+                                    output=maskName,
+                                    band=1,  # TODO: 3 if 3 band masks
+                                    overwrite=gscript.overwrite(),
+                                    quiet=True)
+
+
 def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
                         referencing):
     r2 = os.path.join(masksDir, maskFileName + refExtension)
@@ -226,6 +261,7 @@ def apply_mask(image, mask, colour):
                                   np.zeros([image.shape[0],
                                             image.shape[1]]) + colour[c],
                                   image[:, :, c])
+
     return image
 
 
@@ -240,7 +276,12 @@ def save_instances(image,
                    # ax=None,
                    outputDir='',
                    which='mask',
-                   colours=None):
+                   colours=None,
+                   proj=None,
+                   trans=None,
+                   mList=None,
+                   cList=None,
+                   externalReferencing=None):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
     masks: [height, width, num_instances]
@@ -307,12 +348,46 @@ def save_instances(image,
 
             ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
             ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
-            plt.savefig(
-                os.path.join(
+
+            maskName = '{}_{}'.format(os.path.splitext(title)[0],
+                                      str(class_ids[index]))
+
+            if not externalReferencing:
+                png = BytesIO()
+                plt.savefig(png, dpi=dpi)
+
+                targetPath = os.path.join(
                     outputDir,
-                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
-                dpi=dpi)
-            plt.close()
+                    '{}{}'.format(maskName, os.path.splitext(title)[1]))
+
+                fileWithExt = Image.open(png)
+                fileWithExt.save(targetPath)
+                png.close()
+                plt.close()
+
+                target = gdal.Open(targetPath, gdal.GA_Update)
+                target.SetGeoTransform(trans)
+                target.SetProjection(proj)
+                target.FlushCache()
+                mList.append(maskName)
+                if class_ids[index] not in cList:
+                    cList.append(class_ids[index])
+
+                gscript.run_command('r.in.gdal',
+                                    input=targetPath,
+                                    output=maskName,
+                                    band=1,  # TODO: 3 if 3 band masks
+                                    overwrite=gscript.overwrite(),
+                                    quiet=True)
+            else:
+                plt.savefig(
+                    os.path.join(
+                        outputDir,
+                        maskName),
+                    dpi=dpi)
+                # plt.show()
+                plt.close()
+
     elif which == 'point':
         for classId in set(class_ids):
             fig = plt.figure(figsize=figsize)
@@ -348,13 +423,44 @@ def save_instances(image,
             ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
             ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
 
-            plt.savefig(
-                os.path.join(
+            maskName = '{}_{}'.format(os.path.splitext(title)[0],
+                                      str(class_ids[index]))
+
+            if os.path.splitext(title)[1] not in ['.png', '.jpeg', '.jpg']:
+                png = BytesIO()
+                plt.savefig(png, dpi=dpi)
+
+                targetPath = os.path.join(
                     outputDir,
-                    os.path.splitext(title)[0] + '_' + str(class_ids[index])),
-                dpi=dpi)
-            # plt.show()
-            plt.close()
+                    '{}{}'.format(maskName, os.path.splitext(title)[1]))
+
+                fileWithExt = Image.open(png)
+                fileWithExt.save(targetPath)
+                png.close()
+                plt.close()
+
+                target = gdal.Open(targetPath, gdal.GA_Update)
+                target.SetGeoTransform(trans)
+                target.SetProjection(proj)
+                target.FlushCache()
+                mList.append(maskName)
+                if class_ids[index] not in cList:
+                    cList.append(class_ids[index])
+
+                gscript.run_command('r.in.gdal',
+                                    input=targetPath,
+                                    output=maskName,
+                                    band=1,  # TODO: 3 if 3 band masks
+                                    overwrite=gscript.overwrite(),
+                                    quiet=True)
+            else:
+                plt.savefig(
+                    os.path.join(
+                        outputDir,
+                        maskName),
+                    dpi=dpi)
+                # plt.show()
+                plt.close()
 
 
 if __name__ == "__main__":
