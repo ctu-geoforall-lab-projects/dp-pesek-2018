@@ -84,6 +84,7 @@ In case of stride 1 and without zero-padding, the feature map is naturally of
 shape $[original\_width - kernel\_width + 1] \times [original\_height - 
 kernel\_height + 1]$. An example may be seen in figure \ref{fig:conv}. 
 
+%% ML: reference/author?
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.4\linewidth]{./pictures/conv.jpg}
@@ -103,7 +104,8 @@ by the number of kernels we use.
 In chapter \ref{understanding-cnn}, translational invariance was mentioned. In 
 convolutional layers, the first step to this invariance was achieved by another 
 huge parameter reduction, by parameter sharing. Idea of parameter sharing raised 
-from the premise that when one feature is useful in one location, it could be 
+from the premise that when one feature is useful in one location, it could be
+%% ML: for for
 useful also in another one. This simple presumption which works except for for 
 example centered special structures allows sharing a set of parameters 
 throughout the whole depth slice. 
@@ -150,6 +152,7 @@ decrease of the gradient).
 
 $f(x) = max(0, x)$
 
+%% ML: ... to of ...
 After applying the \zk{ReLU} function to of the input values, we have a feature 
 map where all negative values of the input were changed to zero. This output is 
 called \textit{rectified feature map}. 
@@ -470,7 +473,8 @@ aiming at the computational simplicity.
 \end{figure}
 
 In figure \ref{fig:googlenet}, we can see parallel blocks. Authors found that 
-the sequential queue of layers increases a computational and memory cost a lot, 
+the sequential queue of layers increases a computational and memory cost a lot,
+%% ML: naivni, ale pekne
 so they proposed a module called \textit{Inception}. The naïve idea behind the 
 Inception module is illustrated in figure \ref{fig:inception-naive} and is quite 
 simple: Why should we stack the layers in a sequence, when we can perform them 
