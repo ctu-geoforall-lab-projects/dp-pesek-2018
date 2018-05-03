@@ -668,6 +668,33 @@ vectorized separately and then patched together for each class.
       \label{fig:vectorize}
 \end{figure}
 
+The output of \verb|ann.maskrcnn.detect| represents detected masks in a vector form. The output type can be either areas or points (corresponding to a centre of the mask).
+
 \verb|ann.maskrcnn.detect| also contains its own manual, help and a \zk{GUI} to 
 help a user's understanding of the module.
 
+\section{GRASS GIS patch}
+\label{grass-patch}
+
+Although the support for Python 3 in GRASS GIS is a widely discussed topic and
+although much effort has been done to for it, it is still not incompleted. This
+lack is handled in modules, but there is still a problem in setting the GRASS
+environment. Thus, a patch and a recompilation of GRASS are needed to allow the
+user to set the environment right. The patch decode bytes-typed string into a
+UTF-8-typed string and consists of the following \textit{diff}.
+
+{\scriptsize
+\begin{lstlisting}[basicstyle={\footnotesize\ttfamily},breaklines=True,
+backgroundcolor = \color{light-gray}]
+===================================================================
+--- lib/python/script/core.py	(revision 72644)
++++ lib/python/script/core.py	(working copy)
+@@ -746,7 +746,7 @@
+         elif var.startswith(b'opt_'):
+             options[var[4:]] = val
+         elif var in [b'GRASS_OVERWRITE', b'GRASS_VERBOSE']:
+-            os.environ[var] = val
++            os.environ[var.decode("utf-8")] = val.decode("utf-8")
+         else:
+             raise SyntaxError("invalid output from g.parser: %s" % line)
+\end{lstlisting}}
