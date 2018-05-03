@@ -290,13 +290,13 @@ def main(options, flags):
     # Training dataset
     trainImages = images[:evalImagesThreshold]
     dataset_train = utils.Dataset()
-    dataset_train.import_contents(classes, trainImages, initialWeights)
+    dataset_train.import_contents(classes, trainImages, name)
     dataset_train.prepare()
 
     # Validation dataset
     evalImages = images[evalImagesThreshold:testImagesThreshold]
     dataset_val = utils.Dataset()
-    dataset_val.import_contents(classes, evalImages, initialWeights)
+    dataset_val.import_contents(classes, evalImages, name)
     dataset_val.prepare()
 
     if initialWeights:
