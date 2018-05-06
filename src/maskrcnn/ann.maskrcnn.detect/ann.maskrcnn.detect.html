@@ -1,9 +1,16 @@
 <h2>DESCRIPTION</h2>
 
 <em>ann.maskrcnn.detect</em> allows user to use a Mask R-CNN model to detect
-features in georeferenced files. Files must be in one directory.
+features in georeferenced files and extract them either as areas or points.
+The module creates a separate map for each class.
 
 <h2>NOTES</h2>
+
+<p>
+The detection may be used for multiple files. However, all files for the
+detection must be in one directory specified in the <em>images_directory</em>
+parameter. Even when using only one image, the module finds it through this
+parameter.
 
 <p>
 When detecting, you can use new names of classes. Classes in the model are not
@@ -14,25 +21,37 @@ present areas detected as corn and oryza areas will present areas detected as
 rice.
 
 <p>
-If the file is georeferenced externally, please use <em>-e</em> flag.
+If the file is georeferenced externally (by a worldfile or an <em>.aux.xml</em>
+file), please use <em>-e</em> flag.
 
 <h2>EXAMPLES</h2>
 
 <h3>Detect buildings and lakes and import them as areas</h3>
 
+<p>
+In case the georeferencing is internal (GeoTIFF):
+
 <div class="code"><pre>
-ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=jpg
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=tif
+</pre></div>
+
+<p>
+In case the georeferencing is external:
+
+<div class="code"><pre>
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=png -e
 </pre></div>
 
 <h3>Detect cottages and plattenbaus and import them as points</h3>
 
 <div class="code"><pre>
-ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=cottages,plattenbaus model=/home/user/Documents/logs/mask_rcnn_houses_0100.h5 images_format=png output_type=point
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=cottages,plattenbaus model=/home/user/Documents/logs/mask_rcnn_houses_0100.h5 images_format=tif output_type=point
 </pre></div>
 
 <h2>SEE ALSO</h2>
 
 <em>
+    <a href="maskrcnn.html">Mask R-CNN in GRASS GIS</a>
     <a href="ann.maskrcnn.train.html">ann.maskrcnn.train</a>
 </em>
 

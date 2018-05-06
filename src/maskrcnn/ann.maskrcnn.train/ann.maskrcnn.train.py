@@ -135,7 +135,7 @@
 #% key: images_min_dim
 #% type: integer
 #% label: Minimum length of images sides
-#% description: Images will be resized to have their shortest side of this size (has to be a multiple of 64)
+#% description: Images will be resized to have their shortest side at least of this value (has to be a multiple of 64)
 #% required: no
 #% multiple: no
 #% answer: 256
@@ -145,7 +145,7 @@
 #% key: images_max_dim
 #% type: integer
 #% label: Maximum length of images sides
-#% description: Images will be resized to have their longest side of this size (has to be a multiple of 64)
+#% description: Images will be resized to have their longest side of this value (has to be a multiple of 64)
 #% required: no
 #% multiple: no
 #% answer: 1280

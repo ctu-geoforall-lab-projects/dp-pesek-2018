@@ -1,0 +1,28 @@
+<h2>DESCRIPTION</h2>
+
+Mask R-CNN tools allow the user to train his own model and use it for
+a detection of objects, or to use a model provided by someone else. It can be
+seen as a supervised classification using convolutional neural networks.
+
+The training is done using module <em>ann.maskrcnn.train</em>. The user feeds
+the module with training data consisting of images and masks for each instance
+of intended classes, and gets a model. For difficult tasks and when not using
+a pretrained model, the training may take even weeks; in case of a good
+pretrained model and powerful PC with GPU support, the training could get good
+results after 1 day and even less.
+
+When the user has a model, it can be used for the detection.
+<em>ann.maskrcnn.detect</em> detects classes learned during the training and
+extracts from given images vectors corresponding to detected objects. Objects
+can be extracted either as areas or points.
+
+<h2>MODULES</h2>
+
+<em>
+    <a href="ann.maskrcnn.train.html">ann.maskrcnn.train</a>
+    <a href="ann.maskrcnn.detect.html">ann.maskrcnn.detect</a>
+</em>
+
+<h2>AUTHORS</h2>
+
+Ondrej Pesek
