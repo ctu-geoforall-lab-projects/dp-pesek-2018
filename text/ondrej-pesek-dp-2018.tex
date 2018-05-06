@@ -136,6 +136,22 @@
 
 \usepackage[justification=centering]{caption}
 
+\newcommand\textstyleEmphasis[1]{\textit{#1}}
+\newcommand\liststyleLi{%
+\renewcommand\labelitemi{{\textbullet}}
+\renewcommand\labelitemii{{\textbullet}}
+\renewcommand\labelitemiii{{\textbullet}}
+\renewcommand\labelitemiv{{\textbullet}}
+}
+\newcommand\liststyleLii{%
+\renewcommand\labelitemi{{\textbullet}}
+\renewcommand\labelitemii{{\textbullet}}
+\renewcommand\labelitemiii{{\textbullet}}
+\renewcommand\labelitemiv{{\textbullet}}
+}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
 % ========================================================================
 % Definice informací o dokumentu
 % ========================================================================
