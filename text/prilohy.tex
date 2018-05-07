@@ -8,6 +8,7 @@ generally and then each module separately.
 \section{Mask R-CNN tools}
 
 \subsection*{DESCRIPTION}
+
 Mask R-CNN tools allow the user to train his own model and use it for a 
 detection of objects, or to use a model provided by someone else. It can be seen 
 as a supervised classification using convolutional neural networks.
@@ -24,7 +25,52 @@ When the user has a model, it can be used for the detection.
 extracts from given images vectors corresponding to detected objects. Objects 
 can be extracted either as areas or points. 
 
+\subsection*{DEPENDENCIES}
+
+\emph{ann.maskrcnn.*} modules contain a lot of external python dependencies.
+To run modules, it is necessary to have them installed. Modules use python3, so
+please install python3 versions.
+
+\liststyleLi
+\begin{itemize}
+\item NumPy
+\item Pillow
+\item SciPy
+\item Cython
+\item scikit-image
+\item OSGeo
+\item TensorFlow
+\item Keras
+\item h5py
+\end{itemize}
+
+After dependencies are fulfilled, modules can be installed using
+\emph{g.extension} module.
+
+\subsection*{GRASS GIS PATCH}
+
+Unfortunately, python3 is not fully supported by GRASS GIS yet. To use
+environment setting flags like \emph{--overwrite}, the user has to update
+his GRASS GIS with the following patch:
+
+{\footnotesize
+\begin{lstlisting}[breaklines=true]
+===================================================================
+--- lib/python/script/core.py	(revision 72644)
++++ lib/python/script/core.py	(working copy)
+@@ -746,7 +746,7 @@
+         elif var.startswith(b'opt_'):
+             options[var[4:]] = val
+         elif var in [b'GRASS_OVERWRITE', b'GRASS_VERBOSE']:
+-            os.environ[var] = val
++            os.environ[var.decode("utf-8")] = val.decode("utf-8")
+         else:
+             raise SyntaxError("invalid output from g.parser: %s" % line)
+\end{lstlisting}
+}
+
 \subsection*{MODULES}
+
 \emph{ann.maskrcnn.train},\emph{ }\emph{ann.maskrcnn.detect}\emph{ }
 
 \clearpage
@@ -276,9 +322,12 @@ Dataset for examples:
 \end{itemize}
 
 \subsubsection*{Training from scratch}
+
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
 \end{lstlisting}
+}
 
 After default number of epochs we will get a model where the first class is
 trained to detect corn fields and the second one to detect rice fields. 
@@ -287,17 +336,21 @@ If we use the command with reversed classes order, we will get a model where the
 first class is trained to detect rice fields and the second one to detect corn
 fields:
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
 \end{lstlisting}
+}
 
 The name of the model does not have to be the same as the dataset folder, but
 should be referring to the task of the dataset. A good name for this one
 (referring also to the order of classes) could be also this one: 
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
 \end{lstlisting}
+}
 
 \subsubsection*{Training from a pretrained model}
 We can use a pretrained model to make our training faster. It is necessary for
@@ -308,23 +361,29 @@ be used for a training on buildings in maps).
 A model trained on different classes (use \textstyleEmphasis{{}-e} flag to
 exclude head weights):
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
 \end{lstlisting}
+}
 
 A model trained on the same classes:
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
 \end{lstlisting}
+}
 
 \subsubsection*{Fine-tuning a model}
 It is also possible to stop your training and then continue. To continue in the
 training, just use the last saved epoch as a pretrained model:
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
 \end{lstlisting}
+}
 
 \clearpage
 
@@ -428,17 +487,24 @@ If the file is georeferenced externally (by a worldfile or an
 \subsubsection*{Detect buildings and lakes and import them as areas}
 In case the georeferencing is internal (GeoTIFF): 
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=tif
 \end{lstlisting}
+}
 
 \ \linebreak In case the georeferencing is external: 
 
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=png -e
+ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_building_lakes_0100.h5 images_format=png  -e
 \end{lstlisting}
+}
 
 \subsubsection*{Detect cottages and plattenbaus and import them as points}
+
+{\footnotesize
 \begin{lstlisting}[breaklines=true]
 ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=cottages,plattenbaus model=/home/user/Documents/logs/mask_rcnn_houses_0100.h5 images_format=tif output_type=point
 \end{lstlisting}
+}
