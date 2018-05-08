@@ -31,4 +31,8 @@ Ing. Martin Landa, Ph.D.
 ## Text
 
 Here will be a link to the PDF after the deadline. In case of interest, please
-see the [text directory](https://github.com/ctu-geoforall-lab-projects/dp-pesek-2018/tree/master/text).
+see the [text directory](text).
+
+![Football fields detection](text/pictures/out1.png)
+
+![Tennis fields detection](text/pictures/out2.png)
