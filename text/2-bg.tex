@@ -5,7 +5,8 @@
 
 Although it is assumed that the reader has sufficient prior knowledge of
 %% ML: convolutional neural networks (CNN)
-artificial neural networks and convolutional neural networks, this part briefly 
+%% OP: Oboji zmineno jiz v uvodu, nahrazuji tedy zkratkami
+\zk{ANN}s and \zk{CNN}s, this part briefly 
 introduces convolutional neural networks, their layer types and few selected 
 architectures. 
 
@@ -17,6 +18,7 @@ holy book of deep learning, \cite{dl}.
 
 %% ML: prestoze je CNN uvedena v seznamu zkratek, tak bych ji
 %% navrhoval v minulem odstavci zminit (viz predchozi poznamka)
+%% OP: (viz predchozi poznamka)
 If you try to find an introduction to \zk{CNN}s on the internet, you may bump 
 into a common statement that \zk{CNN}s are neuroscience-based deep neural
 networks using convolution and presuming the input is an image. It is not 
@@ -85,6 +87,7 @@ shape $[original\_width - kernel\_width + 1] \times [original\_height -
 kernel\_height + 1]$. An example may be seen in figure \ref{fig:conv}. 
 
 %% ML: reference/author?
+%% OP: Jeste moje prace
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.4\linewidth]{./pictures/conv.jpg}
@@ -106,7 +109,10 @@ convolutional layers, the first step to this invariance was achieved by another
 huge parameter reduction, by parameter sharing. Idea of parameter sharing raised 
 from the premise that when one feature is useful in one location, it could be
 %% ML: for for
-useful also in another one. This simple presumption which works except for for 
+%% Jde o dve slovni spojeni, except for - for example. Ale vypada to vazne
+%% spatne. Upraveno, diky; sice from - for taky vypada divne, ale je to urcite
+%% lepsi
+useful also in another one. This simple presumption which works apart from for 
 example centered special structures allows sharing a set of parameters 
 throughout the whole depth slice. 
 
@@ -153,7 +159,8 @@ decrease of the gradient).
 $f(x) = max(0, x)$
 
 %% ML: ... to of ...
-After applying the \zk{ReLU} function to of the input values, we have a feature 
+%% OP: Opraveno, dekuji
+After applying the \zk{ReLU} function to the input values, we have a feature 
 map where all negative values of the input were changed to zero. This output is 
 called \textit{rectified feature map}. 
 
