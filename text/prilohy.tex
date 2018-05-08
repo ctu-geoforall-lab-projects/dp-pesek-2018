@@ -519,13 +519,21 @@ ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images c
 \label{examples}
 
 In the following chapter, few results obtained during tests of modules will be
-presented. Firstly a module trained to detect football and tennis pitches, then a module trained to detect buildings.
+presented. Firstly a module trained to detect football and tennis pitches, then 
+a module trained to detect buildings.
 
 \section{Pitches}
 
-The model for detecting football and tennis pitches was trained on a Debian server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the use) and with memory 49 GBs. The processor base frequency of Intel Xeon E5540 is 2.53 GHz and the cache is 8~MB. The training used a model trained on the MS COCO dataset as a pre-trained model and the training took one month.
+The model for detecting football and tennis pitches was trained on a Debian 
+server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the use) and with memory 49 
+GBs. The processor base frequency of Intel Xeon E5540 is 2.53 GHz and the cache 
+is 8~MB. The training used a model trained on the MS COCO dataset as a 
+pre-trained model and the training took one month.
 
-The training dataset consisted of Bing maps\footnote{\url{https://www.bing.com/maps}} tiles with zoom level 18 (resolution 0.6 m per pixel) and masks corresponding to above mentioned pitches. The training dataset consited of almost 54000 images (plus masks).
+The training dataset consisted of Bing 
+maps\footnote{\url{https://www.bing.com/maps}} tiles with zoom level 18 
+(resolution 0.6 m per pixel) and masks corresponding to above mentioned pitches. 
+The training dataset consited of almost 54000 images (plus masks).
 
 When the training was stopped, the loss function was about 0.86.
 
@@ -543,8 +551,22 @@ When the training was stopped, the loss function was about 0.86.
       \label{fig:tennis}
 \end{figure}
 
-The permission to usage of Bing map tiles was given to me specifically for purposes of this thesis.
+The permission to usage of Bing map tiles was given to me specifically for 
+purposes of this thesis. Unfortunately, the permission to share the training 
+dataset in e-attachments could not be given to me.
+
 
 \section{Buildings}
 
 TODO?
+
+\chapter{E-attachments}
+\label{attach}
+
+E-attachment of this thesis consists of following features:
+
+\begin{itemize}
+	\item Source code of GRASS GIS modules and library
+	\item GRASS GIS patch for Python 3
+	\item Modules mentioned in chapter \ref{examples}
+\end{itemize}
