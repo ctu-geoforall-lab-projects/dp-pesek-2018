@@ -1,7 +1,7 @@
 \chapter{User manual}
 \label{manual}
 
-HTML pages in the style of common GRASS GIS user manuals were created. In this
+HTML pages in the~style of common GRASS GIS user manuals were created. In this
 chapter, they will be attached. Firstly, they will introduce Mask R-CNN tools
 generally and then each module separately.
 
@@ -9,27 +9,27 @@ generally and then each module separately.
 
 \subsection*{DESCRIPTION}
 
-Mask R-CNN tools allow the user to train his own model and use it for a 
-detection of objects, or to use a model provided by someone else. It can be seen 
-as a supervised classification using convolutional neural networks.
+Mask R-CNN tools allow the~user to train his own model and use it for
+a~detection of objects, or to use a~model provided by someone else. It can be seen 
+as a~supervised classification using convolutional neural networks.
 
-The training is done using module \emph{ann.maskrcnn.train}. The user feeds the 
-module with training data consisting of images and masks for each instance of 
-intended classes, and gets a model. For difficult tasks and when not using a 
-pretrained model, the training may take even weeks; in case of a good pretrained 
-model and powerful PC with GPU support, the training could get good results 
+The training is done using module \emph{ann.maskrcnn.train}. The~user feeds
+the~module with training data consisting of images and masks for each instance of 
+intended classes and gets a~model. For difficult tasks and when not using
+a~pretrained model, the~training may take even weeks; in case of a~good pretrained 
+model and powerful PC with GPU support, the~training could get good results 
 after 1 day and even less.
 
-When the user has a model, it can be used for the detection. 
-\emph{ann.maskrcnn.detect} detects classes learned during the training and 
+When the~user has a~model, it can be used for the~detection. 
+\emph{ann.maskrcnn.detect} detects classes learned during the~training and 
 extracts from given images vectors corresponding to detected objects. Objects 
 can be extracted either as areas or points. 
 
 \subsection*{DEPENDENCIES}
 
-\emph{ann.maskrcnn.*} modules contain a lot of external python dependencies.
-To run modules, it is necessary to have them installed. Modules use python3, so
-please install python3 versions.
+\emph{ann.maskrcnn.*} modules contain a~lot of external python dependencies.
+To run modules, it is necessary to have them installed. Modules use Python 3, so
+please install Python 3 versions.
 
 \liststyleLi
 \begin{itemize}
@@ -56,8 +56,8 @@ g.extension extension=maskrcnn url=path/to/the/maskrcnn/folder
 \subsection*{GRASS GIS PATCH}
 
 Unfortunately, python3 is not fully supported by GRASS GIS yet. To use
-environment setting flags like \emph{--overwrite}, the user has to update
-his GRASS GIS with the following patch:
+environment setting flags like \emph{--overwrite}, the~user has to update
+his GRASS GIS with the~following patch:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -113,7 +113,7 @@ his GRASS GIS with the following patch:
 
   \textbf{-n}
   
-  \tab No resizing or padding of images (images must be of the same size)
+  \tab No resizing or padding of images (images must be of the~same size)
   
   \textbf{-{}-overwrite}
   
@@ -141,13 +141,13 @@ his GRASS GIS with the following patch:
 \begin{flushleft}
 \textbf{training\_dataset}=name \textbf{[required]}
 
-\tab Path to the dataset with images and masks
+\tab Path to the~dataset with images and masks
 
 \textbf{model}=string
 
-\tab Path to the .h5 file to use as initial values
+\tab Path to the~.h5 file to use as initial values
 
-\tab Keep empty to train from a scratch
+\tab Keep empty to train from a~scratch
 
 \textbf{classes}=string[,string,...] \textbf{[required]}
            
@@ -155,7 +155,7 @@ his GRASS GIS with the following patch:
 
 \textbf{logs}=name \textbf{[required]}
 
-\tab Path to the directory in which will be models saved
+\tab Path to the~directory in which will be models saved
 
 \textbf{name}=string \textbf{[required]}
 
@@ -183,7 +183,7 @@ his GRASS GIS with the following patch:
 
 \tab Number of images per GPU
 
-\tab Bigger number means faster training but needs a bigger GPU
+\tab Bigger number means faster training but needs a~bigger GPU
 
 \tab default: 1
 
@@ -199,13 +199,13 @@ his GRASS GIS with the following patch:
 
 \tab To use full sized masks, keep empty.
 
-\tab Mini mask saves memory at the expense of precision
+\tab Mini mask saves memory at the~expense of precision
 
 \textbf{validation\_steps}=value
 
 \tab Number of validation steps
 
-\tab Bigger number means more accurate estimation of the model precision
+\tab Bigger number means more accurate estimation of the~model precision
 
 \tab default: 100
 
@@ -215,7 +215,7 @@ his GRASS GIS with the following patch:
 
 \tab Images will be resized to have their shortest side at least of this value
 
-\tab Has to be a multiple of 64
+\tab Has to be a~multiple of 64
 
 \tab default: 256
 
@@ -225,7 +225,7 @@ his GRASS GIS with the following patch:
 
 \tab Images will be resized to have their longest side of this value
 
-\tab Has to be a multiple of 64
+\tab Has to be a~multiple of 64
 
 \tab default: 1280
 
@@ -239,11 +239,11 @@ his GRASS GIS with the following patch:
 \end{flushleft}
 
 \subsection*{DESCRIPTION}
-\textstyleEmphasis{ann.maskrcnn.train} allows user to train a Mask R-CNN model
-on his own dataset. The dataset has to be prepared in a predefined structure. 
+\textstyleEmphasis{ann.maskrcnn.train} allows the user to train a~Mask R-CNN model
+on his own dataset. The~dataset has to be prepared in a~predefined structure. 
 
 \subsubsection*{DATASET STRUCTURE}
-Training dataset should be in the following structure: 
+Training dataset should be in the~following structure: 
 
 \liststyleLi
 \begin{itemize}
@@ -270,34 +270,34 @@ Training dataset should be in the following structure:
 
 The described structure of directories is required. Pictures must be *.jpg files
 with 3 channels (for example RGB), masks must be *.png files consisting of
-numbers between 1 and 255 (object instance) and 0s (elsewhere). A mask file for
-each instance of object should be provided separately distinguished by the
+numbers between 1 and 255 (object instance) and 0s (elsewhere). A~mask file for
+each instance of an object should be provided separately distinguished by the
 suffix number. 
 
 \subsection*{NOTES}
 If you are using initial weights (the \textstyleEmphasis{model} parameter),
 epochs are divided into three segments. Firstly training layers 5+, then
-fine-tuning layers 4+ and the last segment is fine-tuning the whole
-architecture. Ending number of epoch is shown for your segment, not for the
+fine-tuning layers 4+ and the~last segment is fine-tuning the~whole
+architecture. Ending number of epochs is shown for your segment, not for the
 whole training. 
 
-The usage of the \textstyleEmphasis{{}-b} flag will result in an activation of
+The usage of the~\textstyleEmphasis{{}-b} flag will result in an activation of
 batch normalization layers training. By default, this option is set to False,
 as it is not recommended to train them when using just small batches (batch is
-defined by the \textstyleEmphasis{images\_per\_gpu} parameter). 
+defined by the~\textstyleEmphasis{images\_per\_gpu} parameter). 
 
-If the dataset consists of images of the same size, the user may use the
+If the~dataset consists of images of the~same size, the~user may use the
 \textstyleEmphasis{{}-n} flag to avoid resizing or padding of images. When the
 flag is not used, images are resized to have their longer side equal to the
-value of the \textstyleEmphasis{images\_max\_dim} parameter and the shorter
-side longer or equal to the value of the \textstyleEmphasis{images\_min\_dim}
+value of the~\textstyleEmphasis{images\_max\_dim} parameter and the~shorter
+side longer or equal to the~value of the~\textstyleEmphasis{images\_min\_dim}
 parameter and zero-padded to be of shape \verb|images\_max\_dim| $\times$
-\verb|images\_max\_dim|. It results in the fact that even images of different
+\verb|images\_max\_dim|. It results in the~fact that even images of different
 sizes may be used. 
 
-After each epoch, the current model is saved. It allows the user to stop the~training
-when he feels satisfied with loss functions. It also allow the user to
-test models even during the training (and, again, stop it even before the last
+After each epoch, the~current model is saved. It allows the~user to stop the~training
+when he feels satisfied with loss functions. It also allows the~user to
+test models even during the~training (and, again, stop it even before the~last
 epoch). 
 
 \subsection*{EXAMPLES}
@@ -335,11 +335,11 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \end{lstlisting}
 }
 
-After default number of epochs we will get a model where the first class is
-trained to detect corn fields and the second one to detect rice fields. 
+After default number of epochs, we will get a~model where the~first class is
+trained to detect corn fields and the~second one to detect rice fields. 
 
-If we use the command with reversed classes order, we will get a model where the
-first class is trained to detect rice fields and the second one to detect corn
+If we use the~command with reversed classes order, we will get a~model where the
+first class is trained to detect rice fields and the~second one to detect corn
 fields:
 
 {\footnotesize
@@ -348,9 +348,9 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn
 \end{lstlisting}
 }
 
-The name of the model does not have to be the same as the dataset folder, but
-should be referring to the task of the dataset. A good name for this one
-(referring also to the order of classes) could be also this one: 
+The name of the~model does not have to be the~same as the~dataset folder but
+should be referring to the~task of the~dataset. A~good name for this one
+(referring also to the~order of classes) could be also this one: 
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -358,11 +358,11 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn
 \end{lstlisting}
 }
 
-\subsubsection*{Training from a pretrained model}
-We can use a pretrained model to make our training faster. It is necessary for
-the~model to be trained on the same channels and similar features, but it does
-not have to be the same ones (e.g. model trained on swimming pools in maps can
-be used for a training on buildings in maps). 
+\subsubsection*{Training from a~pretrained model}
+We can use a~pretrained model to make our training faster. It is necessary for
+the~model to be trained on the~same channels and similar features, but it does
+not have to be the~same ones (e.g. model trained on swimming pools in maps can
+be used for a~training on buildings in maps). 
 
 A model trained on different classes (use \textstyleEmphasis{{}-e} flag to
 exclude head weights):
@@ -373,7 +373,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \end{lstlisting}
 }
 
-A model trained on the same classes:
+A model trained on the~same classes:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -381,9 +381,9 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \end{lstlisting}
 }
 
-\subsubsection*{Fine-tuning a model}
+\subsubsection*{Fine-tuning a~model}
 It is also possible to stop your training and then continue. To continue in the
-training, just use the last saved epoch as a pretrained model:
+training, just use the~last saved epoch as a~pretrained model:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -397,7 +397,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 
 \subsection*{NAME}
 
-\textbf{ann.maskrcnn.detect -} Detect features in images using a Mask R-CNN model.
+\textbf{ann.maskrcnn.detect -} Detect features in images using a~Mask R-CNN model.
 
 \subsection*{SYNOPSIS}
 
@@ -413,7 +413,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \begin{flushleft}
   \textbf{-e}
   
-  \tab External georeferencing in the images folder
+  \tab External georeferencing in the~images folder
   
   \textbf{-{}-overwrite}
   
@@ -441,7 +441,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \begin{flushleft}
 \textbf{images\_directory}=name \textbf{[required]}
 
-\tab Path to a directory with images to detect
+\tab Path to a~directory with images to detect
 
 \textbf{images\_format}=string \textbf{[required]}
 
@@ -449,7 +449,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 
 \textbf{model}=string \textbf{[required]}
 
-\tab Path to the .h5 file containing the model
+\tab Path to the~.h5 file containing the~model
 
 \textbf{classes}=string[,string,...] \textbf{[required]}
            
@@ -469,29 +469,29 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \end{flushleft}
 
 \subsection*{DESCRIPTION}
-\textstyleEmphasis{ann.maskrcnn.detect} allows user to use a Mask R-CNN model to
+\textstyleEmphasis{ann.maskrcnn.detect} allows the user to use a~Mask R-CNN model to
 detect features in georeferenced files and extract them either as areas or
-points. The module creates a~separate map for each class. 
+points. the~module creates a~separate map for each class. 
 
 \subsection*{NOTES}
 The detection may be used for multiple files. However, all files for the
 detection must be in one directory specified in the
 \textstyleEmphasis{images\_directory} parameter. Even when using only one
-image, the module finds it through this parameter. 
+image, the~module finds it through this parameter. 
 
-When detecting, you can use new names of classes. Classes in the model are not
-referenced by their name, but by their order. It means that if the model was
+When detecting, you can use new names of classes. Classes in the~model are not
+referenced by their name, but by their order. It means that if the~model was
 trained with classes \textstyleEmphasis{corn,rice} and you use
 \textstyleEmphasis{ann.maskrcnn.detect} with classes
 \textstyleEmphasis{zea,oryza}, zea areas will present areas detected as corn
 and oryza areas will present areas detected as rice. 
 
-If the file is georeferenced externally (by a worldfile or an
+If the~file is georeferenced externally (by a~worldfile or an
 \textstyleEmphasis{.aux.xml} file), please use \textstyleEmphasis{{}-e} flag. 
 
 \subsection*{EXAMPLES}
 \subsubsection*{Detect buildings and lakes and import them as areas}
-In case the georeferencing is internal (GeoTIFF): 
+In case the~georeferencing is internal (GeoTIFF): 
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -499,7 +499,7 @@ ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images c
 \end{lstlisting}
 }
 
-\ \linebreak In case the georeferencing is external: 
+\ \linebreak In case the~georeferencing is external: 
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -518,41 +518,41 @@ ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images c
 \chapter{Examples}
 \label{examples}
 
-In the following chapter, few results obtained during tests of modules will be
-presented. Firstly a module trained to detect football and tennis pitches, then 
+In the~following chapter, few results obtained during tests of modules will be
+presented. Firstly a~module trained to detect football and tennis pitches, then 
 a module trained to detect buildings.
 
 \section{Pitches}
 
-The model for detecting football and tennis pitches was trained on a Debian 
-server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the use) and with memory 49 
-GBs. The processor base frequency of Intel Xeon E5540 is 2.53 GHz and the cache 
-is 8~MB. The training used a model trained on the MS COCO dataset as a 
-pre-trained model and the training took one month.
+The model for detecting football and tennis pitches was trained on a~Debian 
+server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the~use) and with memory
+49~GBs. The~processor base frequency of Intel Xeon E5540 is 2.53 GHz and the~cache 
+is 8~MB. The~training used a~model trained on the~MS COCO dataset as
+a~pre-trained model and the~training took one month.
 
 The training dataset consisted of Bing 
 maps\footnote{\url{https://www.bing.com/maps}} tiles with zoom level 18 
-(resolution 0.6 m per pixel) and masks corresponding to above mentioned pitches. 
-The training dataset consited of almost 54000 images (plus masks).
+(resolution 0.6 m per pixel) and masks corresponding to above-mentioned pitches. 
+The training dataset consisted of almost 54000 images (plus masks).
 
-When the training was stopped, the loss function was about 0.86.
+When the~training was stopped, the~loss function was about 0.86.
 
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/out1.png}
-	\caption[Detection of football pitches]{An example of the detection on a picture containing football pitches}
+	\caption[Detection of football pitches]{An example of the~detection on a~picture containing football pitches}
       \label{fig:football}
 \end{figure}
 
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/out2.png}
-	\caption[Detection of tennis pitches]{An example of the detection on a picture containing tennis pitches}
+	\caption[Detection of tennis pitches]{An example of the~detection on a~picture containing tennis pitches}
       \label{fig:tennis}
 \end{figure}
 
-The permission to usage of Bing map tiles was given to me specifically for 
-purposes of this thesis. Unfortunately, the permission to share the training 
+The permission to the usage of Bing map tiles was given to me specifically for 
+purposes of this thesis. Unfortunately, the~permission to share the~training 
 dataset in e-attachments could not be given to me.
 
 
@@ -566,7 +566,7 @@ TODO?
 E-attachment of this thesis consists of following features:
 
 \begin{itemize}
-	\item Source code of GRASS GIS modules and library
+	\item The source code of GRASS GIS modules and library
 	\item GRASS GIS patch for Python 3
-	\item Modules mentioned in chapter \ref{examples}
+	\item Models mentioned in chapter \ref{examples}
 \end{itemize}

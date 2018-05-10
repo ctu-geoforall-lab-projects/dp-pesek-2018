@@ -1,54 +1,55 @@
 \chapter{Conclusion}
 \label{conclusion}
 
-The goal of the thesis was to find and implement a suitable \zk{ANN} 
+The goal of the~thesis was to find and implement a~suitable \zk{ANN} 
 architecture into \zk{GRASS} \zk{GIS}. Because \zk{ANN}s and especially 
-\zk{CNN}s are shaking with the field of computer vision, many GRASS GIS users 
+\zk{CNN}s are shaking with the~field of computer vision, many GRASS GIS users 
 and developers were interested in implementation options into this system.
 
-The first part of the thesis was dedicated to a theoretical background behind 
-\zk{CNN}s. It is followed by their various applications in the field of computer 
+The first part of the~thesis was dedicated to a~theoretical background behind 
+\zk{CNN}s. It is followed by their various applications in the~field of computer 
 vision. 
 
-The second part of the thesis was dedicated to implementation of Mask \zk{R-CNN} 
-modules into GRASS GIS. It starts with a brief introduction of some of the used 
-tools and follows with explanations of the most important parts of the code.
+The second part of the~thesis was dedicated to the implementation of Mask \zk{R-CNN} 
+modules into GRASS GIS. It starts with a~brief introduction of some of the~used 
+tools and follows with explanations of the~most important parts of the~code.
 
-The research flows in the background of the theoretical part and is briefly 
-summarized in the beginning of the chapter on the implementation.
+The research flows in the~background of the~theoretical part and is briefly 
+summarized at the~beginning of the~chapter on the~implementation.
 
-Developed modules are ready to use ad as can be seen in appendices, I already 
-made few tests. However, because the training costs a lot of time (at least few 
-days on a GPU machine, even weeks on a machine without GPU), only a limited 
+Developed modules are ready to use and as can be seen in appendices, I already 
+made few tests. However, because the~training costs a~lot of time (at least few 
+days on a~GPU machine, even weeks on a~machine without GPU), only a~limited 
 amount of tests was made. Modules were proposed for testing also to other GRASS 
 GIS developers and users and they found their results to be satisfying, 
 sometimes even for data, where other methods of classification in GRASS GIS 
-failed (a shadow over a field, different colours, etc.).
+failed (a shadow over a~field, different colours, etc.).
 
 Even though modules work, there are still some possible extensions and even some 
 issues.
 
 The biggest issue is in insufficient support for Python 3 in GRASS GIS. This 
-issue is solved by a patch attached as an e-attachment and should be solved in 
+issue is solved by a~patch attached as an e-attachment and should be solved in 
 GRASS GIS during this year.
 
 Possible extensions are:
 \begin{itemize}
-	\item Support objects detection in images imported into GRASS GIS. The current state works only with images outside GRASS GIS.
-	\item Support more training data annotation structures. The current state works with \verb|*.jpg| images and \verb|*.png| masks for each instance. The next step could be a JSON-based structure used in MS COCO\footnote{\url{http://cocodataset.org/\#format-data}}.
+	\item Support more training data annotation structures. The~current state works with \verb|*.jpg| images and \verb|*.png| masks for each instance. The~next step could be a~JSON-based structure used in MS COCO\footnote{\url{http://cocodataset.org/\#format-data}}.
+	\item Support training on images in GRASS GIS (using raster map as images, vector areas as masks).
+	\item Support objects detection in images imported into GRASS GIS. The~current state works only with images outside GRASS GIS.
 	\item Support more channels than three.
-	\item Support more types of the backbone architecture. Now only \zk{ResNet} 50 and \zk{ResNet} 101 are supported.
-	\item Diversify head architecture types. The current one is just very basic one.
+	\item Support more types of the~backbone architecture. Now only \zk{ResNet} 50 and \zk{ResNet} 101 are supported.
+	\item Diversify head architecture types. The~current one is just very basic one.
 \end{itemize}
 
-The last thing worth of mention is the high gear of progress. After only six 
-years of research in the field of \zk{CNN}s, black is white and up is down. 
+The last thing worthy of mention is the~high gear of progress. After only six 
+years of research in the~field of \zk{CNN}s, black is white and up is down. 
 Everything has changed and results unbelievable six years back are standards 
-nowadays. Almost every week, there is a new architecture. Even during work on 
-this project, many interesting architectures were proposed, to name a few, 
+nowadays. Almost every week, there is a~new architecture. Even during work on 
+this project, many interesting architectures were proposed, to name a~few, 
 \cite{masklab} or \cite{panoptic}.
 
-Developed modules are the first step of \zk{GRASS} \zk{GIS} in the direction to 
+Developed modules are the~first step of \zk{GRASS} \zk{GIS} in the~direction to 
 neural networks. Many functions could be useful for developing more modules. It 
-would be pleasant to start a new trend and see more modules using \zk{CNN}s and 
+would be pleasant to start a~new trend and see more modules using \zk{CNN}s and 
 sharing libraries. Unsupervised learning is an open call.

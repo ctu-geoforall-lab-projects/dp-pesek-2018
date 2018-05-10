@@ -1,6 +1,6 @@
 <h2>DESCRIPTION</h2>
 
-<em>ann.maskrcnn.train</em> allows user to train a Mask R-CNN model on his own
+<em>ann.maskrcnn.train</em> allows the user to train a Mask R-CNN model on his own
 dataset. The dataset has to be prepared in a predefined structure.
 
 <h3>DATASET STRUCTURE</h3>
@@ -31,7 +31,7 @@ dataset-directory
 The described structure of directories is required. Pictures must be *.jpg
 files with 3 channels (for example RGB), masks must be *.png files consisting
 of numbers between 1 and 255 (object instance) and 0s (elsewhere). A mask file
-for each instance of object should be provided separately distinguished by
+for each instance of an object should be provided separately distinguished by
 the suffix number.
 
 <h2>NOTES</h2>
@@ -39,7 +39,7 @@ the suffix number.
 If you are using initial weights (the <em>model</em> parameter), epochs are
 divided into three segments. Firstly training layers 5+, then fine-tuning
 layers 4+ and the last segment is fine-tuning the whole architecture.
-Ending number of epoch is shown for your segment, not for the whole training.
+Ending number of epochs is shown for your segment, not for the whole training.
 
 <p>
 The usage of the <em>-b</em> flag will result in an activation of batch
@@ -58,7 +58,7 @@ that even images of different sizes may be used.
 
 <p>
 After each epoch, the current model is saved. It allows the user to stop the
-training when he feels satisfied with loss functions. It also allow the user to
+training when he feels satisfied with loss functions. It also allows the user to
 test models even during the training (and, again, stop it even before the last
 epoch).
 
@@ -94,7 +94,7 @@ crops
 <div class="code"><pre>
 ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
 </pre></div>
-After default number of epochs we will get a model where the first class is
+After default number of epochs, we will get a model where the first class is
 trained to detect corn fields and the second one to detect rice fields.
 
 <p>
@@ -106,7 +106,7 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn
 </pre></div>
 
 <p>
-The name of the model does not have to be the same as the dataset folder, but
+The name of the model does not have to be the same as the dataset folder but
 should be referring to the task of the dataset. A good name for this one
 (referring also to the order of classes) could be also this one:
 <div class="code"><pre>
