@@ -617,10 +617,11 @@ user interface (\zk{GUI}) to help a~user's understanding of the~module.
 
 In case we have a~trained model, either trained by us or provided by someone 
 else, we can use it to detect features or objects in maps. Such maps have to be 
-a georeferenced raster. The~output from the~module consists of a~set of vector 
+raster maps imprted to GRASS GIS or georeferenced raster files. The~output
+from the~module consists of a~set of vector 
 maps for each class. Although the~model is to some extent scale-invariant, it is 
-recommended to provide rasters in the~same resolution as the~ones used for
-the~training. The~detection is done in the~\verb|ann.maskrcnn.detect| GRASS GIS 
+recommended to provide rasters in similar resolution to the~one used in
+training images. The~detection is done in the~\verb|ann.maskrcnn.detect| GRASS GIS
 module. The~module is written in the~file \verb|ann.maskrcnn.detect.py| and was 
 written for the~practical part of the~thesis. Its workflow is with some 
 simplifications illustrated in figure \ref{fig:detect}.
@@ -631,19 +632,18 @@ class from chapter \ref{config} and the~\verb|MaskRCNN| class from chapter
 \ref{model-mrcnn}.
 
 However, more unmentioned functions can be seen in the~flowchart. Function
-\verb|save_instances| saves masks of detected instances (by default they will be 
-saved in the~temporary GRASS folder, but the~user is allowed to choose to keep 
-them). These masks are rasters of the~same size as the~input images where mask 
-pixels have the~value of class ID and the~rest are zeros. In case the~original 
-images were georeferenced internally (for example a~\textit{GeoTIFF} format), 
-the georeferencing is copied to saved rasters using \verb|GDAL|; otherwise (a 
-flag \verb|-e| should be used), the~function \verb|external_georeferencing| is 
-called to copy georeferencing files to the~directory with masks.
+\verb|save_instances| imports masks of detected instances into GRASS GIS
+(except for images with external georeferencig; they are just saved into
+a~temporary folder). These masks are rasters of the~same size as the~input
+maps/images where mask pixels have the~value of class ID and the~rest are
+zeros. In case the~georeferencing is external, a flag \verb|-e| should be
+used and the~function \verb|external_georeferencing| is 
+called to copy georeferencing files to the~directory with masks and import them
+into GRASS GIS.
 
-Rasters with masks are imported to GRASS GIS using the~\verb|r.in.gdal| module, 
-and then cropped and vectorized to get a~separate vector map for each class. The~process
-of cropping and vectorizing consists of a~bunch of GRASS GIS modules and 
-is illustrated in figure \ref{fig:vectorize}.
+Rasters are then cropped and vectorized to get a~separate vector map for each
+class. The~process of cropping and vectorizing consists of a~bunch of GRASS GIS
+modules and is illustrated in figure \ref{fig:vectorize}.
 
 The illustrated process works only with detected classes (e.g. when no instance 
 of sties was detected, the~loop corresponding to this class will be skipped). 
@@ -657,7 +657,7 @@ vectorized separately and then patched together for each class.
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=0.6\linewidth]{./pictures/detect_dia.png}
+	\includegraphics[width=\linewidth]{./pictures/detect_dia.png}
 	\caption[ann.maskrcnn.detect flowchart]{Flowchart of the~ann.maskrcnn.detect module}
       \label{fig:detect}
 \end{figure}
