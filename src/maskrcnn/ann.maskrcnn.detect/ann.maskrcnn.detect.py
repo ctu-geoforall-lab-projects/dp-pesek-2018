@@ -526,6 +526,15 @@ def save_instances(image,
                                     band=1,  # TODO: 3 if 3 band masks
                                     overwrite=gscript.overwrite(),
                                     quiet=True)
+            elif grassMap:
+                # using maps imported in GRASS
+                mList.append(maskName)
+                if class_ids[index] not in cList:
+                    cList.append(class_ids[index])
+
+                mask2d = garray.array(dtype=np.uint8)
+                np.copyto(mask2d, masked_image[:, :, 0])
+                mask2d.write(mapname=maskName)
             else:
                 plt.savefig(
                     os.path.join(
