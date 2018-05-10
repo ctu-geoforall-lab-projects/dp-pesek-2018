@@ -21,19 +21,33 @@
 #%end
 #%flag
 #%  key: e
-#%  description: External georeferencing in the images folder
+#%  description: External georeferencing in the images folder (when using images_directory)
+#%end
+#%option
+#% key: band1
+#% type: string
+#% label: Name of raster maps to use for detection as the first band (divided by ",")
+#%end
+#%option
+#% key: band2
+#% type: string
+#% label: Name of raster maps to use for detection as the second band (divided by ",")
+#%end
+#%option
+#% key: band3
+#% type: string
+#% label: Name of raster maps to use for detection as the third band (divided by ",")
 #%end
 #%option G_OPT_M_DIR
 #% key: images_directory
-#% label: Path to a directory with images to detect
-#% required: yes
+#% label: Path to a directory with external images to detect
+#% required: no
 #%end
 #%option
 #% key: images_format
 #% type: string
 #% label: Format suffix of images
 #% description: .jpg, .tiff, .png, etc.
-#% required: yes
 #%end
 #%option
 #% key: model
@@ -63,6 +77,11 @@
 #% answer: area
 #% required: no
 #%end
+#%rules
+#% requires_all: images_directory, images_format
+#% requires_all: band1, band2, band3
+#% required: images_directory, band1
+#%end
 
 
 import os
@@ -77,6 +96,7 @@ from matplotlib.patches import Polygon
 
 import grass.script as gscript
 from grass.script.utils import get_lib_path
+import grass.script.array as garray
 import skimage.io
 from PIL import Image
 
@@ -97,11 +117,17 @@ def main(options, flags):
         imagesDir = options['images_directory']
         modelPath = options['model']
         classes = options['classes'].split(',')
+        band1 = options['band1'].split(',')
+        band2 = options['band2'].split(',')
+        band3 = options['band3'].split(',')
         outputType = options['output_type']
-        if options['images_format'][0] != '.':
-            extension = '.{}'.format(options['images_format'])
+        if options['images_format']:
+            if options['images_format'][0] != '.':
+                extension = '.{}'.format(options['images_format'])
+            else:
+                extension = options['images_format']
         else:
-            extension = options['images_format']
+            extension = ''
         masksDir = options['masks_output']
         if masksDir == '':
             masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
@@ -110,11 +136,17 @@ def main(options, flags):
         imagesDir = options[b'images_directory'].decode('utf-8')
         modelPath = options[b'model'].decode('utf-8')
         classes = options[b'classes'].decode('utf-8').split(',')
+        band1 = options[b'band1'].decode('utf-8').split(',')
+        band2 = options[b'band2'].decode('utf-8').split(',')
+        band3 = options[b'band3'].decode('utf-8').split(',')
         outputType = options[b'output_type'].decode('utf-8')
-        if options[b'images_format'].decode('utf-8')[0] != '.':
-            extension = '.{}'.format(options[b'images_format'].decode('utf-8'))
+        if options[b'images_format'].decode('utf-8'):
+            if options[b'images_format'].decode('utf-8')[0] != '.':
+                extension = '.{}'.format(options[b'images_format'].decode('utf-8'))
+            else:
+                extension = options[b'images_format'].decode('utf-8')
         else:
-            extension = options[b'images_format'].decode('utf-8')
+            extension = ''
         masksDir = options[b'masks_output'].decode('utf-8')
         if masksDir == '':
             masksDir = gscript.core.tempfile().decode('utf-8').rsplit(os.sep,
@@ -145,38 +177,68 @@ def main(options, flags):
     detectedClasses = list()
 
     # TODO: Use the whole list instead of iteration
-    for imageFile in [file for file in next(
-            os.walk(imagesDir))[2] if os.path.splitext(file)[1] == extension]:
-        image = skimage.io.imread(os.path.join(imagesDir, imageFile))
-        if image.shape[2] > 3:
-            image = image[:,:,0:3]
-        source = gdal.Open(os.path.join(imagesDir, imageFile))
+    if len(band1) > 0:
+        # using maps imported in GRASS
+        for i in range(len(band1)):
+            # load map into 3-band np.array
+            gscript.run_command('g.region', raster=band1[i])
+            bands = np.stack((garray.array(band1[i]),
+                              garray.array(band2[i]),
+                              garray.array(band3[i])), 2)
 
-        sourceSrs = osr.SpatialReference()
-        sourceSrs.ImportFromWkt(source.GetProjectionRef())
-        sourceProj = source.GetProjection()
-        sourceTrans = source.GetGeoTransform()
+            # Run detection
+            results = model.detect([bands], verbose=1)
 
-        # Run detection
-        results = model.detect([image], verbose=1)
+            # Save results
+            for r in results:
+                save_instances(bands,
+                               r['rois'],
+                               r['masks'],
+                               r['class_ids'],
+                               # ['BG'] + [i for i in classes],
+                               # r['scores'],
+                               outputDir=masksDir,
+                               which=outputType,
+                               title=band1[i].split('.')[0],
+                               colours=classesColours,
+                               mList=masks,
+                               cList=detectedClasses,
+                               grassMap=True,
+                               externalReferencing=flags['e'])
 
-        # Save results
-        for r in results:
-            save_instances(image,
-                           r['rois'],
-                           r['masks'],
-                           r['class_ids'],
-                           # ['BG'] + [i for i in classes],
-                           # r['scores'],
-                           outputDir=masksDir,
-                           which=outputType,
-                           title=imageFile,
-                           colours=classesColours,
-                           proj=sourceProj,
-                           trans=sourceTrans,
-                           mList=masks,
-                           cList=detectedClasses,
-                           externalReferencing=flags['e'])
+    if imagesDir:
+        for imageFile in [file for file in next(
+                os.walk(imagesDir))[2] if os.path.splitext(file)[1] == extension]:
+            image = skimage.io.imread(os.path.join(imagesDir, imageFile))
+            if image.shape[2] > 3:
+                image = image[:,:,0:3]
+            source = gdal.Open(os.path.join(imagesDir, imageFile))
+
+            sourceSrs = osr.SpatialReference()
+            sourceSrs.ImportFromWkt(source.GetProjectionRef())
+            sourceProj = source.GetProjection()
+            sourceTrans = source.GetGeoTransform()
+
+            # Run detection
+            results = model.detect([image], verbose=1)
+
+            # Save results
+            for r in results:
+                save_instances(image,
+                               r['rois'],
+                               r['masks'],
+                               r['class_ids'],
+                               # ['BG'] + [i for i in classes],
+                               # r['scores'],
+                               outputDir=masksDir,
+                               which=outputType,
+                               title=imageFile,
+                               colours=classesColours,
+                               proj=sourceProj,
+                               trans=sourceTrans,
+                               mList=masks,
+                               cList=detectedClasses,
+                               externalReferencing=flags['e'])
 
     if flags['e']:
         print('Masks detected. Georeferencing masks...')
@@ -281,6 +343,7 @@ def save_instances(image,
                    trans=None,
                    mList=None,
                    cList=None,
+                   grassMap=False,
                    externalReferencing=None):
     """
     boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
@@ -346,13 +409,14 @@ def save_instances(image,
                 # TODO: write probabilities
                 # score = scores[i] if scores is not None else None
 
-            ax.imshow(masked_image.astype(np.uint8), interpolation='nearest')
+            masked_image = masked_image.astype(np.uint8)
+            ax.imshow(masked_image, interpolation='nearest')
             ax.set(xlim=[0, width], ylim=[height, 0], aspect=1)
 
             maskName = '{}_{}'.format(os.path.splitext(title)[0],
                                       str(class_ids[index]))
 
-            if not externalReferencing:
+            if not externalReferencing and not grassMap:
                 png = BytesIO()
                 plt.savefig(png, dpi=dpi)
 
@@ -379,6 +443,15 @@ def save_instances(image,
                                     band=1,  # TODO: 3 if 3 band masks
                                     overwrite=gscript.overwrite(),
                                     quiet=True)
+            elif grassMap:
+                # using maps imported in GRASS
+                mList.append(maskName)
+                if class_ids[index] not in cList:
+                    cList.append(class_ids[index])
+
+                mask2d = garray.array(dtype=np.uint8)
+                np.copyto(mask2d, masked_image[:, :, 0])
+                mask2d.write(mapname=maskName)
             else:
                 plt.savefig(
                     os.path.join(
