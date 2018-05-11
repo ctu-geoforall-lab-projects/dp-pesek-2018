@@ -104,7 +104,7 @@ from osgeo import gdal, osr
 
 path = get_lib_path(modname='maskrcnn', libname='model')
 if path is None:
-    grass.script.fatal('Not able to find the maskrcnn library directory.')
+    gscript.fatal('Not able to find the maskrcnn library directory.')
 sys.path.append(path)
 
 
@@ -163,14 +163,14 @@ def main(options, flags):
         flags = newFlags
 
     if len(band1) != len(band2)  or len(band2) != len(band3):
-        raise SystemExit('Length of band1, band2 and band3 must be equal.')
+        gscript.fatal('Length of band1, band2 and band3 must be equal.')
 
     # TODO: (3 different brands in case of lot of classes?)
     if len(classes) > 255:
-        raise SystemExit('Too many classes. Must be less than 256.')
+        gscript.fatal('Too many classes. Must be less than 256.')
 
     if len(set(classes)) != len(classes):
-        raise SystemExit('ERROR: Two or more classes have the same name.')
+        gscript.fatal('Two or more classes have the same name.')
 
     # used colour corresponds to class_id
     classesColours = range(len(classes) + 1)
@@ -187,17 +187,19 @@ def main(options, flags):
 
     # TODO: Use the whole list instead of iteration
     if len(band1) > 0:
+        gscript.message('Detecting features in raster maps...')
         # using maps imported in GRASS
-        for i in range(len(band1)):
-            maskTitle = '{}{}'.format(band1[i].split('.')[0], i)
+        mapsCount = len(band1)
+        for i in range(mapsCount):
+            maskTitle = '{}_{}'.format(band1[i].split('.')[0], i)
             # load map into 3-band np.array
-            gscript.run_command('g.region', raster=band1[i])
+            gscript.run_command('g.region', raster=band1[i], quiet=True)
             bands = np.stack((garray.array(band1[i]),
                               garray.array(band2[i]),
                               garray.array(band3[i])), 2)
 
             # Run detection
-            results = model.detect([bands], verbose=1)
+            results = model.detect([bands], verbosity=gscript.verbosity())
 
             # Save results
             for r in results:
@@ -215,8 +217,10 @@ def main(options, flags):
                                cList=detectedClasses,
                                grassMap=True,
                                externalReferencing=flags['e'])
+            gscript.percent(i, mapsCount, 1)
 
     if imagesDir:
+        gscript.message('Detecting features in images from the directory...')
         for imageFile in [file for file in next(
                 os.walk(imagesDir))[2] if os.path.splitext(file)[1] == extension]:
             image = skimage.io.imread(os.path.join(imagesDir, imageFile))
@@ -230,7 +234,7 @@ def main(options, flags):
             sourceTrans = source.GetGeoTransform()
 
             # Run detection
-            results = model.detect([image], verbose=1)
+            results = model.detect([image], verbosity=gscript.verbosity())
 
             # Save results
             for r in results:
@@ -251,21 +255,24 @@ def main(options, flags):
                                externalReferencing=flags['e'])
 
     if flags['e']:
-        print('Masks detected. Georeferencing masks...')
+        gscript.message('Masks detected. Georeferencing masks...')
         external_georeferencing(imagesDir, classes, masksDir, masks,
                                 detectedClasses, extension)
 
-    print('Converting masks to vectors...')
+    gscript.message('Converting masks to vectors...')
     masksString = ','.join(masks)
-    for i in detectedClasses:
-        print('Processing {} map...'.format(classes[i - 1]))
+    for parsedClass in detectedClasses:
+        gscript.message('Processing {} map...'.format(
+            classes[parsedClass - 1]))
+        i = 0
         for maskName in masks:
+            gscript.percent(i, len(masks), 1)
             gscript.run_command('g.region',
                                 raster=maskName,
                                 quiet=True)
             gscript.run_command('r.mask',
                                 raster=maskName,
-                                maskcats=classesColours[i],
+                                maskcats=classesColours[parsedClass],
                                 quiet=True)
             gscript.run_command('r.to.vect',
                                 's',
@@ -276,10 +283,11 @@ def main(options, flags):
             gscript.run_command('r.mask',
                                 'r',
                                 quiet=True)
+            i += 1
 
         gscript.run_command('v.patch',
                             input=masksString,
-                            output=classes[i - 1])
+                            output=classes[parsedClass - 1])
         gscript.run_command('g.remove',
                             'f',
                             name=masksString,
@@ -372,7 +380,8 @@ def save_instances(image,
 
     N = boxes.shape[0]
     if not N:
-        print("\n*** No instances to detect in image {}*** \n".format(title))
+        gscript.message(
+            "\n*** No instances to detect in image {}*** \n".format(title))
     else:
         assert boxes.shape[0] == masks.shape[-1] == class_ids.shape[0]
 
@@ -455,6 +464,7 @@ def save_instances(image,
                                     quiet=True)
             elif grassMap:
                 # using maps imported in GRASS
+                plt.close()
                 mList.append(maskName)
                 if class_ids[index] not in cList:
                     cList.append(class_ids[index])

@@ -7,6 +7,7 @@ Licensed under the MIT License (see LICENSE for details)
 Written by Waleed Abdulla
 Modified by Ondrej Pesek
     Written error handling in load_image_gt and data_generator
+    Changed the verbosity to correspond GRASS verbosity in detect
 """
 
 import os
@@ -2466,7 +2467,7 @@ class MaskRCNN():
 
         return boxes, class_ids, scores, full_masks
 
-    def detect(self, images, verbose=0):
+    def detect(self, images, verbosity=0):
         """Runs the detection pipeline.
 
         images: List of images, potentially of different sizes.
@@ -2476,12 +2477,16 @@ class MaskRCNN():
         class_ids: [N] int class IDs
         scores: [N] float probability scores for the class IDs
         masks: [H, W, N] instance binary masks
+
+        Modified by Ondrej Pesek:
+            verbose -> verbosity
+            verbose form in case of verbosity == 3, not 1
         """
         assert self.mode == "inference", "Create model in inference mode."
         assert len(
             images) == self.config.BATCH_SIZE, "len(images) must be equal to BATCH_SIZE"
 
-        if verbose:
+        if verbosity == 3:
             log("Processing {} images".format(len(images)))
             for image in images:
                 log("image", image)
@@ -2502,7 +2507,7 @@ class MaskRCNN():
         # TODO: can this be optimized to avoid duplicating the anchors?
         anchors = np.broadcast_to(anchors, (self.config.BATCH_SIZE,) + anchors.shape)
 
-        if verbose:
+        if verbosity == 3:
             log("molded_images", molded_images)
             log("image_metas", image_metas)
             log("anchors", anchors)

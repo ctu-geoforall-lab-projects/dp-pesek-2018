@@ -255,7 +255,7 @@ def main(options, flags):
 
     # Load weights
     if initialWeights:
-        print("Loading weights ", initialWeights)
+        gscript.message("Loading weights {}".format(initialWeights))
     if initialWeights and flags['e']:
         model.load_weights(initialWeights, by_name=True,
                            exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
@@ -263,7 +263,7 @@ def main(options, flags):
     elif initialWeights:
         model.load_weights(initialWeights, by_name=True)
 
-    print('Reading images from dataset ', dataset)
+    gscript.message('Reading images from dataset {}'.format(dataset))
     images = list()
     for root, subdirs, _ in os.walk(dataset):
         if not subdirs:
@@ -275,8 +275,8 @@ def main(options, flags):
     if flags['s']:
         # Write list of unused images to logs
         testImagesThreshold = int(len(images) * .9)
-        print('List of unused images saved in the logs directory '
-              'as "unused.txt"')
+        gscript.message('List of unused images saved in the logs directory'
+                        'as "unused.txt"')
         with open(os.path.join(logs, 'unused.txt'), 'w') as unused:
             for filename in images[testImagesThreshold:]:
                 unused.write('{}\n'.format(filename))
@@ -302,7 +302,7 @@ def main(options, flags):
     if initialWeights:
         # Training - Stage 1
         # Adjust epochs and layers as needed
-        print("Training network heads")
+        gscript.message("Training network heads")
         model.train(dataset_train, dataset_val,
                     learning_rate=config.LEARNING_RATE,
                     epochs=int(epochs / 7),
@@ -310,7 +310,7 @@ def main(options, flags):
 
         # Training - Stage 2
         # Finetune layers from ResNet stage 4 and up
-        print("Fine tune Resnet stage 4 and up")
+        gscript.message("Fine tune Resnet stage 4 and up")
         # divide the learning rate by 10 if ran out of memory or
         # if weights exploded
         model.train(dataset_train, dataset_val,
@@ -320,10 +320,10 @@ def main(options, flags):
 
         # Training - Stage 3
         # Fine tune all layers
-        print("Fine tune all layers")
+        gscript.message("Fine tune all layers")
         # out of if statement
     else:
-        print("Training all layers")
+        gscript.message("Training all layers")
         # out of if statement
 
     # divide the learning rate by 100 if ran out of memory or
