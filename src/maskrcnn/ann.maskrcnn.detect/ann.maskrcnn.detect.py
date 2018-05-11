@@ -121,6 +121,10 @@ def main(options, flags):
                 extension = '.{}'.format(extension)
         else:
             extension = ''
+
+        # a directory where masks and georeferencing will be saved in case of
+        # external images
+        masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
     except KeyError:
         # GRASS parses keys and values as bytes instead of strings
         imagesDir = options[b'images_directory'].decode('utf-8')
@@ -147,6 +151,10 @@ def main(options, flags):
             newFlags.update({flag.decode('utf-8'): value})
         flags = newFlags
 
+        # a directory where masks and georeferencing will be saved in case of
+        # external images
+        masksDir = gscript.core.tempfile().decode('utf-8').rsplit(os.sep, 1)[0]
+
     if len(band1) != len(band2) or len(band2) != len(band3):
         gscript.fatal('Length of band1, band2 and band3 must be equal.')
 
@@ -159,10 +167,6 @@ def main(options, flags):
 
     # used colour corresponds to class_id
     classesColours = range(len(classes) + 1)
-
-    # a directory where masks and georeferencing will be saved in case of
-    # external images
-    masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
 
     # Create model object in inference mode.
     config = ModelConfig(numClasses=len(classes) + 1)
@@ -204,9 +208,8 @@ def main(options, flags):
                                colours=classesColours,
                                mList=masks,
                                cList=detectedClasses,
-                               grassMap=True,
-                               externalReferencing=flags['e'])
-            gscript.percent(i, mapsCount, 1)
+                               grassMap=True)
+            gscript.percent(i + 1, mapsCount, 1)
 
     if imagesDir:
         gscript.message('Detecting features in images from the directory...')
@@ -217,8 +220,6 @@ def main(options, flags):
                 image = image[:, :, 0:3]
             source = gdal.Open(os.path.join(imagesDir, imageFile))
 
-            sourceSrs = osr.SpatialReference()
-            sourceSrs.ImportFromWkt(source.GetProjectionRef())
             sourceProj = source.GetProjection()
             sourceTrans = source.GetGeoTransform()
 
@@ -469,16 +470,11 @@ def parse_instances(image,
                                       str(class_ids[index]))
 
             if not externalReferencing and not grassMap:
-                png = BytesIO()
-                plt.savefig(png, dpi=dpi)
-
                 targetPath = os.path.join(
                     outputDir,
                     '{}{}'.format(maskName, os.path.splitext(title)[1]))
 
-                fileWithExt = Image.open(png)
-                fileWithExt.save(targetPath)
-                png.close()
+                plt.savefig(targetPath, dpi=dpi)
                 plt.close()
 
                 target = gdal.Open(targetPath, gdal.GA_Update)
@@ -495,6 +491,7 @@ def parse_instances(image,
                                     band=1,  # TODO: 3 if 3 band masks
                                     overwrite=gscript.overwrite(),
                                     quiet=True)
+
             elif grassMap:
                 # using maps imported in GRASS
                 plt.close()
@@ -552,17 +549,12 @@ def parse_instances(image,
             maskName = '{}_{}'.format(os.path.splitext(title)[0],
                                       str(class_ids[index]))
 
-            if os.path.splitext(title)[1] not in ['.png', '.jpeg', '.jpg']:
-                png = BytesIO()
-                plt.savefig(png, dpi=dpi)
-
+            if not externalReferencing and not grassMap:
                 targetPath = os.path.join(
                     outputDir,
                     '{}{}'.format(maskName, os.path.splitext(title)[1]))
 
-                fileWithExt = Image.open(png)
-                fileWithExt.save(targetPath)
-                png.close()
+                plt.savefig(targetPath, dpi=dpi)
                 plt.close()
 
                 target = gdal.Open(targetPath, gdal.GA_Update)
@@ -581,6 +573,7 @@ def parse_instances(image,
                                     quiet=True)
             elif grassMap:
                 # using maps imported in GRASS
+                plt.close()
                 mList.append(maskName)
                 if class_ids[index] not in cList:
                     cList.append(class_ids[index])
