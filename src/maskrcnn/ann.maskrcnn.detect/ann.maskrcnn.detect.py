@@ -136,9 +136,14 @@ def main(options, flags):
         imagesDir = options[b'images_directory'].decode('utf-8')
         modelPath = options[b'model'].decode('utf-8')
         classes = options[b'classes'].decode('utf-8').split(',')
-        band1 = options[b'band1'].decode('utf-8').split(',')
-        band2 = options[b'band2'].decode('utf-8').split(',')
-        band3 = options[b'band3'].decode('utf-8').split(',')
+        if options[b'band1'].decode('utf-8'):
+            band1 = options[b'band1'].decode('utf-8').split(',')
+            band2 = options[b'band2'].decode('utf-8').split(',')
+            band3 = options[b'band3'].decode('utf-8').split(',')
+        else:
+            band1 = list()
+            band2 = list()
+            band3 = list()
         outputType = options[b'output_type'].decode('utf-8')
         if options[b'images_format'].decode('utf-8'):
             if options[b'images_format'].decode('utf-8')[0] != '.':
@@ -157,14 +162,18 @@ def main(options, flags):
             newFlags.update({flag.decode('utf-8'): value})
         flags = newFlags
 
+    if len(band1) != len(band2)  or len(band2) != len(band3):
+        raise SystemExit('Length of band1, band2 and band3 must be equal.')
+
     # TODO: (3 different brands in case of lot of classes?)
     if len(classes) > 255:
         raise SystemExit('Too many classes. Must be less than 256.')
 
-    classesColours = range(len(classes) + 1)
-
     if len(set(classes)) != len(classes):
         raise SystemExit('ERROR: Two or more classes have the same name.')
+
+    # used colour corresponds to class_id
+    classesColours = range(len(classes) + 1)
 
     # Create model object in inference mode.
     config = ModelConfig(numClasses=len(classes) + 1)
@@ -180,6 +189,7 @@ def main(options, flags):
     if len(band1) > 0:
         # using maps imported in GRASS
         for i in range(len(band1)):
+            maskTitle = '{}{}'.format(band1[i].split('.')[0], i)
             # load map into 3-band np.array
             gscript.run_command('g.region', raster=band1[i])
             bands = np.stack((garray.array(band1[i]),
@@ -199,7 +209,7 @@ def main(options, flags):
                                # r['scores'],
                                outputDir=masksDir,
                                which=outputType,
-                               title=band1[i].split('.')[0],
+                               title=maskTitle,
                                colours=classesColours,
                                mList=masks,
                                cList=detectedClasses,
