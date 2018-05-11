@@ -632,8 +632,8 @@ class from chapter \ref{config} and the~\verb|MaskRCNN| class from chapter
 \ref{model-mrcnn}.
 
 However, more unmentioned functions can be seen in the~flowchart. Function
-\verb|save_instances| imports masks of detected instances into GRASS GIS
-(except for images with external georeferencig; they are just saved into
+\verb|parse_instances| imports masks of detected instances into GRASS GIS
+(except for images with external georeferencing; they are just saved into
 a~temporary folder). These masks are rasters of the~same size as the~input
 maps/images where mask pixels have the~value of class ID and the~rest are
 zeros. In case the~georeferencing is external, a flag \verb|-e| should be

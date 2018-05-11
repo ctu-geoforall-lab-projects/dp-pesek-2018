@@ -63,12 +63,6 @@
 #% required: yes
 #% multiple: yes
 #%end
-#%option G_OPT_M_DIR
-#% key: masks_output
-#% label: Directory where masks will be saved
-#% description: keep empty to use just temporary files
-#% required: no
-#%end
 #%option
 #% key: output_type
 #% type: string
@@ -122,15 +116,11 @@ def main(options, flags):
         band3 = options['band3'].split(',')
         outputType = options['output_type']
         if options['images_format']:
+            extension = options['images_format']
             if options['images_format'][0] != '.':
-                extension = '.{}'.format(options['images_format'])
-            else:
-                extension = options['images_format']
+                extension = '.{}'.format(extension)
         else:
             extension = ''
-        masksDir = options['masks_output']
-        if masksDir == '':
-            masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
     except KeyError:
         # GRASS parses keys and values as bytes instead of strings
         imagesDir = options[b'images_directory'].decode('utf-8')
@@ -146,23 +136,18 @@ def main(options, flags):
             band3 = list()
         outputType = options[b'output_type'].decode('utf-8')
         if options[b'images_format'].decode('utf-8'):
-            if options[b'images_format'].decode('utf-8')[0] != '.':
-                extension = '.{}'.format(options[b'images_format'].decode('utf-8'))
-            else:
-                extension = options[b'images_format'].decode('utf-8')
+            extension = options[b'images_format'].decode('utf-8')
+            if extension[0] != '.':
+                extension = '.{}'.format(extension)
         else:
             extension = ''
-        masksDir = options[b'masks_output'].decode('utf-8')
-        if masksDir == '':
-            masksDir = gscript.core.tempfile().decode('utf-8').rsplit(os.sep,
-                                                                      1)[0]
 
         newFlags = dict()
         for flag, value in flags.items():
             newFlags.update({flag.decode('utf-8'): value})
         flags = newFlags
 
-    if len(band1) != len(band2)  or len(band2) != len(band3):
+    if len(band1) != len(band2) or len(band2) != len(band3):
         gscript.fatal('Length of band1, band2 and band3 must be equal.')
 
     # TODO: (3 different brands in case of lot of classes?)
@@ -174,6 +159,10 @@ def main(options, flags):
 
     # used colour corresponds to class_id
     classesColours = range(len(classes) + 1)
+
+    # a directory where masks and georeferencing will be saved in case of
+    # external images
+    masksDir = gscript.core.tempfile().rsplit(os.sep, 1)[0]
 
     # Create model object in inference mode.
     config = ModelConfig(numClasses=len(classes) + 1)
@@ -203,7 +192,7 @@ def main(options, flags):
 
             # Save results
             for r in results:
-                save_instances(bands,
+                parse_instances(bands,
                                r['rois'],
                                r['masks'],
                                r['class_ids'],
@@ -221,11 +210,11 @@ def main(options, flags):
 
     if imagesDir:
         gscript.message('Detecting features in images from the directory...')
-        for imageFile in [file for file in next(
-                os.walk(imagesDir))[2] if os.path.splitext(file)[1] == extension]:
+        for imageFile in [file for file in next(os.walk(imagesDir))[2] if
+                          os.path.splitext(file)[1] == extension]:
             image = skimage.io.imread(os.path.join(imagesDir, imageFile))
             if image.shape[2] > 3:
-                image = image[:,:,0:3]
+                image = image[:, :, 0:3]
             source = gdal.Open(os.path.join(imagesDir, imageFile))
 
             sourceSrs = osr.SpatialReference()
@@ -238,7 +227,7 @@ def main(options, flags):
 
             # Save results
             for r in results:
-                save_instances(image,
+                parse_instances(image,
                                r['rois'],
                                r['masks'],
                                r['class_ids'],
@@ -302,6 +291,17 @@ def main(options, flags):
 
 def external_georeferencing(imagesDir, classes, masksDir, mList, cList,
                             extension):
+    """
+    Find the external georeferencing and copy it to the directory with
+    the image.
+
+    :param imagesDir: a directory of original images
+    :param classes: a list of classes names
+    :param masksDir: intermediate directory where masks are saved
+    :param mList: list of names of imported rasters
+    :param cList: list of classes with at least one instance
+    :param extension: extension if images
+    """
     for referencing in [file for file in next(os.walk(imagesDir))[2] if (
                     os.path.splitext(file)[1] != extension and
                     extension in file)]:
@@ -328,6 +328,16 @@ def external_georeferencing(imagesDir, classes, masksDir, mList, cList,
 
 def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
                         referencing):
+    """
+    Copy georeferencing file.
+
+    :param imagesDir: a directory of original images
+    :param masksDir: intermediate directory where masks are saved
+    :param maskFileName: title given to mask during parse_instances
+    :param refExtension: extension of referencing file
+    :param referencing: path to the file containing georeferencing
+    """
+
     r2 = os.path.join(masksDir, maskFileName + refExtension)
     copyfile(os.path.join(imagesDir, referencing), r2)
 
@@ -335,6 +345,12 @@ def copy_georeferencing(imagesDir, masksDir, maskFileName, refExtension,
 def apply_mask(image, mask, colour):
     """
     Apply the given mask to the image.
+
+    :param image: [band1, band2, band3]
+    :param mask: [height, width]
+    :param colour: integer giving corresponding to the class ID
+
+    :return image: A three band mask
     """
     for c in range(3):
         image[:, :, c] = np.where(mask == 1,
@@ -345,7 +361,7 @@ def apply_mask(image, mask, colour):
     return image
 
 
-def save_instances(image,
+def parse_instances(image,
                    boxes,
                    masks,
                    class_ids,
@@ -355,7 +371,7 @@ def save_instances(image,
                    # figsize=(16, 16),
                    # ax=None,
                    outputDir='',
-                   which='mask',
+                   which='area',
                    colours=None,
                    proj=None,
                    trans=None,
@@ -364,12 +380,29 @@ def save_instances(image,
                    grassMap=False,
                    externalReferencing=None):
     """
-    boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image coordinates.
-    masks: [height, width, num_instances]
-    class_ids: [num_instances]
-    class_names: list of class names of the dataset
-    scores: (optional) confidence scores for each box
-    figsize: (optional) the size of the image.
+    Create a raster from results of detection and import it into GRASS GIS or
+    save to a temporal directory to wait for external georeferencing.
+    
+    :param image: [band1, band2, band3]
+    :param boxes: [num_instance, (y1, x1, y2, x2, class_id)] in image
+        coordinates
+    :param masks: [height, width, num_instances]
+    :param class_ids: [num_instances]
+    :param class_names: list of class names of the dataset
+    :param scores: (optional) confidence scores for each box
+    :param title: title used for importing as a raster map
+    :param figsize: (optional) the size of the image.
+    :param outputDir: intermediate directory where masks will be saved
+    :param which: either 'area' or 'point', a representation of detections
+    :param colours: list of colours i order of class_ids
+    :param proj: projection of image
+    :param trans: geotransform of image
+    :param mList: list of names of imported rasters
+    :param cList: list of classes with at least one instance
+    :param grassMap: boolean. True=using maps in GRASS, False=using external
+        images
+    :param externalReferencing: boolean. True=images are georeferenced by
+        an external file
 
     May be extended in the future (commented parameters)
     """
