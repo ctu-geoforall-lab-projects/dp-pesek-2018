@@ -439,11 +439,26 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 \subsubsection*{Parameters:}
 
 \begin{flushleft}
-\textbf{images\_directory}=name \textbf{[required]}
+\textbf{band1}=name
+
+\tab Name of raster maps to use for detection as the first band
+(divided by ",")
+
+\textbf{band2}=name
+
+\tab Name of raster maps to use for detection as the second band
+(divided by ",")
+
+\textbf{band3}=name
+
+\tab Name of raster maps to use for detection as the third band
+(divided by ",")
+
+\textbf{images\_directory}=name
 
 \tab Path to a~directory with images to detect
 
-\textbf{images\_format}=string \textbf{[required]}
+\textbf{images\_format}=string
 
 \tab Format suffix of images
 

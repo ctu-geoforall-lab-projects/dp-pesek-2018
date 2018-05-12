@@ -539,11 +539,11 @@ the~\verb|generate_anchors| function is called to generate anchors of ratios for
 a~given set of scales. 
 
 The workflow of the~\verb|generate_anchors| function is illustrated in 
-pseudocode \ref{code:anchors}. It took scales, ratios, feature map shape and 
-anchors and feature map strides as inputs. It uses these inputs to compute 
-heights and widths of different anchors (can be seen in figure \ref{fig:rpn}) 
-and to compute a~grid of anchors centers. This grid together with their heights 
-and widths defines the~returned value, anchors.
+pseudocode \ref{code:anchors}. It takes scales and ratios of anchors, feature
+map shape and anchors and feature map strides as inputs. It uses these inputs
+to compute heights and widths of different anchors (can be seen in figure
+\ref{fig:rpn}) and to compute a~grid of anchors centers. This grid together
+with their heights and widths defines the~returned value, anchors.
 
 {\scriptsize
 \begin{lstlisting}[style=python, caption={generate\_anchors}, captionpos=b, 
