@@ -569,37 +569,134 @@ The model for detecting football and tennis pitches was trained on a~Debian
 server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the~use) and with memory
 49~GBs. The~processor base frequency of Intel Xeon E5540 is 2.53 GHz and the~cache 
 is 8~MB. The~training used a~model trained on the~MS COCO dataset as
-a~pre-trained model and the~training took one month.
+a~pre-trained model and the~training took one month reaching loss function of 0.9568.
 
 The training dataset consisted of Bing 
 maps\footnote{\url{https://www.bing.com/maps}} tiles with zoom level 18 
-(resolution 0.6 m per pixel) and masks corresponding to above-mentioned pitches. 
-The training dataset consisted of almost 54000 images (plus masks).
+(resolution 0.6 m per pixel) and masks corresponding to above-mentioned
+pitches. The training dataset consisted of almost 54000 images (plus masks).
 
 When the~training was stopped, the~loss function was about 0.86.
+
+Detection of pitches worked very well on images with the same shape and
+resolution (0.6 m/pixel) as training images (figures \ref{fig:football1} and
+\ref{fig:tennis1}). For images with worse resolution (1.19 m/pixel), the
+detection sometimes contained a bit of background for tennis pitches (figures
+\ref{fig:football-tennis}). However, there
+was a problem in detecting football pitches, as the model sometimes detected
+wrongly also other green fields (figure \ref{fig:football2}). This problem is
+considered to be caused by the~fact that training data contained also amateur
+football pitches consisting only of rectangular green field and two goals.
 
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/out1.png}
 	\caption[Detection of football pitches]{An example of the~detection on a~picture containing football pitches}
-      \label{fig:football}
+      \label{fig:football1}
 \end{figure}
 
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/out2.png}
 	\caption[Detection of tennis pitches]{An example of the~detection on a~picture containing tennis pitches}
-      \label{fig:tennis}
+      \label{fig:tennis1}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out4.png}
+	\caption[Detection of football pitches, another resolution]{An example of the~detection on a~picture containing football pitches}
+      \label{fig:football2}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out3.png}
+	\caption[Detection of football and tennis pitches]{An example of the~detection on a~picture containing football and tennis pitches}
+      \label{fig:football-tennis}
 \end{figure}
 
 The permission to the usage of Bing map tiles was given to me specifically for 
 purposes of this thesis. Unfortunately, the~permission to share the~training 
 dataset in e-attachments could not be given to me.
 
-
 \section{Buildings}
 
-TODO?
+Another model was trained to recognize buildings. Training data were from the
+same source, with the same resolution, but this time only 2400 images (plus
+masks) was used.
+
+The training ran for 2 days on a machine using NVIDIA Tesla K80 GPU. NVIDIA
+Tesla K80 has memory 24 GBs, effective clock speed 2.5 Hz with 875 MHz boost
+clock and 560 MHz core clock. The training ran from the scratch.
+
+Results are worse than in the pitches detection. In figure \ref{fig:build-1},
+we can see a~tennis pitch and road detected as a building, the building with
+black roof was not recognized and only a small part of the tribune was
+detected. In figure \ref{fig:build-2}, almost all buildings were detected with
+only one wrong detection (again road). However, the area corresponding to the
+building in the right upper corner does not fit the building at all.
+These problems may be caused by some of the following effects:
+\begin{itemize}
+	\item More than twenty times smaller dataset.
+	\item Bigger diversity in building types (compared to tennis pitches)
+	\item Training from a scratch and for a shorter time
+\end{itemize}
+
+Even though the training took a shorter time, it reached much smaller loss
+function (0.5019 for the last epoch). Two figures of detection with this loss
+function are shown (\ref{fig:build-1} and \ref{fig:build-2}).
+
+To illustrate
+a~progress of the~training, the~area from figure \ref{fig:build-1} will be
+shown also during older epochs with loss function depicted in their captions.
+The progress shows also interesting moment, where an epoch with loss function
+0.6280 (figure \ref{fig:build-6}) seems to behave better than the one with loss
+function 0.5019 (it detects also the small building on the left and a piece of
+a building at the bottom of the~picture and it does not detect the street on
+the right; the tribune was detected as two individual buildings).
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_180_2.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 180, loss function 0.5019}
+      \label{fig:build-2}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_180.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 180, loss function 0.5019}
+      \label{fig:build-1}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_1.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 1, loss function 35.0102}
+      \label{fig:build-3}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_50.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 50, loss function 1.3638}
+      \label{fig:build-4}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_100.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 100, loss function 0.8245}
+      \label{fig:build-5}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.8\linewidth]{./pictures/out_b_150.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch 150, loss function 0.6280}
+      \label{fig:build-6}
+\end{figure}
 
 \chapter{E-attachments}
 \label{attach}
@@ -609,5 +706,4 @@ E-attachment of this thesis consists of following features:
 \begin{itemize}
 	\item The source code of GRASS GIS modules and library
 	\item GRASS GIS patch for Python 3
-	\item Models mentioned in chapter \ref{examples}
 \end{itemize}
