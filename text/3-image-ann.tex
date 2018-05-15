@@ -97,7 +97,7 @@ conditions.
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/classification.png}
 	\caption[Classification example]{An example of the~classification output with 
-softmax function, source: \cite{cnn-classification}}
+	softmax function, source: \cite{cnn-classification}}
       \label{fig:class}
 \end{figure}
 
@@ -123,21 +123,21 @@ the~bounding box as tight around the~object as possible and predict the~class of
 the~object, so the~user ends up with two outputs:
 \begin{itemize}
 	\item \textbf{Class:} Class label
-	\item \textbf{Bounding box:} Box in the~image defined by two coordinates and 
-its width and height.
+	\item \textbf{Bounding box:} Box in the~image defined by two coordinates and
+	its width and height.
 \end{itemize}
-
-Because multiple values are returned, this task can be considered as a~kind of
-a~regression problem. Outputs from the~regression are enough to get a~result as 
-the one illustrated in figure \ref{fig:class-loc}. 
 
 \begin{figure}[H]
    \centering
 	\includegraphics[width=.7\linewidth]{./pictures/class-loc.JPG}
 	\caption[Classification with localization example]{An example of classification 
-with localization}
+	with localization}
       \label{fig:class-loc}
 \end{figure}
+
+Because multiple values are returned, this task can be considered as a~kind of
+a~regression problem. Outputs from the~regression are enough to get a~result as 
+the~one illustrated in figure \ref{fig:class-loc}. 
 
 \section{Object detection}
 \label{object-detection}
@@ -201,11 +201,11 @@ features computed on the~inferred deformable part model (\zk{DPM}) locations.
 
 Although R-CNN outperformed similar architectures\footnote{\cite{rcnn} claims
 a~mean average precision (\zk{mAP}) of $53.3 \%$.}, there were still some 
-shortcomings. The~biggest one was the~slowness caused mainly by three elements - 
-the forward propagation through \zk{CNN} (each region of every image must be 
-passed separately), by its triplicated training (a network for generating image 
-features, a~network for the~class decision and the~bounding box regression 
-model) and by the~generating of bounding box proposals.
+shortcomings. The~biggest one was the~slowness. It is caused mainly by three
+elements - the forward propagation through \zk{CNN} (each region of every image
+must be passed separately), by its triplicated training (a network for
+generating image features, a~network for the~class decision and the~bounding
+box regression model) and by the~generating of bounding box proposals.
 
 \subsection{Fast R-CNN}
 \label{fast-rcnn}
@@ -340,14 +340,6 @@ of \cite{fcns}, cut off the~last classification layer and convert the~fully
 connected layers into convolutional ones. $1 \times 1$ convolution was appended 
 to predict scores for each class. 
 
-Everything must be then passed through the~decoder; the~decoder is here 
-represented by a~backward convolution, by a~\textit{deconvolution}. 
-Deconvolution consists of upsampling using a~bilinear interpolation. With a~few 
-of deconvolutional layers, the~network can learn even a~nonlinear upsampling. 
-When using more layers, it is useful to fuse the~output of each layer with 
-predictions computed in the~backbone layer with corresponding resolution using 
-similar bypass (skip connections) as that described in chapter \ref{resnet}.
-
 \begin{figure}[H]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/fcns-bypass.png}
@@ -355,6 +347,14 @@ similar bypass (skip connections) as that described in chapter \ref{resnet}.
 schema; only pooling and prediction layers are shown, source: \cite{fcns}}
       \label{fig:fcns-bypass}
 \end{figure}
+
+Everything must be then passed through the~decoder; the~decoder is here 
+represented by a~backward convolution, by a~\textit{deconvolution}. 
+Deconvolution consists of upsampling using a~bilinear interpolation. With a~few 
+of deconvolutional layers, the~network can learn even a~nonlinear upsampling. 
+When using more layers, it is useful to fuse the~output of each layer with 
+predictions computed in the~backbone layer with corresponding resolution using 
+similar bypass (skip connections) as that described in chapter \ref{resnet}.
 
 % segnet, fully convolutional densenet 
 

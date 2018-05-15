@@ -14,15 +14,16 @@ ship, car, etc.). It means elements that can be represented as points. But what
 about searching for forests? Searching for lakes? Rivers? Oil spills? Do we 
 really want to represent them in \zk{GIS} as points in their centre of mass?
 
-It seems that better representation is in polygons (or lines). But representing 
+It seems that better representation is in polygons (or lines). But representing
 a detection bounding box as a~polygon square does not seem like the~right way. 
 So there are two possible ways - semantic segmentation and instance 
 segmentation. Three arguments were raised and discussed on behalf of instance 
 segmentation:
 \begin{itemize}
-	\item the~instance differentiation could be very useful for some tasks.
+	\item The~instance differentiation could be very useful for some tasks.
 	\item It is easier to create masks only for requested objects.
-	\item If each pixel in a~raster input will be assigned to a~class, we got \textit{semantic segmentation}.
+	\item If each pixel in a~raster input will be assigned to a~class, we got
+	\textit{semantic segmentation}.
 \end{itemize}
 
 When works on this implementation started, the~paper on Mask R-CNN was just 
@@ -33,11 +34,13 @@ the~success of the~original paper. Few followers also appeared (for example
 \cite{masklab}) and it could be interesting to examine them deeper from
 a~geomatic point of view.
 
-For the~implementation to GRASS GIS, the~Python language was chosen. There are 
+For the~implementation to GRASS GIS, the~Python language was chosen. There are
 few reasons for this decision:
 \begin{itemize}
-	\item Although some GRASS GIS modules are written in C and C++, many of them are written in Python.
-	\item Python allows me to use libraries such as TensorFlow\footnote{\url{https://www.tensorflow.org/}} and Keras\footnote{\url{https://keras.io/}}, both very useful and widely used in the~field of deep learning. 
+	\item Although some GRASS GIS modules are written in C and C++, many of them
+	are written in Python.
+	\item Python allows me to use libraries such as TensorFlow and Keras, both
+	very useful and widely used in the~field of deep learning. 
 \end{itemize}
 
 Mask \zk{R-CNN} tools created for the~practical part of the~thesis consist of 
@@ -84,10 +87,16 @@ code.
 
 The library consists of four files:
 \begin{itemize}
-	 \item \verb|config.py|: the~configuration file for the~model. It will be described in chapter \ref{config}.
-	 \item \verb|model.py|: the~core of the~Mask \zk{R-CNN} model. It builds up the~model. It will be described in chapter \ref{model}.
-	 \item \verb|parallel_model.py|: Contains the~ParallelModel class, a~subclass of the~standard Keras model allowing the~parallelized computation. Because this file is in the~original state written by Waleed Abdulla without any modification, it will not be described further in the~text.
-	 \item \verb|utils.py|: Utilities for the~model. They will be described in chapter \ref{utils}.
+	 \item \verb|config.py|: The~configuration file for the~model. It will be
+	 described in chapter \ref{config}.
+	 \item \verb|model.py|: The~core of the~Mask \zk{R-CNN} model. It builds up
+	 the~model. It will be described in chapter \ref{model}.
+	 \item \verb|parallel_model.py|: Contains the~ParallelModel class, a~subclass
+	 of the~standard Keras model allowing the~parallelized computation. Because
+	 this file is in the~original state written by Waleed Abdulla without any
+	 modification, it will not be described further in the~text.
+	 \item \verb|utils.py|: Utilities for the~model. They will be described in
+	 chapter \ref{utils}.
 \end{itemize}
 
 Files \verb|config.py|, \verb|model.py|, and \verb|utils.py| will be described 
@@ -149,7 +158,7 @@ two functions \verb|identity_block| and \verb|convolutional block|. These
 features will be described in the~following text.
 
 {\scriptsize
-\begin{lstlisting}[style=python, caption={Building the~ResNet backbone 
+\begin{lstlisting}[style=python, caption={Building the ResNet backbone 
 architecture}, captionpos=b, label=code:resnet, deletekeywords={from, max},
 backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
 layers = intended layers
@@ -273,7 +282,7 @@ rounding. The~implementation is briefly sketched in pseudocode
 label=code:roialign, deletekeywords={from, input, map},
 backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
 pool_shape = shape of regions
-image_shape = shape of the~image
+image_shape = shape of the image
 boxes = list of RoIs
 feature_maps = list of feature maps
 h, w = compute_heights_and_widths_boxes(boxes)
@@ -386,7 +395,7 @@ anchors = generate_anchors()
 rpn = build_rpn()
 rois = ProposalLayer(rpn, anchors)
 if mode == 'training':
-    ground_truth_values = values from the~training dataset
+    ground_truth_values = values from the training dataset
     bbox, classes = fpn_classifier(rois)
     target_detection = DetectionTargetLayer(ground_truth_values)
     mask = fpn_mask(rois from target_detection)
@@ -470,10 +479,10 @@ skipped for all masks in the~directory.
 \begin{lstlisting}[style=python, caption={get\_mask}, captionpos=b, 
 label=code:get-mask, deletekeywords={class},
 backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
-masks_list = list of mask files within the~directory
+masks_list = list of mask files within the directory
 first_mask = masks_list[0]
 masks_array = array containing first_mask transformed to bool
-classes_list = list containing class of the~first mask
+classes_list = list containing class of the first mask
 for new_mask in masks_list[1:]:
     concat_mask = new_mask transformed to bool
     concatenate masks_array with concat_mask
@@ -511,10 +520,10 @@ label=code:iou, deletekeywords={from, and},
 backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
 predicted_box_area = area of predicted box
 groundtruth_box_area = area of given mask
-y1 = the~bigger one from the~upper coordinates of the~predicted and ground truth bboxes
-y2 = the~smaller one from the~lower coordinates of the~predicted and ground truth bboxes
-x1 = the~bigger one from the~left coordinates of the~predicted and ground truth bboxes
-x2 = the~smaller one from the~right coordinates of the~predicted and ground truth bboxes
+y1 = the bigger one from the upper coordinates of the predicted and ground truth bboxes
+y2 = the smaller one from the lower coordinates of the predicted and ground truth bboxes
+x1 = the bigger one from the left coordinates of the predicted and ground truth bboxes
+x2 = the smaller one from the right coordinates of the predicted and ground truth bboxes
 intersection = (x2 - x1) * (y2 - y1)
 union = predicted_box_area + groundtruth_box_area - intersection
 iou = intersection / union
@@ -552,8 +561,8 @@ backgroundcolor = \color{light-gray}, numbers=left, breaklines=true]
 scales = array of scales
 ratios = array of ratios
 feature_map_shape = [height, width]
-anchor_stride = stride of anchors on the~featuremap
-feature_stride = stride of the~featuremap
+anchor_stride = stride of anchors on the featuremap
+feature_stride = stride of the featuremap
 heights = scales divided by a square root of ratios (each by each)
 widths = scales multiplied by square root of ratios (each by each)
 shifts_y = grid from 0 to shape[0] with stride anchor_stride

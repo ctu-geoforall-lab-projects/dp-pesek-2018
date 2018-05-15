@@ -10,15 +10,15 @@ generally and then each module separately.
 \subsection*{DESCRIPTION}
 
 Mask R-CNN tools allow the~user to train his own model and use it for
-a~detection of objects, or to use a~model provided by someone else. It can be seen 
-as a~supervised classification using convolutional neural networks.
+a~detection of objects, or to use a~model provided by someone else. It can be
+seen as a~supervised classification using convolutional neural networks.
 
 The training is done using module \emph{ann.maskrcnn.train}. The~user feeds
-the~module with training data consisting of images and masks for each instance of 
-intended classes and gets a~model. For difficult tasks and when not using
-a~pretrained model, the~training may take even weeks; in case of a~good pretrained 
-model and powerful PC with GPU support, the~training could get good results 
-after 1 day and even less.
+the~module with training data consisting of images and masks for each instance
+of intended classes and gets a~model. For difficult tasks and when not using
+a~pretrained model, the~training may take even weeks; in case of a~good
+pretrained model and powerful PC with GPU support, the~training could get good
+results after 1 day and even less.
 
 When the~user has a~model, it can be used for the~detection. 
 \emph{ann.maskrcnn.detect} detects classes learned during the~training and 
@@ -28,8 +28,8 @@ can be extracted either as areas or points.
 \subsection*{DEPENDENCIES}
 
 \emph{ann.maskrcnn.*} modules contain a~lot of external python dependencies.
-To run modules, it is necessary to have them installed. Modules use Python 3, so
-please install Python 3 versions.
+To run modules, it is necessary to have them installed. Modules use Python 3,
+so please install Python 3 versions.
 
 \liststyleLi
 \begin{itemize}
@@ -94,7 +94,16 @@ his GRASS GIS with the~following patch:
 
 \textbf{ann.maskrcnn.train -{}-help}
 
-\textbf{ann.maskrcnn.train} [\textbf{-esbn}] \textbf{training\_dataset}=name [\textbf{model}=string] \tab\ \textbf{classes}=string[,string,...] \textbf{logs}=name \textbf{name}=string [\textbf{epochs}=value] \tab\ [\textbf{steps\_per\_epoch}=value] [\textbf{rois\_per\_image}=value] \tab\ [\textbf{images\_per\_gpu}=value] [\textbf{gpu\_count}=value] \tab\ [\textbf{mini\_mask\_size}=value[,value,...]] [\textbf{validation\_steps}=value] \tab\ [\textbf{images\_min\_dim}=value] [\textbf{images\_max\_dim}=value] \tab\ [\textbf{backbone}=string] [\textbf{-{}-overwrite}] [\textbf{-{}-help}] [\textbf{-{}-verbose}] [\textbf{-{}-quiet}] [\textbf{-{}-ui}]
+\textbf{ann.maskrcnn.train} [\textbf{-esbn}] \textbf{training\_dataset}=name
+[\textbf{model}=string] \tab\ \textbf{classes}=string[,string,...]
+\textbf{logs}=name \textbf{name}=string [\textbf{epochs}=value] \tab\
+[\textbf{steps\_per\_epoch}=value] [\textbf{rois\_per\_image}=value] \tab\
+[\textbf{images\_per\_gpu}=value] [\textbf{gpu\_count}=value] \tab\
+[\textbf{mini\_mask\_size}=value[,value,...]]
+[\textbf{validation\_steps}=value] \tab\ [\textbf{images\_min\_dim}=value]
+[\textbf{images\_max\_dim}=value] \tab\ [\textbf{backbone}=string]
+[\textbf{-{}-overwrite}] [\textbf{-{}-help}] [\textbf{-{}-verbose}]
+[\textbf{-{}-quiet}] [\textbf{-{}-ui}]
 \end{flushleft}
 
 \subsubsection*{Flags:}
@@ -109,7 +118,8 @@ his GRASS GIS with the~following patch:
   
   \textbf{-b}
   
-  \tab Train also batch normalization layers (not recommended for small batches)
+  \tab Train also batch normalization layers (not recommended for small
+  batches)
 
   \textbf{-n}
   
@@ -239,8 +249,9 @@ his GRASS GIS with the~following patch:
 \end{flushleft}
 
 \subsection*{DESCRIPTION}
-\textstyleEmphasis{ann.maskrcnn.train} allows the user to train a~Mask R-CNN model
-on his own dataset. The~dataset has to be prepared in a~predefined structure. 
+\textstyleEmphasis{ann.maskrcnn.train} allows the user to train a~Mask R-CNN
+model on his own dataset. The~dataset has to be prepared in a~predefined
+structure. 
 
 \subsubsection*{DATASET STRUCTURE}
 Training dataset should be in the~following structure: 
@@ -268,11 +279,11 @@ Training dataset should be in the~following structure:
 \end{itemize}
 \end{itemize}
 
-The described structure of directories is required. Pictures must be *.jpg files
-with 3 channels (for example RGB), masks must be *.png files consisting of
-numbers between 1 and 255 (object instance) and 0s (elsewhere). A~mask file for
-each instance of an object should be provided separately distinguished by the
-suffix number. 
+The described structure of directories is required. Pictures must be *.jpg
+files with 3 channels (for example RGB), masks must be *.png files consisting
+of numbers between 1 and 255 (object instance) and 0s (elsewhere). A~mask file
+for each instance of an object should be provided separately distinguished by
+the suffix number. 
 
 \subsection*{NOTES}
 If you are using initial weights (the \textstyleEmphasis{model} parameter),
@@ -295,10 +306,10 @@ parameter and zero-padded to be of shape \verb|images\_max\_dim| $\times$
 \verb|images\_max\_dim|. It results in the~fact that even images of different
 sizes may be used. 
 
-After each epoch, the~current model is saved. It allows the~user to stop the~training
-when he feels satisfied with loss functions. It also allows the~user to
-test models even during the~training (and, again, stop it even before the~last
-epoch). 
+After each epoch, the~current model is saved. It allows the~user to stop
+the~training when he feels satisfied with loss functions. It also allows
+the~user to test models even during the~training (and, again, stop it even
+before the~last epoch). 
 
 \subsection*{EXAMPLES}
 Dataset for examples: 
@@ -338,9 +349,9 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 After default number of epochs, we will get a~model where the~first class is
 trained to detect corn fields and the~second one to detect rice fields. 
 
-If we use the~command with reversed classes order, we will get a~model where the
-first class is trained to detect rice fields and the~second one to detect corn
-fields:
+If we use the~command with reversed classes order, we will get a~model where
+the first class is trained to detect rice fields and the~second one to detect
+corn fields:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
@@ -397,7 +408,8 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 
 \subsection*{NAME}
 
-\textbf{ann.maskrcnn.detect -} Detect features in images using a~Mask R-CNN model.
+\textbf{ann.maskrcnn.detect -} Detect features in images using a~Mask R-CNN
+model.
 
 \subsection*{SYNOPSIS}
 
@@ -406,7 +418,11 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 
 \textbf{ann.maskrcnn.detect -{}-help}
 
-\textbf{ann.maskrcnn.detect} [\textbf{-esbn}] \textbf{images\_directory}=name \tab\ \textbf{images\_format}=string \textbf{model}=string \textbf{classes}=string[,string,...] \tab\ [\textbf{masks\_output}=name] [\textbf{output\_type}=string] [\textbf{-{}-overwrite}] [\textbf{-{}-help}] \tab\ [\textbf{-{}-verbose}] [\textbf{-{}-quiet}] [\textbf{-{}-ui}]
+\textbf{ann.maskrcnn.detect} [\textbf{-esbn}] \textbf{images\_directory}=name
+\tab\ \textbf{images\_format}=string \textbf{model}=string
+\textbf{classes}=string[,string,...] \tab\ [\textbf{masks\_output}=name]
+[\textbf{output\_type}=string] [\textbf{-{}-overwrite}] [\textbf{-{}-help}]
+\tab\ [\textbf{-{}-verbose}] [\textbf{-{}-quiet}] [\textbf{-{}-ui}]
 \end{flushleft}
 
 \subsubsection*{Flags:}
@@ -485,7 +501,8 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 
 \subsection*{DESCRIPTION}
 \textstyleEmphasis{ann.maskrcnn.detect} allows the user to use a~Mask R-CNN
-model to detect features in GRASS GIS raster maps or georeferenced files and extract them either as areas or
+model to detect features in GRASS GIS raster maps or georeferenced files and
+extract them either as areas or
 points. The~module creates a~separate map for each class. 
 
 \subsection*{NOTES}
@@ -567,9 +584,10 @@ a module trained to detect buildings.
 
 The model for detecting football and tennis pitches was trained on a~Debian 
 server with 16 CPUs Intel Xeon E5540 (8 CPUs were in the~use) and with memory
-49~GBs. The~processor base frequency of Intel Xeon E5540 is 2.53 GHz and the~cache 
-is 8~MB. The~training used a~model trained on the~MS COCO dataset as
-a~pre-trained model and the~training took one month reaching loss function of 0.9568.
+49~GBs. The~processor base frequency of Intel Xeon E5540 is 2.53 GHz and
+the~cache is 8~MB. The~training used a~model trained on the~MS COCO dataset as
+a~pre-trained model and the~training took one month reaching loss function of
+0.9568.
 
 The training dataset consisted of Bing 
 maps\footnote{\url{https://www.bing.com/maps}} tiles with zoom level 18 
@@ -590,29 +608,33 @@ football pitches consisting only of rectangular green field and two goals.
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out1.png}
-	\caption[Detection of football pitches]{An example of the~detection on a~picture containing football pitches}
+	\includegraphics[width=.9\linewidth]{./pictures/out1.png}
+	\caption[Detection of football pitches]{An example of the~detection on
+	a~picture containing football pitches}
       \label{fig:football1}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out2.png}
-	\caption[Detection of tennis pitches]{An example of the~detection on a~picture containing tennis pitches}
+	\includegraphics[width=.9\linewidth]{./pictures/out2.png}
+	\caption[Detection of tennis pitches]{An example of the~detection on
+	a~picture containing tennis pitches}
       \label{fig:tennis1}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out4.png}
-	\caption[Detection of football pitches, another resolution]{An example of the~detection on a~picture containing football pitches}
+	\includegraphics[width=.9\linewidth]{./pictures/out4.png}
+	\caption[Detection of football pitches, another resolution]{An example of
+	the~detection on a~picture containing football pitches}
       \label{fig:football2}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out3.png}
-	\caption[Detection of football and tennis pitches]{An example of the~detection on a~picture containing football and tennis pitches}
+	\includegraphics[width=.9\linewidth]{./pictures/out3.png}
+	\caption[Detection of football and tennis pitches]{An example of the~detection
+	on a~picture containing football and tennis pitches}
       \label{fig:football-tennis}
 \end{figure}
 
@@ -632,10 +654,10 @@ clock and 560 MHz core clock. The training ran from the scratch.
 
 Results are worse than in the pitches detection. In figure \ref{fig:build-1},
 we can see a~tennis pitch and road detected as a building, the building with
-black roof was not recognized and only a small part of the tribune was
+black roof was not recognized and only a small part of the~tribune was
 detected. In figure \ref{fig:build-2}, almost all buildings were detected with
-only one wrong detection (again road). However, the area corresponding to the
-building in the right upper corner does not fit the building at all.
+only one wrong detection (again road). However, the~area corresponding to the
+building in the right upper corner does not fit the~building at all.
 These problems may be caused by some of the following effects:
 \begin{itemize}
 	\item More than twenty times smaller dataset.
@@ -658,43 +680,49 @@ the right; the tribune was detected as two individual buildings).
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_180_2.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 180, loss function 0.5019}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_180_2.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	180, loss function 0.5019}
       \label{fig:build-2}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_180.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 180, loss function 0.5019}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_180.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	180, loss function 0.5019}
       \label{fig:build-1}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_1.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 1, loss function 35.0102}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_1.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	1, loss function 35.0102}
       \label{fig:build-3}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_50.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 50, loss function 1.3638}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_50.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	50, loss function 1.3638}
       \label{fig:build-4}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_100.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 100, loss function 0.8245}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_100.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	100, loss function 0.8245}
       \label{fig:build-5}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.8\linewidth]{./pictures/out_b_150.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch 150, loss function 0.6280}
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_150.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	150, loss function 0.6280}
       \label{fig:build-6}
 \end{figure}
 

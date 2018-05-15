@@ -90,7 +90,7 @@ kernel\_height + 1]$. An~example may be seen in figure \ref{fig:conv}.
 
 %% ML: reference/author?
 %% OP: Jeste moje prace
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[width=.8\linewidth]{./pictures/conv.jpg}
 	\caption[Kernel convolution]{Two steps of kernel convolution}
@@ -305,7 +305,7 @@ high-level features, the other one to classify the results\footnote{Gaussian
 connections are used here instead of softmax mentioned in \ref{fc-layers}. They
 are based on Euclidean Radial Basis Function and described in \cite{lenet5}.}.
 
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/lenet.png}
 	\caption[LeNet-5 architecture]{LeNet-5 architecture schema, source: 
@@ -315,7 +315,7 @@ are based on Euclidean Radial Basis Function and described in \cite{lenet5}.}.
 
 LeNet-5 made the first important step for \zk{CNN}s and a~big step for 
 \zk{ANN}-based computer vision generally. It explained that taking an input as 
-individual values - besides its speed and computation problems - does not use 
+individual values, besides its speed and computation problems, does not use 
 the advantage of spatial correlations within the input. 
 
 %\subsection{Dan Ciresan Net}
@@ -353,7 +353,7 @@ the~training. The separate GPU approach is indicated in figure
 processes; it can be seen that the interaction between two GPUs happens only at
 certain layers. 
 
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/alexnet.png}
 	\caption[AlexNet architecture]{AlexNet architecture schema, source: 
@@ -383,7 +383,7 @@ of the middle convolutional layers expanded and the cross-entropy loss function
 was used as well as stochastic gradient descent with a~mini-batch size of 128.
 The architecture can be seen in figure \ref{fig:zf-net}.
 
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/zf-net.png}
 	\caption[ZF Net architecture]{ZF Net architecture schema, source: 
@@ -405,7 +405,7 @@ seen in figure \ref{fig:deconvnet}.
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=\linewidth]{./pictures/deconvnet.png}
+	\includegraphics[width=0.79\linewidth]{./pictures/deconvnet.png}
 	\caption[Deconvolutional network]{Visualization of 5 feature maps through 
 	deconvolutional networks, source: \cite{zf-net}}
       \label{fig:deconvnet}
@@ -477,7 +477,7 @@ architecture of \zk{ILSVRC} 2014 with a~top 5 error rate of 6.7 \%, proposed in
 \cite{googlenet} another approach, instead of at the~architecture simplicity 
 aiming at the~computational simplicity.
 
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/googlenet.png}
 	\caption[GoogLeNet networks]{GoogLeNet network schema, source: 
@@ -585,11 +585,12 @@ is sometimes referred to as a~\textit{residual mapping}.
 
 Authors experimented with diverse depths of the~architecture counting 18, 34, 
 50, 101 and 152 layers. During these experiments, authors found a~problem in
-the number of parameters in deeper architectures. However, they found
+the number of parameters in deeper architectures. However, authors found
 a~solution by following the~design of bottleneck layers described in chapter
 \ref{googlenet}: They redesigned the~residual block into a~bottleneck block.
-This block reduced the number of features usually to one quarter by using
-$1 \times 1$ convolutions and was implemented into ResNet-50 and higher.
+This block reduced the number of features usually to approximately one quarter
+by using $1 \times 1$ convolutions and was implemented into ResNet-50 and
+higher.
 
 \begin{figure}[H]
    \centering
