@@ -7,6 +7,8 @@ Convolutional Network models have recently demonstrated impressive
 classification performance on the~ImageNet benchmark. However there is no clear 
 understanding of why they perform so well, or how they might be improved.}
 
+%% ML: s Ich-formou bych setril na uvod a zaver, ale neni to podstatne
+%% ML: Ich-forma se Ti objevuje dale v textu, ponechal bych to v tomto stavu
 I tried to disperse such clouds a bit in the~previous chapter, but now I would 
 like to focus on another undertone connected with those statements. On their 
 applications in the~computer vision.
@@ -31,10 +33,11 @@ colleagues or just random people passing by. You can do all of that in a
 fraction of a second without any effort. The~computer vision is supposed to be a 
 computer-aided version of this human cognition. Or in a fancier way, from 
 \cite{opencv}: \textit{Computer vision is the~transformation of data from a 
-still or video camera into either a decision or a new representation.} the~new 
+still or video camera into either a decision or a new representation.} The~new 
 representation might be for instance a colour shift, the~decision an answer to a 
 question like \textit{Is there any football field in the~picture?}
 
+%% ML: zkus vetu prepsat, je v ni 3x that
 However, the~problem is that the~claim that it is easy for humans does not mean 
 that it is easy also for computers. As is generally known and was indicated in 
 chapter \ref{understanding-cnn}, the~human brain is an extremely complex tool. 
@@ -118,7 +121,7 @@ between pure classification and object detection.
 
 Classification was already explained in the~previous chapter. Classification 
 with localization uses classification in its one-class form together with 
-bounding boxes (bounding boxes may be multiple). the~goal is to draw
+bounding boxes (bounding boxes may be multiple). The~goal is to draw
 the~bounding box as tight around the~object as possible and predict the~class of
 the~object, so the~user ends up with two outputs:
 \begin{itemize}
@@ -129,7 +132,8 @@ the~object, so the~user ends up with two outputs:
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.7\linewidth]{./pictures/class-loc.JPG}
+   \includegraphics[width=.7\linewidth]{./pictures/class-loc.JPG}
+   %% ML: zdroj autor?
 	\caption[Classification with localization example]{An example of classification 
 	with localization}
       \label{fig:class-loc}
