@@ -26,6 +26,7 @@ segmentation:
 	\textit{semantic segmentation}.
 \end{itemize}
 
+%% ML: work?
 When works on this implementation started, the~paper on Mask R-CNN was just 
 recently published (\cite{mask-rcnn}, March 2017). With its approach, it was
 a~kind of bleeding edge. However, its results spoke for themselves and within
@@ -43,13 +44,19 @@ few reasons for this decision:
 	very useful and widely used in the~field of deep learning. 
 \end{itemize}
 
-Mask \zk{R-CNN} tools created for the~practical part of the~thesis consist of 
+Mask \zk{R-CNN} tools created for the~practical part of the~thesis consist of
+%% ML: zkus, aby veta nezacinala na male pismeno/nazev modulu
+%% ML: update: mas to dale v textu, nech to byt, je to detail
+%% ML: uvazoval bych o prejmenovani modulu na i.ann.maskrcnn.*
+%% ML: zkus se vyhnout his/him
 two modules. \verb|ann.maskrcnn.train| allows the user to train a~Mask R-CNN model 
 on his own dataset, \verb|ann.maskrcnn.detect| allows him to use that model to 
 detect features in georeferenced files. Both modules are licensed under GNU
 \zk{GPL}~2 license.
 
-Along with these modules, a~library of Mask \zk{R-CNN} tools was prepared. This 
+%% ML: prepared -> designed (?)
+Along with these modules, a~library of Mask \zk{R-CNN} tools was prepared. This
+%% ML: was -> is?
 library was heavily based on a~Python implementation of Mask \zk{R-CNN} written 
 by Waleed Abdulla from Matterport, 
 Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published 
@@ -85,6 +92,7 @@ code.
 \section{Mask R-CNN library}
 \label{library}
 
+%% ML: files (Python modules) ?
 The library consists of four files:
 \begin{itemize}
 	 \item \verb|config.py|: The~configuration file for the~model. It will be
@@ -492,7 +500,8 @@ for new_mask in masks_list[1:]:
 return masks_array, classes_list, 0
 \end{lstlisting}}
 
-From the~rest of \verb|Dataset| class methods, one more will be mentioned. 
+From the~rest of \verb|Dataset| class methods, one more will be mentioned.
+%% ML: neni tu tecka navic?
 \verb|prepare|. \verb|prepare| must be called before the~usage of
 the~\verb|Dataset| object as it prepares it for use. The~preparation is done through 
 setting object parameters like a number of classes, classes names and identifiers 
@@ -578,10 +587,12 @@ return anchors
 \section{ann.maskrcnn.train}
 \label{train-module}
 
+%% ML: him/her ;-)
 Before a~child can recognize an object, his or her parents must teach him how 
 does the~object look like, what is its name, its common colours and other 
 attributes. The~same applies to an \zk{ANN} - the~model must be trained before it 
 can detect or predict objects. The~training is done in the~\verb|ann.maskrcnn.train|
+%% ML: ta posledni veta je dlouha a zni divne
 GRASS GIS module. The~module is written in the~file 
 \verb|ann.maskrcnn.train.py| and was written for the~practical part of
 the~thesis and its workflow is with few simplifications illustrated in figure 
@@ -608,6 +619,7 @@ for any object.
    \centering
 	\includegraphics[width=0.95\linewidth]{./pictures/train_dia.png}
 	\caption[ann.maskrcnn.train flowchart]{Flowchart of the~ann.maskrcnn.train module}
+        %% ML: (source: author)
       \label{fig:train}
 \end{figure}
 
@@ -615,9 +627,12 @@ for any object.
    \centering
 	\includegraphics[width=\linewidth]{./pictures/training_dia.png}
 	\caption[ann.maskrcnn.train training flowchart]{Flowchart of different training branches inside the~ann.maskrcnn.train module}
+        %% ML: (source: author)
+        %% ML: obrazek bych zmensil (.7/textwidth?)
       \label{fig:training}
 \end{figure}
 
+%% ML: tady muze byt odkaz do priloh
 \verb|ann.maskrcnn.train| also contains its own manual, help and a~graphical 
 user interface (\zk{GUI}) to help a~user's understanding of the~module.
 
@@ -630,6 +645,7 @@ raster maps imprted to GRASS GIS or georeferenced raster files. The~output
 from the~module consists of a~set of vector 
 maps for each class. Although the~model is to some extent scale-invariant, it is 
 recommended to provide rasters in similar resolution to the~one used in
+%% ML: stejna veta se opakuje v predchozi kapitole, zkus prepsat
 training images. The~detection is done in the~\verb|ann.maskrcnn.detect| GRASS GIS
 module. The~module is written in the~file \verb|ann.maskrcnn.detect.py| and was 
 written for the~practical part of the~thesis. Its workflow is with some 
@@ -668,6 +684,7 @@ vectorized separately and then patched together for each class.
    \centering
 	\includegraphics[width=\linewidth]{./pictures/detect_dia.png}
 	\caption[ann.maskrcnn.detect flowchart]{Flowchart of the~ann.maskrcnn.detect module}
+        %% ML: (source: author)
       \label{fig:detect}
 \end{figure}
 
@@ -675,14 +692,18 @@ vectorized separately and then patched together for each class.
    \centering
 	\includegraphics[width=0.95\linewidth]{./pictures/vectorize.png}
 	\caption[vectorization in ann.maskrcnn.detect flowchart]{Flowchart of the~vectorization and classes extraction in the~ann.maskrcnn.detect module}
+        %% ML: (source: author)
+        %% ML: obrazek bych zmensil (.7/textwidth?)
       \label{fig:vectorize}
 \end{figure}
 
 The output of \verb|ann.maskrcnn.detect| represents detected masks in a~vector form. The~output type can be either areas or points (corresponding to a~centre of the~mask).
 
+%% ML: opakujici se veta, to by asi nevadilo, pridej odkaz do priloh
 \verb|ann.maskrcnn.detect| also contains its own manual, help and a~\zk{GUI} to 
 help a~user's understanding of the~module.
 
+%% ML: Mozna by stalo za uvahu presnout kapitolu do prilohy
 \section{GRASS GIS patch}
 \label{grass-patch}
 
