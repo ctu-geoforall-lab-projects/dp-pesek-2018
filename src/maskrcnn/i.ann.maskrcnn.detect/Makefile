@@ -1,6 +1,6 @@
 MODULE_TOPDIR = ../../..
 
-PGM = ann.maskrcnn.detect
+PGM = i.ann.maskrcnn.detect
 
 include $(MODULE_TOPDIR)/include/Make/Script.make
 

@@ -6,6 +6,7 @@ chapter, they will be attached. Firstly, they will introduce Mask R-CNN tools
 generally and then each module separately.
 
 \section{Mask R-CNN tools}
+\label{appendix-lib}
 
 \subsection*{DESCRIPTION}
 
@@ -13,7 +14,7 @@ Mask R-CNN tools allow the~user to train his own model and use it for
 a~detection of objects, or to use a~model provided by someone else. It can be
 seen as a~supervised classification using convolutional neural networks.
 
-The training is done using module \emph{ann.maskrcnn.train}. The~user feeds
+The training is done using module \emph{i.ann.maskrcnn.train}. The~user feeds
 the~module with training data consisting of images and masks for each instance
 of intended classes and gets a~model. For difficult tasks and when not using
 a~pretrained model, the~training may take even weeks; in case of a~good
@@ -21,13 +22,13 @@ pretrained model and powerful PC with GPU support, the~training could get good
 results after 1 day and even less.
 
 When the~user has a~model, it can be used for the~detection. 
-\emph{ann.maskrcnn.detect} detects classes learned during the~training and 
+\emph{i.ann.maskrcnn.detect} detects classes learned during the~training and 
 extracts from given images vectors corresponding to detected objects. Objects 
 can be extracted either as areas or points. 
 
 \subsection*{DEPENDENCIES}
 
-\emph{ann.maskrcnn.*} modules contain a~lot of external python dependencies.
+\emph{i.ann.maskrcnn.*} modules contain a~lot of external python dependencies.
 To run modules, it is necessary to have them installed. Modules use Python 3,
 so please install Python 3 versions.
 
@@ -77,24 +78,25 @@ his GRASS GIS with the~following patch:
 
 \subsection*{MODULES}
 
-\emph{ann.maskrcnn.train},\emph{ }\emph{ann.maskrcnn.detect}\emph{ }
+\emph{i.ann.maskrcnn.train},\emph{ }\emph{i.ann.maskrcnn.detect}\emph{ }
 
 \clearpage
 
-\section{ann.maskrcnn.train}
+\section{i.ann.maskrcnn.train}
+\label{appendix-train}
 
 \subsection*{NAME}
 
-\textbf{ann.maskrcnn.train -} Train your Mask R-CNN network.
+\textbf{i.ann.maskrcnn.train -} Train your Mask R-CNN network.
 
 \subsection*{SYNOPSIS}
 
 \begin{flushleft}
-\textbf{ann.maskrcnn.train} 
+\textbf{i.ann.maskrcnn.train} 
 
-\textbf{ann.maskrcnn.train -{}-help}
+\textbf{i.ann.maskrcnn.train -{}-help}
 
-\textbf{ann.maskrcnn.train} [\textbf{-esbn}] \textbf{training\_dataset}=name
+\textbf{i.ann.maskrcnn.train} [\textbf{-esbn}] \textbf{training\_dataset}=name
 [\textbf{model}=string] \tab\ \textbf{classes}=string[,string,...]
 \textbf{logs}=name \textbf{name}=string [\textbf{epochs}=value] \tab\
 [\textbf{steps\_per\_epoch}=value] [\textbf{rois\_per\_image}=value] \tab\
@@ -249,7 +251,7 @@ his GRASS GIS with the~following patch:
 \end{flushleft}
 
 \subsection*{DESCRIPTION}
-\textstyleEmphasis{ann.maskrcnn.train} allows the user to train a~Mask R-CNN
+\textstyleEmphasis{i.ann.maskrcnn.train} allows the user to train a~Mask R-CNN
 model on his own dataset. The~dataset has to be prepared in a~predefined
 structure. 
 
@@ -342,7 +344,7 @@ Dataset for examples:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
 \end{lstlisting}
 }
 
@@ -355,7 +357,7 @@ corn fields:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
 \end{lstlisting}
 }
 
@@ -365,7 +367,7 @@ should be referring to the~task of the~dataset. A~good name for this one
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
 \end{lstlisting}
 }
 
@@ -380,7 +382,7 @@ exclude head weights):
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
 \end{lstlisting}
 }
 
@@ -388,7 +390,7 @@ A model trained on the~same classes:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
 \end{lstlisting}
 }
 
@@ -398,27 +400,28 @@ training, just use the~last saved epoch as a~pretrained model:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
 \end{lstlisting}
 }
 
 \clearpage
 
-\section{ann.maskrcnn.detect}
+\section{i.ann.maskrcnn.detect}
+\label{appendix-detect}
 
 \subsection*{NAME}
 
-\textbf{ann.maskrcnn.detect -} Detect features in images using a~Mask R-CNN
+\textbf{i.ann.maskrcnn.detect -} Detect features in images using a~Mask R-CNN
 model.
 
 \subsection*{SYNOPSIS}
 
 \begin{flushleft}
-\textbf{ann.maskrcnn.detect} 
+\textbf{i.ann.maskrcnn.detect} 
 
-\textbf{ann.maskrcnn.detect -{}-help}
+\textbf{i.ann.maskrcnn.detect -{}-help}
 
-\textbf{ann.maskrcnn.detect} [\textbf{-esbn}] \textbf{images\_directory}=name
+\textbf{i.ann.maskrcnn.detect} [\textbf{-esbn}] \textbf{images\_directory}=name
 \tab\ \textbf{images\_format}=string \textbf{model}=string
 \textbf{classes}=string[,string,...] \tab\ [\textbf{masks\_output}=name]
 [\textbf{output\_type}=string] [\textbf{-{}-overwrite}] [\textbf{-{}-help}]
@@ -500,7 +503,7 @@ model.
 \end{flushleft}
 
 \subsection*{DESCRIPTION}
-\textstyleEmphasis{ann.maskrcnn.detect} allows the user to use a~Mask R-CNN
+\textstyleEmphasis{i.ann.maskrcnn.detect} allows the user to use a~Mask R-CNN
 model to detect features in GRASS GIS raster maps or georeferenced files and
 extract them either as areas or
 points. The~module creates a~separate map for each class. 
@@ -523,7 +526,7 @@ image, the~module finds it through this parameter.
 When detecting, you can use new names of classes. Classes in the~model are not
 referenced by their name, but by their order. It means that if the~model was
 trained with classes \textstyleEmphasis{corn,rice} and you use
-\textstyleEmphasis{ann.maskrcnn.detect} with classes
+\textstyleEmphasis{i.ann.maskrcnn.detect} with classes
 \textstyleEmphasis{zea,oryza}, zea areas will present areas detected as corn
 and oryza areas will present areas detected as rice. 
 
@@ -537,7 +540,7 @@ One map imported in GRASS GIS:
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect band1=map1.red band2=map1.green band3=map1.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5
+i.ann.maskrcnn.detect band1=map1.red band2=map1.green band3=map1.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5
 \end{lstlisting}
 }
 
@@ -545,7 +548,7 @@ ann.maskrcnn.detect band1=map1.red band2=map1.green band3=map1.blue classes=buil
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect band1=map1.red,map2.red band2=map1.green,map2.green band3=map1.blue,map2.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5
+i.ann.maskrcnn.detect band1=map1.red,map2.red band2=map1.green,map2.green band3=map1.blue,map2.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5
 \end{lstlisting}
 }
 
@@ -553,7 +556,7 @@ ann.maskrcnn.detect band1=map1.red,map2.red band2=map1.green,map2.green band3=ma
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 images_format=tif
+i.ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 images_format=tif
 \end{lstlisting}
 }
 
@@ -561,7 +564,7 @@ ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images c
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 images_format=png  -e
+i.ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 images_format=png  -e
 \end{lstlisting}
 }
 
@@ -569,7 +572,7 @@ ann.maskrcnn.detect images_directory=/home/user/Documents/georeferenced_images c
 
 {\footnotesize
 \begin{lstlisting}[breaklines=true]
-ann.maskrcnn.detect ann.maskrcnn.detect band1=map1.red band2=map1.green band3=map1.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 output_type=point
+i.ann.maskrcnn.detect band1=map1.red band2=map1.green band3=map1.blue classes=buildings,lakes model=/home/user/Documents/logs/mask_rcnn_buildings_lakes_0100.h5 output_type=point
 \end{lstlisting}
 }
 

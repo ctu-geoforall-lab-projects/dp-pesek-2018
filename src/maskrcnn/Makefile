@@ -3,8 +3,8 @@ MODULE_TOPDIR =../../..
 PGM = maskrcnn
 
 SUBDIRS = maskrcnnlib \
-	ann.maskrcnn.train \
-	ann.maskrcnn.detect \
+	i.ann.maskrcnn.train \
+	i.ann.maskrcnn.detect \
 
 include $(MODULE_TOPDIR)/include/Make/Dir.make
 

@@ -1,7 +1,7 @@
 <h2>DESCRIPTION</h2>
 
-<em>ann.maskrcnn.train</em> allows the user to train a Mask R-CNN model on his own
-dataset. The dataset has to be prepared in a predefined structure.
+<em>i.ann.maskrcnn.train</em> allows the user to train a Mask R-CNN model on
+his own dataset. The dataset has to be prepared in a predefined structure.
 
 <h3>DATASET STRUCTURE</h3>
 <p>
@@ -92,7 +92,7 @@ crops
 <h3>Training from scratch</h3>
 <p>
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops
 </pre></div>
 After default number of epochs, we will get a model where the first class is
 trained to detect corn fields and the second one to detect rice fields.
@@ -102,7 +102,7 @@ If we use the command with reversed classes order, we will get a model where
 the first class is trained to detect rice fields and the second one to detect
 corn fields.
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=crops
 </pre></div>
 
 <p>
@@ -110,7 +110,7 @@ The name of the model does not have to be the same as the dataset folder but
 should be referring to the task of the dataset. A good name for this one
 (referring also to the order of classes) could be also this one:
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=rice,corn logs=/home/user/Documents/logs name=rice_corn
 </pre></div>
 
 <h3>Training from a pretrained model</h3>
@@ -124,13 +124,13 @@ be used for a training on buildings in maps).
 A model trained on different classes (use <em>-e</em> flag to exclude head
 weights).
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/buildings.h5 -e
 </pre></div>
 
 <p>
 A model trained on the same classes.
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/corn_rice.h5
 </pre></div>
 
 <h3>Fine-tuning a model</h3>
@@ -138,14 +138,14 @@ ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice
 It is also possible to stop your training and then continue. To continue in
 the training, just use the last saved epoch as a pretrained model.
 <div class="code"><pre>
-ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
+i.ann.maskrcnn.train training_dataset=/home/user/Documents/crops classes=corn,rice logs=/home/user/Documents/logs name=crops model=/home/user/Documents/models/mask_rcnn_crops_0005.h5
 </pre></div>
 
 <h2>SEE ALSO</h2>
 
 <em>
     <a href="maskrcnn.html">Mask R-CNN in GRASS GIS</a>
-    <a href="ann.maskrcnn.detect.html">ann.maskrcnn.detect</a>
+    <a href="i.ann.maskrcnn.detect.html">i.ann.maskrcnn.detect</a>
 </em>
 
 <h2>AUTHORS</h2>

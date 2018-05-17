@@ -1,6 +1,6 @@
 MODULE_TOPDIR = ../../..
 
-PGM = ann.maskrcnn.train
+PGM = i.ann.maskrcnn.train
 
 include $(MODULE_TOPDIR)/include/Make/Script.make
 

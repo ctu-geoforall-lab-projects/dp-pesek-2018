@@ -27,7 +27,8 @@ segmentation:
 \end{itemize}
 
 %% ML: work?
-When works on this implementation started, the~paper on Mask R-CNN was just 
+%% OP: Prepsano do singularu
+When work on this implementation started, the~paper on Mask R-CNN was just 
 recently published (\cite{mask-rcnn}, March 2017). With its approach, it was
 a~kind of bleeding edge. However, its results spoke for themselves and within
 a~year of its publication, it was implemented in few projects following
@@ -48,16 +49,20 @@ Mask \zk{R-CNN} tools created for the~practical part of the~thesis consist of
 %% ML: zkus, aby veta nezacinala na male pismeno/nazev modulu
 %% ML: update: mas to dale v textu, nech to byt, je to detail
 %% ML: uvazoval bych o prejmenovani modulu na i.ann.maskrcnn.*
+%% OP: Hotovo.
 %% ML: zkus se vyhnout his/him
-two modules. \verb|ann.maskrcnn.train| allows the user to train a~Mask R-CNN model 
-on his own dataset, \verb|ann.maskrcnn.detect| allows him to use that model to 
+%% OP: Pokus vykonan.
+two modules. \verb|i.ann.maskrcnn.train| allows the user to train a~Mask R-CNN model 
+on his own dataset, \verb|i.ann.maskrcnn.detect| to use that model to 
 detect features in georeferenced files. Both modules are licensed under GNU
 \zk{GPL}~2 license.
 
 %% ML: prepared -> designed (?)
-Along with these modules, a~library of Mask \zk{R-CNN} tools was prepared. This
+%% OP: Muze byt, prepsano
+Along with these modules, a~library of Mask \zk{R-CNN} tools was designed. This
 %% ML: was -> is?
-library was heavily based on a~Python implementation of Mask \zk{R-CNN} written 
+%% OP: Zpritomneno.
+library is heavily based on a~Python implementation of Mask \zk{R-CNN} written 
 by Waleed Abdulla from Matterport, 
 Inc.\footnote{\url{https://matterport.com/about/}}  Matterport, Inc. published 
 their implementation under the~MIT License \cite{mit}. The~MIT License is
@@ -93,6 +98,7 @@ code.
 \label{library}
 
 %% ML: files (Python modules) ?
+%% OP: Jsou skripty v knihovne vnimany jako moduly?
 The library consists of four files:
 \begin{itemize}
 	 \item \verb|config.py|: The~configuration file for the~model. It will be
@@ -125,7 +131,7 @@ initialization method. The~\verb|__init__| method is automatically called when
 a~class object is being constructed and allows to construct it in a~specific 
 state; in the~\verb|ModelConfig| class, \verb|__init__| sets model attributes 
 either to a~default or a~user-defined state. The~attribute value pass is made 
-through parameters of \verb|ann.maskrcnn.train| and \verb|ann.maskrcnn.detect| 
+through parameters of \verb|i.ann.maskrcnn.train| and \verb|i.ann.maskrcnn.detect| 
 modules.
 
 The \verb|ModelConfig| class also contains the~\verb|display| method to display 
@@ -502,7 +508,9 @@ return masks_array, classes_list, 0
 
 From the~rest of \verb|Dataset| class methods, one more will be mentioned.
 %% ML: neni tu tecka navic?
-\verb|prepare|. \verb|prepare| must be called before the~usage of
+%% OP: Prislo mi to takhle uderne, jako rana nazvem te metody. 
+%% OP: Ocividne to tedy ale tak uderne neni.
+\verb|prepare| must be called before the~usage of
 the~\verb|Dataset| object as it prepares it for use. The~preparation is done through 
 setting object parameters like a number of classes, classes names and identifiers 
 or number of images. This setting is based on information got during
@@ -584,19 +592,20 @@ anchors = [anchors_centers - 0.5 * anchors_sizes, anchors_centers + 0.5 * anchor
 return anchors
 \end{lstlisting}}
 
-\section{ann.maskrcnn.train}
+\section{i.ann.maskrcnn.train}
 \label{train-module}
 
 %% ML: him/her ;-)
-Before a~child can recognize an object, his or her parents must teach him how 
+%% OP: Prepsano
+Before a~child can recognize an object, child's parents must teach him how 
 does the~object look like, what is its name, its common colours and other 
 attributes. The~same applies to an \zk{ANN} - the~model must be trained before it 
-can detect or predict objects. The~training is done in the~\verb|ann.maskrcnn.train|
+can detect or predict objects. The~training is done in the~\verb|i.ann.maskrcnn.train|
 %% ML: ta posledni veta je dlouha a zni divne
-GRASS GIS module. The~module is written in the~file 
-\verb|ann.maskrcnn.train.py| and was written for the~practical part of
-the~thesis and its workflow is with few simplifications illustrated in figure 
-\ref{fig:train}.
+GRASS GIS module. The~module is written in the~file
+\verb|i.ann.maskrcnn.train.py|. This file was written as part of the~practical
+section of the~thesis. Its workflow is with few simplifications illustrated in
+figure \ref{fig:train}.
 
 The flowchart contains few already-mentioned functions and classes, specifically 
 the \verb|ModelConfig| class and its \verb|display| method from chapter 
@@ -618,25 +627,26 @@ for any object.
 \begin{figure}[H]
    \centering
 	\includegraphics[width=0.95\linewidth]{./pictures/train_dia.png}
-	\caption[ann.maskrcnn.train flowchart]{Flowchart of the~ann.maskrcnn.train module}
+	\caption[i.ann.maskrcnn.train flowchart]{Flowchart of the~i.ann.maskrcnn.train module, source: author}
         %% ML: (source: author)
       \label{fig:train}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=\linewidth]{./pictures/training_dia.png}
-	\caption[ann.maskrcnn.train training flowchart]{Flowchart of different training branches inside the~ann.maskrcnn.train module}
+	\includegraphics[width=.7\linewidth]{./pictures/training_dia.png}
+	\caption[i.ann.maskrcnn.train training branches flowchart]{Flowchart of different training branches inside the~i.ann.maskrcnn.train module, source: author}
         %% ML: (source: author)
         %% ML: obrazek bych zmensil (.7/textwidth?)
       \label{fig:training}
 \end{figure}
 
 %% ML: tady muze byt odkaz do priloh
-\verb|ann.maskrcnn.train| also contains its own manual, help and a~graphical 
-user interface (\zk{GUI}) to help a~user's understanding of the~module.
+\verb|i.ann.maskrcnn.train| also contains its own manual, help and a~graphical 
+user interface (\zk{GUI}) to help a~user's understanding of the~module. The
+manual can be seen in appendix \ref{appendix-train}.
 
-\section{ann.maskrcnn.detect}
+\section{i.ann.maskrcnn.detect}
 \label{detect-module}
 
 In case we have a~trained model, either trained by us or provided by someone 
@@ -646,12 +656,13 @@ from the~module consists of a~set of vector
 maps for each class. Although the~model is to some extent scale-invariant, it is 
 recommended to provide rasters in similar resolution to the~one used in
 %% ML: stejna veta se opakuje v predchozi kapitole, zkus prepsat
-training images. The~detection is done in the~\verb|ann.maskrcnn.detect| GRASS GIS
-module. The~module is written in the~file \verb|ann.maskrcnn.detect.py| and was 
-written for the~practical part of the~thesis. Its workflow is with some 
-simplifications illustrated in figure \ref{fig:detect}.
+training images. The~GRASS GIS module providing detection is
+\verb|i.ann.maskrcnn.detect|. The~module is contained in the~file
+\verb|i.ann.maskrcnn.detect.py|. This file can be seen as the second part of
+the~practical section of the~thesis. Its workflow is with some simplifications
+illustrated in figure \ref{fig:detect}.
 
-As in the~\verb|ann.maskrcnn.train| module, the~flowchart contains few 
+As in the~\verb|i.ann.maskrcnn.train| module, the~flowchart contains few 
 already-mentioned functions and classes, specifically the~\verb|ModelConfig| 
 class from chapter \ref{config} and the~\verb|MaskRCNN| class from chapter 
 \ref{model-mrcnn}.
@@ -683,27 +694,29 @@ vectorized separately and then patched together for each class.
 \begin{figure}[H]
    \centering
 	\includegraphics[width=\linewidth]{./pictures/detect_dia.png}
-	\caption[ann.maskrcnn.detect flowchart]{Flowchart of the~ann.maskrcnn.detect module}
+	\caption[i.ann.maskrcnn.detect flowchart]{Flowchart of the~i.ann.maskrcnn.detect module, source: author}
         %% ML: (source: author)
       \label{fig:detect}
 \end{figure}
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=0.95\linewidth]{./pictures/vectorize.png}
-	\caption[vectorization in ann.maskrcnn.detect flowchart]{Flowchart of the~vectorization and classes extraction in the~ann.maskrcnn.detect module}
+	\includegraphics[width=0.7\linewidth]{./pictures/vectorize.png}
+	\caption[vectorization in i.ann.maskrcnn.detect flowchart]{Flowchart of the~vectorization and classes extraction in the~i.ann.maskrcnn.detect module, source: author}
         %% ML: (source: author)
         %% ML: obrazek bych zmensil (.7/textwidth?)
       \label{fig:vectorize}
 \end{figure}
 
-The output of \verb|ann.maskrcnn.detect| represents detected masks in a~vector form. The~output type can be either areas or points (corresponding to a~centre of the~mask).
+The output of \verb|i.ann.maskrcnn.detect| represents detected masks in a~vector form. The~output type can be either areas or points (corresponding to a~centre of the~mask).
 
 %% ML: opakujici se veta, to by asi nevadilo, pridej odkaz do priloh
-\verb|ann.maskrcnn.detect| also contains its own manual, help and a~\zk{GUI} to 
-help a~user's understanding of the~module.
+\verb|i.ann.maskrcnn.detect| also contains its own manual, help and a~\zk{GUI} to 
+help a~user's understanding of the~module. The
+manual can be seen in appendix \ref{appendix-detect}.
 
 %% ML: Mozna by stalo za uvahu presnout kapitolu do prilohy
+%% OP: Zanechan popis a pridan odkaz do priloh
 \section{GRASS GIS patch}
 \label{grass-patch}
 
@@ -712,20 +725,5 @@ although much effort has been done to for it, it is still incomplete. This
 lack is handled in modules, but there is still a~problem in setting the~GRASS
 environment. Thus, a~patch and a~recompilation of GRASS are needed to allow the
 user to set the~environment right. The~patch decodes bytes-typed string into a
-UTF-8-typed string and consists of the~following \textit{diff}.
-
-{\scriptsize
-\begin{lstlisting}[basicstyle={\footnotesize\ttfamily},breaklines=True,
-backgroundcolor = \color{light-gray}]
-===================================================================
---- lib/python/script/core.py	(revision 72644)
-+++ lib/python/script/core.py	(working copy)
-@@ -746,7 +746,7 @@
-         elif var.startswith(b'opt_'):
-             options[var[4:]] = val
-         elif var in [b'GRASS_OVERWRITE', b'GRASS_VERBOSE']:
--            os.environ[var] = val
-+            os.environ[var.decode("utf-8")] = val.decode("utf-8")
-         else:
-             raise SyntaxError("invalid output from g.parser: %s" % line)
-\end{lstlisting}}
+UTF-8-typed string and consists of the~following \textit{diff}. It can be seen
+in appendix \ref{appendix-lib}.

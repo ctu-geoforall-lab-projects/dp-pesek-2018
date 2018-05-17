@@ -2,7 +2,7 @@
 #
 ############################################################################
 #
-# MODULE:	    ann.maskrcnn.detect
+# MODULE:	    i.ann.maskrcnn.detect
 # AUTHOR(S):	Ondrej Pesek <pesej.ondrek@gmail.com>
 # PURPOSE:	    Train your Mask R-CNN network
 # COPYRIGHT:	(C) 2017 Ondrej Pesek and the GRASS Development Team

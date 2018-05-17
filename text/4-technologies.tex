@@ -29,11 +29,12 @@ maintained by an international team of developers and users and licensed under
 the GNU \zk{GPL} license allowing users to perform geospatial data management 
 and analysis for both raster and vector data, image processing, geocoding and
 %% ML: v soucasnosti pres 400
-visualization. Within its more than 300 modules, it supports also 
+%% OP: Dik, cerpal jsem jen z uvodnich informaci GRASSu namisto vlastnich poctu
+visualization. Within its more than 400 modules, it supports also 
 spatio-temporal data.
 
 %% ML: original -> official ?
-For more information about \zk{GRASS} \zk{GIS}, please see its original 
+For more information about \zk{GRASS} \zk{GIS}, please see its official 
 website\footnote{\url{https://grass.osgeo.org/documentation/general-overview/}}.
 
 \section{Python}
@@ -41,7 +42,7 @@ website\footnote{\url{https://grass.osgeo.org/documentation/general-overview/}}.
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=\linewidth]{./pictures/python-logo.png}
+	\includegraphics[width=0.8\linewidth]{./pictures/python-logo.png}
 	\caption[Python logo]{Python logo, source: \url{https://www.python.org/community/logos/}}
       \label{fig:python-logo}
 \end{figure}
@@ -51,20 +52,24 @@ was invented by a~Dutch programmer and Monty Python's Flying Circus fan Guido
 van~Rossum in the~year 1991. Due to its user-friendly and readable structure, it is 
 more and more popular.
 
-It is very popular also in the~field of open-source \zk{GIS}. Many modules for 
-\zk{GRASS} \zk{GIS} are written in Python and Python is the~most used language
+It is also one of the most popular languages in the~field of (nay) open-source
+\zk{GIS}. Many modules for \zk{GRASS} \zk{GIS} are written in Python and Python
+is the~most used language
 %% ML: QGIS plugins ML: nejen, GDAL na Python API, Fiona, RasterIO ML:
 %% skoro bych to prepsal v tom smyslu, ze vetsina opensource GIS
 %% projektu Python podporuje, a nejen open source, napr. pro ESRI je
 %% to hlavni skriptovaci platforma na desktopu
-in QGIS\footnote{\url{https://qgis.org/}}.
+in QGIS\footnote{\url{https://qgis.org/}} plugins. Also libraries like
+Fiona\footnote{\url{http://toblerity.org/fiona/}} or
+RasterIO\footnote{\url{http://rasterio.readthedocs.io/}} are Python-based, and
+GDAL\footnote{\url{http://www.gdal.org/}} has its Python API.
 
 For information about programming in Python, please see \cite{diveintopython}.
 
 \section{TensorFlow}
 \label{tf}
 
-\begin{figure}[H]
+\begin{figure}[h]
    \centering
 	\includegraphics[scale=0.5]{./pictures/tf-logo.png}
 	\caption[TensorFlow logo]{TensorFlow logo, source: \url{https://www.tensorflow.org/images/tf_logo_transp.png}}
@@ -85,7 +90,7 @@ provides a~lot of functions useful for deep learning.
 
 A good starting point is the~book Getting Started with TensorFlow \cite{tf}.
 %% ML: official
-A~documentation and examples can be found also at the~original 
+A~documentation and examples can be found also at the~official 
 website\footnote{\url{https://www.tensorflow.org/}}.
 
 \section{Keras}
@@ -93,7 +98,7 @@ website\footnote{\url{https://www.tensorflow.org/}}.
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=\linewidth]{./pictures/keras-logo.png}
+	\includegraphics[width=0.8\linewidth]{./pictures/keras-logo.png}
 	\caption[Keras logo]{Keras logo, source: \url{https://keras.io/}}
       \label{fig:keras-logo}
 \end{figure}
@@ -107,5 +112,5 @@ is the~content of extensible objects for defining different types of layers (see
 chapter \ref{layers}), models, loss functions and other tools widely used in
 the~field of \zk{ANN}s.
 
-For a~wider documentation, please see the~original 
+For a~wider documentation, please see the~official 
 website\footnote{\url{https://keras.io/}}.
