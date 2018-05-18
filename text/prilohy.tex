@@ -655,12 +655,11 @@ The training ran for 2 days on a machine using NVIDIA Tesla K80 GPU. NVIDIA
 Tesla K80 has memory 24 GBs, effective clock speed 2.5 Hz with 875 MHz boost
 clock and 560 MHz core clock. The training ran from the scratch.
 
-Results are worse than in the pitches detection. In figure \ref{fig:build-1},
+Results are worse than in the pitches detection. In the figure from the last
+epoch, figure \ref{fig:build-1},
 we can see a~tennis pitch and road detected as a building, the building with
 black roof was not recognized and only a small part of the~tribune was
-detected. In figure \ref{fig:build-2}, almost all buildings were detected with
-only one wrong detection (again road). However, the~area corresponding to the
-building in the right upper corner does not fit the~building at all.
+detected.
 These problems may be caused by some of the following effects:
 \begin{itemize}
 	\item More than twenty times smaller dataset.
@@ -669,11 +668,12 @@ These problems may be caused by some of the following effects:
 \end{itemize}
 
 Even though the training took a shorter time, it reached much smaller loss
-function (0.5019 for the last epoch). Two figures of detection with this loss
-function are shown (\ref{fig:build-1} and \ref{fig:build-2}).
+function (0.5019 for the last epoch) than in the pitches training. A figures of
+detection with this loss
+function is shown in figure \ref{fig:build-1}.
 
 To illustrate
-a~progress of the~training, the~area from figure \ref{fig:build-1} will be
+a~progress of the~training, the~same area will be
 shown also during older epochs with loss function depicted in their captions.
 The progress shows also interesting moment, where an epoch with loss function
 0.6280 (figure \ref{fig:build-6}) seems to behave better than the one with loss
@@ -683,26 +683,18 @@ the right; the tribune was detected as two individual buildings).
 
 \begin{figure}[H]
    \centering
-	\includegraphics[width=.9\linewidth]{./pictures/out_b_180_2.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch
-	180, loss function 0.5019}
-      \label{fig:build-2}
-\end{figure}
-
-\begin{figure}[H]
-   \centering
-	\includegraphics[width=.9\linewidth]{./pictures/out_b_180.png}
-	\caption[Detection of buildings, example]{An example of the~detection; epoch
-	180, loss function 0.5019}
-      \label{fig:build-1}
-\end{figure}
-
-\begin{figure}[H]
-   \centering
 	\includegraphics[width=.9\linewidth]{./pictures/out_b_1.png}
 	\caption[Detection of buildings, example]{An example of the~detection; epoch
 	1, loss function 35.0102}
       \label{fig:build-3}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_10.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	10, loss function 5.8694}
+      \label{fig:build-2}
 \end{figure}
 
 \begin{figure}[H]
@@ -727,6 +719,14 @@ the right; the tribune was detected as two individual buildings).
 	\caption[Detection of buildings, example]{An example of the~detection; epoch
 	150, loss function 0.6280}
       \label{fig:build-6}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+	\includegraphics[width=.9\linewidth]{./pictures/out_b_180.png}
+	\caption[Detection of buildings, example]{An example of the~detection; epoch
+	180, loss function 0.5019}
+      \label{fig:build-1}
 \end{figure}
 
 \chapter{E-attachments}

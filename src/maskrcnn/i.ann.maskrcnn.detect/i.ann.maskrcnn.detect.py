@@ -184,6 +184,7 @@ def main(options, flags):
         # using maps imported in GRASS
         mapsCount = len(band1)
         for i in range(mapsCount):
+            gscript.percent(i + 1, mapsCount, 1)
             maskTitle = '{}_{}'.format(band1[i].split('.')[0], i)
             # load map into 3-band np.array
             gscript.run_command('g.region', raster=band1[i], quiet=True)
@@ -209,7 +210,6 @@ def main(options, flags):
                                mList=masks,
                                cList=detectedClasses,
                                grassMap=True)
-            gscript.percent(i + 1, mapsCount, 1)
 
     if imagesDir:
         gscript.message('Detecting features in images from the directory...')
