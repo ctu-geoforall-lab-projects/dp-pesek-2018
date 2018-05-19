@@ -345,7 +345,7 @@ layers.add(convolution pool_size X pool_size)
 layers.add(batch_normalization)
 layers.add(ReLU)
 layers.add(convolution 1x1)
-layers.add(batch_normaliztaion)
+layers.add(batch_normalizataion)
 layers.add(ReLU)
 shared = squeeze_to_one_tensor(output of layers)
 class_logits = fully_connected_layer(input=shared, number_of_filters=num_classes)
@@ -568,7 +568,7 @@ The workflow of the~\verb|generate_anchors| function is illustrated in
 pseudocode \ref{code:anchors}. It takes scales and ratios of anchors, feature
 map shape and anchors and feature map strides as inputs. It uses these inputs
 to compute heights and widths of different anchors (can be seen in figure
-\ref{fig:rpn}) and to compute a~grid of anchors centers. This grid together
+\ref{fig:rpn}) and to compute a~grid of anchors centres. This grid together
 with their heights and widths defines the~returned value, anchors.
 
 {\scriptsize
@@ -651,7 +651,7 @@ manual can be seen in appendix \ref{appendix-train}.
 
 In case we have a~trained model, either trained by us or provided by someone 
 else, we can use it to detect features or objects in maps. Such maps have to be 
-raster maps imprted to GRASS GIS or georeferenced raster files. The~output
+raster maps imported to GRASS GIS or georeferenced raster files. The~output
 from the~module consists of a~set of vector 
 maps for each class. Although the~model is to some extent scale-invariant, it is 
 recommended to provide rasters in similar resolution to the~one used in

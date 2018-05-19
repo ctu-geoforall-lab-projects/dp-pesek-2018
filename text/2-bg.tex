@@ -127,7 +127,7 @@ a~typo or authors forgot to mention a~zero-padding.} using kernels of size
 $11 \times 11 \times 3$. Sharing parameters within a~depth slice, we can reduce
 the parameter amount from $55 * 55 * 96 * (11 * 11 * 3 + 1)$ to
 $96 * (11 * 11 * 3 + 96)$, where 1 and 96 are biases; it means from more than
-105 millions to less than 35 thousands. Speaking only about the first layer. I
+105 million to less than 35 thousand. Speaking only about the first layer. I
 believe that this example said it all. 
 
 An inquiring reader may raise a~question: In the chapter name, there is
@@ -263,7 +263,7 @@ Fully connected layers are sometimes referred to also as \textit{dense layers}.
 \label{cnn-architectures}
 
 It is generally resolved\footnote{Roots of \zk{CNN}s lie at the end of
-eighties, but the breakthrough came in nineties.} that the history of
+the eighties, but the breakthrough came in nineties.} that the history of
 successful \zk{CNN}s started in 1998 when Yann LeCun and his team published the
 paper Gradient-Based Learning Applied to Document Recognition \cite{lenet5}.
 Although it is just twenty years, \zk{CNN}s have made tremendous progress.
@@ -339,7 +339,7 @@ with 26 \%.}.
 
 Krizhevsky benefited from years of progress bringing more computing power and 
 more data to be trained on. This well-timed entree allowed him to use a~deep 
-architecture containing about sixty millions parameters, \zk{ReLU} layers, 
+architecture containing about sixty million parameters, \zk{ReLU} layers, 
 overlapping max pooling and dropout\footnote{A technique used to prevent 
 overfitting proposed in \cite{dropout}. Dropout selectively ignores individual 
 neurons during training.}. AlexNet also included a~stack of convolutional
@@ -440,7 +440,7 @@ it means that 3 layers with a~kernel $3 \times 3$ emulate the effect of 1 layer
 with kernel $7 \times 7$, decrease the number of parameters and allows the user
 to implement three ReLU layers instead of one, exactly the advantage VGG Net
 used. It has to be said that the number of parameters was still enormous
-reaching almost 140 millions and in the following architectures, this problem
+reaching almost 140 million and in the following architectures, this problem
 caused by \zk{FC} layers had to be solved to reduce the time consumption.
 
 VGG Net also enlarges the number of filters after each maxpool layer as can be 
