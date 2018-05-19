@@ -1,6 +1,6 @@
 MODULE_TOPDIR =../../..
 
-PGM = maskrcnn
+PGM = i.ann.maskrcnn
 
 SUBDIRS = maskrcnnlib \
 	i.ann.maskrcnn.train \
