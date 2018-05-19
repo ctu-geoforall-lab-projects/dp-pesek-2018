@@ -26,7 +26,7 @@ Ing. Martin Landa, Ph.D.
 
 ## Defence
 
-???
+June 2018
 
 ## Text
 
