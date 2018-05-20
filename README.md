@@ -22,7 +22,7 @@ Ing. Martin Landa, Ph.D.
 
 ## Reader
 
-???
+Moritz Lennert, Université Libre de Bruxelles
 
 ## Defence
 
