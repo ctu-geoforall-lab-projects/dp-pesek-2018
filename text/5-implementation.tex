@@ -165,7 +165,7 @@ explicitly written.
 \label{model-resnet}
 
 The essential function for the~building of the~backbone architecture is
-the~function \verb|resnet_graph|. It literally follows the~architecture described in 
+the~one called \verb|resnet_graph|. It follows the~architecture described in 
 chapter \ref{resnet}. Its workflow is illustrated in pseudocode 
 \ref{code:resnet}. Some features were simplified in the~pseudocode and it uses 
 two functions \verb|identity_block| and \verb|convolutional block|. These 
@@ -239,11 +239,12 @@ e.g.~the~sliding window and its behaviour, anchors are generated in \verb|utils.
 described in chapter \ref{anchors-func}. Even in this split approach, it 
 follows the~idea from chapter \ref{faster-rcnn}.
 
-\verb|rpn_graph| takes as inputs a~feature map, number of anchors per location 
-and anchor stride and returns anchor class logits, probabilities and bounding 
-boxes refinements. The~workflow of \verb|rpn_graph| is illustrated in pseudocode 
-\ref{code:rpn}. \verb|build_rpn_model| creates a~model which firstly feed
-the~\verb|rpn_graph| function and then returns the~above-mentioned values.
+Inputs for the \verb|rpn_graph| function are a~feature map, number of anchors
+per location and anchor stride and returns anchor class logits, probabilities
+and bounding boxes refinements. The~workflow of \verb|rpn_graph| is illustrated
+in pseudocode \ref{code:rpn}. \verb|build_rpn_model| creates a~model which
+firstly feed the~\verb|rpn_graph| function and then returns the~above-mentioned
+values.
 
 {\scriptsize
 \begin{lstlisting}[style=python, caption={rpn\_graph}, captionpos=b, 

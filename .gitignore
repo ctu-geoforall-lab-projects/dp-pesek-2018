@@ -3,7 +3,6 @@
 *.out
 *.synctex.gz
 *.tex.bak
-text/ondrej-pesek-dp-2018.pdf
 *.bbl
 *.blg
 __pycache__

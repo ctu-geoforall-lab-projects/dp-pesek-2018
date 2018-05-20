@@ -21,7 +21,7 @@ a~pretrained model, the~training may take even weeks; in case of a~good
 pretrained model and powerful PC with GPU support, the~training could get good
 results after 1 day and even less.
 
-When the~user has a~model, it can be used for the~detection. 
+When the~user has a~trained model, it can be used for the~detection. Module
 \emph{i.ann.maskrcnn.detect} detects classes learned during the~training and 
 extracts from given images vectors corresponding to detected objects. Objects 
 can be extracted either as areas or points. 
@@ -48,7 +48,7 @@ so please install Python 3 versions.
 After dependencies are fulfilled, modules can be installed locally using
 \emph{g.extension} module:
 {\footnotesize
-\begin{lstlisting}
+\begin{lstlisting}[breaklines=true]
 g.extension extension=i.ann.maskrcnn url=path/to/the/i.ann.maskrcnn/folder
 \end{lstlisting}
 }

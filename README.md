@@ -30,8 +30,7 @@ June 2018
 
 ## Text
 
-Here will be a link to the PDF after the deadline. In case of interest, please
-see the [text directory](text).
+[PDF](text/ondrej-pesek-dp-2018.pdf)
 
 ![Football fields detection](text/pictures/out1.png)
 
