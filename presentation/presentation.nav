@@ -1,0 +1,91 @@
+\beamer@endinputifotherversion {3.36pt}
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\sectionentry {1}{Motivace}{3}{Motivace}{0}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\slideentry {1}{0}{1}{3/6}{}{0}}
+\headcommand {\beamer@framepages {3}{6}}
+\headcommand {\slideentry {1}{0}{2}{7/9}{}{0}}
+\headcommand {\beamer@framepages {7}{9}}
+\headcommand {\slideentry {1}{0}{3}{10/12}{}{0}}
+\headcommand {\beamer@framepages {10}{12}}
+\headcommand {\sectionentry {2}{Zad\IeC {\'a}n\IeC {\'\i }}{13}{Zad\IeC {\'a}n\IeC {\'\i }}{0}}
+\headcommand {\beamer@sectionpages {3}{12}}
+\headcommand {\beamer@subsectionpages {3}{12}}
+\headcommand {\slideentry {2}{0}{1}{13/13}{}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\sectionentry {3}{Teoretick\IeC {\'y} \IeC {\'u}vod}{14}{Teoretick\IeC {\'y} \IeC {\'u}vod}{0}}
+\headcommand {\beamer@sectionpages {13}{13}}
+\headcommand {\beamer@subsectionpages {13}{13}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{14}{Konvolu\IeC {\v c}n\IeC {\'\i } neuronov\IeC {\'e} s\IeC {\'\i }t\IeC {\v e}}}\headcommand {\beamer@subsectionpages {14}{13}}
+\headcommand {\slideentry {3}{1}{1}{14/16}{Konvolu\IeC {\v c}n\IeC {\'\i } neuronov\IeC {\'e} s\IeC {\'\i }t\IeC {\v e}}{0}}
+\headcommand {\beamer@framepages {14}{16}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{17}{Mask R-CNN}}\headcommand {\beamer@subsectionpages {14}{16}}
+\headcommand {\slideentry {3}{2}{1}{17/18}{Mask R-CNN}{0}}
+\headcommand {\beamer@framepages {17}{18}}
+\headcommand {\slideentry {3}{2}{2}{19/19}{Mask R-CNN}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {3}{2}{3}{20/23}{Mask R-CNN}{0}}
+\headcommand {\beamer@framepages {20}{23}}
+\headcommand {\slideentry {3}{2}{4}{24/26}{Mask R-CNN}{0}}
+\headcommand {\beamer@framepages {24}{26}}
+\headcommand {\sectionentry {4}{Pou\IeC {\v z}it\IeC {\'e} technologie}{27}{Pou\IeC {\v z}it\IeC {\'e} technologie}{0}}
+\headcommand {\beamer@sectionpages {14}{26}}
+\headcommand {\beamer@subsectionpages {17}{26}}
+\headcommand {\slideentry {4}{0}{1}{27/30}{}{0}}
+\headcommand {\beamer@framepages {27}{30}}
+\headcommand {\sectionentry {5}{Implementace}{31}{Implementace}{0}}
+\headcommand {\beamer@sectionpages {27}{30}}
+\headcommand {\beamer@subsectionpages {27}{30}}
+\headcommand {\beamer@subsectionentry {0}{5}{1}{31}{Seznam soubor\IeC {\r u}}}\headcommand {\beamer@subsectionpages {31}{30}}
+\headcommand {\slideentry {5}{1}{1}{31/31}{Seznam soubor\IeC {\r u}}{0}}
+\headcommand {\beamer@framepages {31}{31}}
+\headcommand {\beamer@subsectionentry {0}{5}{2}{32}{i.ann.maskrcnn.train}}\headcommand {\beamer@subsectionpages {31}{31}}
+\headcommand {\slideentry {5}{2}{1}{32/32}{i.ann.maskrcnn.train}{0}}
+\headcommand {\beamer@framepages {32}{32}}
+\headcommand {\slideentry {5}{2}{2}{33/33}{i.ann.maskrcnn.train}{0}}
+\headcommand {\beamer@framepages {33}{33}}
+\headcommand {\beamer@subsectionentry {0}{5}{3}{34}{i.ann.maskrcnn.detect}}\headcommand {\beamer@subsectionpages {32}{33}}
+\headcommand {\slideentry {5}{3}{1}{34/34}{i.ann.maskrcnn.detect}{0}}
+\headcommand {\beamer@framepages {34}{34}}
+\headcommand {\slideentry {5}{3}{2}{35/35}{i.ann.maskrcnn.detect}{0}}
+\headcommand {\beamer@framepages {35}{35}}
+\headcommand {\beamer@subsectionentry {0}{5}{4}{36}{Pou\IeC {\v z}it\IeC {\'\i }}}\headcommand {\beamer@subsectionpages {34}{35}}
+\headcommand {\slideentry {5}{4}{1}{36/36}{Pou\IeC {\v z}it\IeC {\'\i }}{0}}
+\headcommand {\beamer@framepages {36}{36}}
+\headcommand {\slideentry {5}{4}{2}{37/41}{Pou\IeC {\v z}it\IeC {\'\i }}{0}}
+\headcommand {\beamer@framepages {37}{41}}
+\headcommand {\beamer@subsectionentry {0}{5}{5}{42}{V\IeC {\'y}sledky}}\headcommand {\beamer@subsectionpages {36}{41}}
+\headcommand {\slideentry {5}{5}{1}{42/50}{V\IeC {\'y}sledky}{0}}
+\headcommand {\beamer@framepages {42}{50}}
+\headcommand {\sectionentry {6}{Z\IeC {\'a}v\IeC {\v e}r}{51}{Z\IeC {\'a}v\IeC {\v e}r}{0}}
+\headcommand {\beamer@sectionpages {31}{50}}
+\headcommand {\beamer@subsectionpages {42}{50}}
+\headcommand {\slideentry {6}{0}{1}{51/51}{}{0}}
+\headcommand {\beamer@framepages {51}{51}}
+\headcommand {\sectionentry {7}{Zdroje}{52}{Zdroje}{0}}
+\headcommand {\beamer@sectionpages {51}{51}}
+\headcommand {\beamer@subsectionpages {51}{51}}
+\headcommand {\slideentry {7}{0}{1}{52/52}{}{0}}
+\headcommand {\beamer@framepages {52}{52}}
+\headcommand {\slideentry {7}{0}{2}{53/53}{}{0}}
+\headcommand {\beamer@framepages {53}{53}}
+\headcommand {\sectionentry {8}{Reakce na ot\IeC {\'a}zky oponenta}{54}{Reakce na ot\IeC {\'a}zky oponenta}{0}}
+\headcommand {\beamer@sectionpages {52}{53}}
+\headcommand {\beamer@subsectionpages {52}{53}}
+\headcommand {\slideentry {8}{0}{1}{54/61}{}{0}}
+\headcommand {\beamer@framepages {54}{61}}
+\headcommand {\slideentry {8}{0}{2}{62/69}{}{0}}
+\headcommand {\beamer@framepages {62}{69}}
+\headcommand {\slideentry {8}{0}{3}{70/71}{}{0}}
+\headcommand {\beamer@framepages {70}{71}}
+\headcommand {\slideentry {8}{0}{4}{72/75}{}{0}}
+\headcommand {\beamer@framepages {72}{75}}
+\headcommand {\beamer@partpages {1}{75}}
+\headcommand {\beamer@subsectionpages {54}{75}}
+\headcommand {\beamer@sectionpages {54}{75}}
+\headcommand {\beamer@documentpages {75}}
+\headcommand {\def \inserttotalframenumber {27}}
