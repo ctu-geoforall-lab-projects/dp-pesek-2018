@@ -114,7 +114,6 @@
 Fakulta stavební \\
 %\medskip
 Obor Geomatika
-% \textit{ondrej.svoboda.2@fsv.cvut.cz} % Your email address
 }
 \date{20. června 2018} % Date, can be changed to a custom date
 \titlegraphic{\includegraphics[width=1.5cm]{pictures/logo2.pdf}}
@@ -212,21 +211,6 @@ Proč neuronové sítě?
 
 %------------------------------------------------------------------
 
-\section{Zadání}
-
-\begin{frame}
-
-\frametitle{Zadání}
-
-\begin{itemize}
-	\item nalézt vhodný model
-	\item jeho implementace do prostředí GRASS GIS
-\end{itemize}
-
-\end{frame}
-
-%------------------------------------------------------------------
-
 \section{Teoretický úvod}
 
 \subsection{Konvoluční neuronové sítě} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
@@ -296,16 +280,14 @@ Dvě části:
 
 Páteřní architektura:
 \begin{itemize}
-	\item RPN
-	\item<3-> ResNet
-	\item<4-> FPN
+	\item ResNet
+	\item<2-> RPN
 \end{itemize}
 
 \begin{figure}[ht]
-	\includegraphics<1>[width=0.5\textwidth]{pictures/fasterrcnn.png}
-	\includegraphics<2>[width=0.5\textwidth]{pictures/fasterrcnn-anchors.png}
-	\includegraphics<3>[width=0.5\textwidth]{pictures/bottleneck-block.jpg}
-	\includegraphics<4>[width=0.5\textwidth]{pictures/top-down.png}
+	\includegraphics<1>[width=0.5\textwidth]{pictures/bottleneck-block.jpg}
+	\includegraphics<2>[width=0.5\textwidth]{pictures/fasterrcnn.png}
+	\includegraphics<3>[width=0.5\textwidth]{pictures/fasterrcnn-anchors.png}
 	\caption{Zdroj: [4]}
 \end{figure}
 
@@ -334,115 +316,7 @@ Hlavová architektura:
 
 %------------------------------------------------------------------
 
-\section{Použité technologie}
-
-\begin{frame}
-
-\frametitle{Použité technologie}
-
-\begin{figure}
-	\centering
-	\begin{minipage}{.4\textwidth}
-		\centering
-		\visible<1->{
-		\begin{figure}[ht]
-	  		\includegraphics[width=2.5cm]{pictures/grass-logo.png}
-		\end{figure}}
-    \end{minipage}%
-    \begin{minipage}{.6\textwidth}
-		\centering
-		\visible<2->{
-		\begin{figure}[ht]
-			\includegraphics[width=6cm]{pictures/python-logo.png}
-		\end{figure}}
-	\end{minipage}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\begin{minipage}{.32\textwidth}
-		\centering
-		\visible<3->{
-		\begin{figure}[ht]
-	  		\includegraphics[width=2.5cm]{pictures/tf-logo.png}
-		\end{figure}}
-    \end{minipage}%
-    \begin{minipage}{.32\textwidth}
-		\centering
-		\visible<4->{
-		\begin{figure}[ht]
-			\includegraphics[width=2.5cm]{pictures/keras-logo.png}
-		\end{figure}}
-	\end{minipage}
-\end{figure}
-
-\end{frame}
-
-%------------------------------------------------------------------
-
 \section{Implementace}
-
-\subsection{Seznam souborů}
-
-\begin{frame}
-
-\frametitle{Seznam souborů}
-
-\begin{itemize}
-	\item i.ann.maskrcnn.train
-	\item i.ann.maskrcnn.detect
-	\item maskrcnnlib
-\end{itemize}
-
-\end{frame}
-
-%------------------------------------------------------------------
-
-\subsection{i.ann.maskrcnn.train}
-
-\begin{frame}
-
-\frametitle{i.ann.maskrcnn.train}
-
-\begin{figure}[ht]
-	\includegraphics[width=0.55\textwidth]{pictures/train_dia.png}
-\end{figure}
-\end{frame}
-
-%------------------------------------------------------------------
-
-\begin{frame}
-
-\frametitle{i.ann.maskrcnn.train}
-
-\begin{figure}[ht]
-	\includegraphics[width=0.8\textwidth]{pictures/training_dia.png}
-\end{figure}
-\end{frame}
-
-%------------------------------------------------------------------
-
-\subsection{i.ann.maskrcnn.detect}
-
-\begin{frame}
-
-\frametitle{i.ann.maskrcnn.detect}
-
-\begin{figure}[ht]
-	\includegraphics[width=0.7\textwidth]{pictures/detect_dia.png}
-\end{figure}
-\end{frame}
-
-%------------------------------------------------------------------
-
-\begin{frame}
-
-\frametitle{i.ann.maskrcnn.detect}
-
-\begin{figure}[ht]
-	\includegraphics[width=0.55\textwidth]{pictures/vectorize.png}
-\end{figure}
-\end{frame}
 
 %------------------------------------------------------------------
 
@@ -462,16 +336,50 @@ Postup práce:
 
 %------------------------------------------------------------------
 
+\subsection{i.ann.maskrcnn.train}
+
 \begin{frame}
 
-\frametitle{Použití}
+\frametitle{i.ann.maskrcnn.train}
+
+Postup práce modulu
+\begin{itemize}
+	\item<1-> konfigurace modelu
+	\item<2-> naplnění předtrénovanými váhami
+	\item<3-> přečtení datasetu
+	\item<4-> učení
+	\item<5-> uložení modelu
+\end{itemize}
 
 \begin{figure}[ht]
-	\includegraphics<1>[width=.9\textwidth]{pictures/gui-train-01.png}
-	\includegraphics<2>[width=.9\textwidth]{pictures/gui-train-02.png}
-	\includegraphics<3>[width=.9\textwidth]{pictures/gui-train-03.png}
-	\includegraphics<4>[width=.9\textwidth]{pictures/gui-detect-01.png}
-	\includegraphics<5>[width=.9\textwidth]{pictures/gui-detect-02.png}
+	\includegraphics<1>[width=.7\textwidth]{pictures/gui-train-conf.png}
+	\includegraphics<2>[width=.7\textwidth]{pictures/gui-train-weights.png}
+	\includegraphics<3>[width=.7\textwidth]{pictures/gui-train-dataset.png}
+	\includegraphics<4>[width=.7\textwidth]{pictures/gui-train-train.png}
+	\includegraphics<5>[width=.7\textwidth]{pictures/gui-train-save.png}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------------------------
+
+\subsection{i.ann.maskrcnn.detect}
+
+\begin{frame}
+
+\frametitle{i.ann.maskrcnn.detect}
+
+Postup práce modulu
+\begin{itemize}
+	\item<1-> naplnění natrénovanými váhami
+	\item<2-> detekce pro každý obrázek
+	\item<3-> vektorizace
+\end{itemize}
+
+\begin{figure}[ht]
+	\includegraphics<1>[width=.7\textwidth]{pictures/gui-detect-model.png}
+	\includegraphics<2>[width=.7\textwidth]{pictures/gui-detect-images.png}
+	\includegraphics<3>[width=.7\textwidth]{pictures/gui-detect-vectorize.png}
 \end{figure}
 
 \end{frame}
@@ -485,15 +393,33 @@ Postup práce:
 \frametitle{Výsledky}
 
 \begin{figure}[ht]
-	\includegraphics<1>[width=.9\textwidth]{pictures/out1.png}
-	\includegraphics<2>[width=.9\textwidth]{pictures/out2.png}
-	\includegraphics<3>[width=.9\textwidth]{pictures/out3.png}
-	\includegraphics<4>[width=.9\textwidth]{pictures/out4.png}
-	\includegraphics<5>[width=.9\textwidth]{pictures/out_b_1.png}
-	\includegraphics<6>[width=.9\textwidth]{pictures/out_b_10.png}
-	\includegraphics<7>[width=.9\textwidth]{pictures/out_b_50.png}
-	\includegraphics<8>[width=.9\textwidth]{pictures/out_b_150.png}
-	\includegraphics<9>[width=.9\textwidth]{pictures/out_b_180.png}
+	\only<1>{
+	\includegraphics[width=.9\textwidth]{pictures/out1.png}
+	\caption{ztrátová funkce 0.96, 54000 trénovacích obrázků}}
+	\only<2>{
+	\includegraphics[width=.9\textwidth]{pictures/out2.png}
+	\caption{ztrátová funkce 0.96, 54000 trénovacích obrázků}}
+	\only<3>{
+	\includegraphics[width=.9\textwidth]{pictures/out3.png}
+	\caption{ztrátová funkce 0.96, 54000 trénovacích obrázků}}
+	\only<4>{
+	\includegraphics[width=.9\textwidth]{pictures/out4.png}
+	\caption{ztrátová funkce 0.96, 54000 trénovacích obrázků}}
+	\only<5>{
+	\includegraphics[width=.9\textwidth]{pictures/out_b_1.png}
+	\caption{epocha 1, ztrátová funkce 35.01, 2400 trénovacích obrázků}}
+	\only<6>{
+	\includegraphics[width=.9\textwidth]{pictures/out_b_10.png}
+	\caption{epocha 10, ztrátová funkce 5.87, 2400 trénovacích obrázků}}
+	\only<7>{
+	\includegraphics[width=.9\textwidth]{pictures/out_b_50.png}
+	\caption{epocha 50, ztrátová funkce 1.36, 2400 trénovacích obrázků}}
+	\only<8>{
+	\includegraphics[width=.9\textwidth]{pictures/out_b_150.png}
+	\caption{epocha 150, ztrátová funkce 0.63, 2400 trénovacích obrázků}}
+	\only<9>{
+	\includegraphics[width=.9\textwidth]{pictures/out_b_180.png}
+	\caption{epocha 180, ztrátová funkce 0.50, 2400 trénovacích obrázků}}
 \end{figure}
 
 \end{frame}
