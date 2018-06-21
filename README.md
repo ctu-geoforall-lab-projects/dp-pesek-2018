@@ -7,7 +7,7 @@ Mask R-CNN in GRASS GIS
 ## Description
 
 The goal of the diploma thesis is a design of a software tool allowing the user
-to train his own get Mask R-CNN model and to apply it to get vector masks from
+to train his own Mask R-CNN model and to apply it to get vector masks from
 raster data. The library for these tools is heavily based on Python
 implementation of Mask R-CNN by Waleed Abdulla, Matterport, Inc. (see
 [here](https://github.com/matterport/Mask_RCNN)).
@@ -32,6 +32,8 @@ June 2018
 
 [PDF](text/ondrej-pesek-dp-2018.pdf)
 
-![Football fields detection](text/pictures/out1.png)
+## Follow-up development
 
-![Tennis fields detection](text/pictures/out2.png)
+This repository is freezed by the term of the defence. The follow-up
+development can be found in repository
+[https://github.com/ctu-geoforall-lab/i.ann.maskrcnn](https://github.com/ctu-geoforall-lab/i.ann.maskrcnn).
